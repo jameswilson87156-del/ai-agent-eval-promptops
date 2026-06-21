@@ -1,0 +1,31 @@
+server:
+  port: 18080
+
+spring:
+  application:
+    name: ai-agent-eval-promptops-console
+  datasource:
+    url: ${PROMPTOPS_DB_URL:jdbc:mysql://127.0.0.1:3306/ai_agent_eval_promptops?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${PROMPTOPS_DB_USER:root}
+    password: ${PROMPTOPS_DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: ${PROMPTOPS_SQL_INIT:always}
+      encoding: UTF-8
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+
+promptops:
+  demo-data:
+    enabled: ${PROMPTOPS_DEMO_DATA:true}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
