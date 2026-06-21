@@ -1,14 +1,26 @@
 ﻿# PromptOps Evaluation Lab
 
-AI Agent 评测中心 / PromptOps 实验室。这个个人作品集项目用一套可本地复现的工程闭环，演示如何管理 Prompt 版本、执行规则评测、定位失败 Case、查看 Trace、完成人工 Review，并据此提出下一轮 Prompt 迭代建议。
+PromptOps 本地实验台：规则评测引擎 + Prompt 版本管理 + Eval Run 落库闭环。这个个人作品集项目用一套可本地复现的工程闭环，演示如何管理 Prompt 版本、执行规则评测、定位失败 Case、查看 Trace、完成人工 Review，并据此提出下一轮 Prompt 迭代建议。
 
 > [!IMPORTANT]
-> 这是用于 GitHub、实习简历和面试演示的本地项目，不是生产系统。页面数据来自种子 Demo；模型输出由确定性 Mock 生成器产生，评分来自可解释规则。项目不包含真实用户数据，不承诺真实 LLM 稳定接入，页面中的人工 Review 结论也不持久化。
+> 这是用于 GitHub、实习简历和面试演示的本地项目，不是生产系统。页面数据来自种子 Demo；输出由确定性 Mock 生成器产生，评分来自可解释规则。项目不包含真实用户数据，不包含真实 LLM 调用，页面中的人工 Review 结论也不持久化。
+
+## 诚实边界
+
+- 当前无真实 LLM 调用。
+- 当前无真实 AI Agent。
+- 当前无多模型对比。
+- 当前无 LLM-as-Judge。
+- MockOutputGenerator 基于确定性规则生成输出，用于验证评测流程。
+- RuleEvaluator 基于规则评分，不是 AI 语义评分。
+- Review 结论当前部分为前端演示状态，不是后端持久化审批流。
 
 ![PromptOps 实验室概览](docs/images/dashboard.png)
 
 ## 项目亮点
 
+- 技术栈扎实：Spring Boot 3 + Java 17 + MyBatis-Plus，前端使用 Vue 3 + TypeScript 真实 fetch 后端 API。
+- 数据建模完整：Prompt 模板 / 版本、Eval Dataset / Eval Case / Rule / Run / Result / Trace 均有领域对象和落库结构。
 - 完整闭环：`Prompt Version → Eval Dataset → Eval Run → Case Result → Rule Scoring → Trace → Human Review → Version Compare`。
 - 可解释评测：支持必含词、禁用词、风险提示与输出格式规则；JSON 使用确定性解析校验，Case 结果可回溯到逐条规则检查。
 - 双运行模式：默认 MySQL 配置用于完整后端演示；`demo` profile 使用内存 H2，无需外部数据库即可复现页面与截图。
@@ -139,13 +151,13 @@ npm run screenshots
 ## 项目边界
 
 - 已实现：Prompt/版本/评测集/Case/规则/Run/Result/Trace 的后端闭环，规则评分、版本对比与本地 Demo 展示。
-- 未实现：真实 LLM Provider、LLM-as-Judge、RAG、向量数据库、异步队列、生产监控、多租户、权限系统和持久化审批。
+- 未实现：真实 LLM Provider、真实 AI Agent、多模型对比、LLM-as-Judge、RAG、向量数据库、异步队列、生产监控、多租户、权限系统和持久化审批。
 - Demo 语义：种子数据、运行指标和截图仅用于展示 PromptOps 工作流，不代表真实线上评测平台或企业使用情况。
 - Review 语义：后端领域策略只判断 Case 是否需要 Review（规则失败，或风险等级为 high/critical）；前端 Review 结论仅是页面内交互状态。真正上线决策仍需后端审批模型、审计日志和权限控制。
 
 ## 简历可写亮点
 
-- 设计并实现 Prompt 版本、评测集、规则评分、Case Result、Generation Trace、人工 Review 与版本对比的 PromptOps 闭环。
+- 设计并实现 PromptOps 本地实验台：基于 Spring Boot 3 + MyBatis-Plus 建模 Prompt 模板、版本、评测集、评测结果与 Generation Trace；实现可解释规则评分引擎，支持 Eval Run 批量评测、结果落库、版本对比与 Vue 3 可视化展示。（当前阶段为规则层闭环，未接入真实 LLM。）
 - 使用 Spring Boot + MyBatis-Plus 建模评测领域对象，并通过领域单元测试与 H2 集成测试验证评分、风险队列和核心工作流。
 - 使用 Vue 3 + TypeScript 构建可搜索、可筛选、可交互的评测实验室，并明确区分 Mock 结果与生产数据。
 - 编写 Playwright 自动验收与截图流程，在 Windows 下验证关键交互、响应式和端口释放，生成可用于 GitHub/简历的展示资产。

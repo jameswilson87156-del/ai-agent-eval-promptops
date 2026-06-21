@@ -7,9 +7,10 @@
 开始工作前必须读取：
 
 - `AGENTS.md`
-- `docs/PRD.md`
-- `docs/DESIGN.md`
-- `docs/ARCHITECTURE.md`
+- `docs/architecture.md`
+- `docs/interview-guide.md`
+- `docs/demo-script.md`
+- `docs/acceptance-checklist.md`
 - `TODO.md`
 - `HANDOFF.md`
 
@@ -18,7 +19,7 @@
 - 每轮只能完成一个名称明确、范围可验收的 TODO。
 - 修改前先检查项目目录、相关源码、现有文档；存在 Git 仓库时查看 `git status` 和当前 diff。
 - 不得顺手实现下一个 TODO，不得把小任务扩展为全项目重构。
-- 不得实现 `docs/PRD.md`“暂不做事项”中的内容。
+- 不得实现 `TODO.md` 或现有 `docs/` 中标记为“暂不做事项”的内容。
 - 新增生产依赖、数据库、付费服务、外部账号或破坏性变更前，必须获得用户明确同意。
 - 用户已有的无关改动必须保留；不覆盖、不回滚、不混入本轮修改。
 
@@ -56,9 +57,9 @@
 
 ## 6. 文档更新要求
 
-- 需求变化：更新 `docs/PRD.md`。
-- 页面、交互或状态变化：更新 `docs/DESIGN.md`。
-- 技术栈、目录、接口、数据或运行方式变化：更新 `docs/ARCHITECTURE.md`。
+- 需求变化：更新 `TODO.md` 和 `HANDOFF.md`，必要时补充 `docs/architecture.md` 或相关说明文档。
+- 页面、交互或状态变化：更新 `docs/demo-script.md` 或 `docs/acceptance-checklist.md`。
+- 技术栈、目录、接口、数据或运行方式变化：更新 `docs/architecture.md`。
 - 任务状态变化：更新 `TODO.md`。
 - 每轮实现、测试、阻塞与审查结果：追加到 `HANDOFF.md`，不覆盖历史记录。
 - 文档只能描述真实现状；未确认内容标记为“待确认”。
@@ -71,4 +72,3 @@
 - 禁止把 Claude/Codex 描述成会自动互聊。
 - 禁止伪造测试、构建、部署或 Git 提交成功。
 - 禁止在未理解影响时执行管理员命令、递归删除或全局配置修改。
-
