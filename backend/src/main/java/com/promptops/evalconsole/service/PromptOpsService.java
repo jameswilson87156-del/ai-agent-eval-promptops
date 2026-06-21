@@ -1,6 +1,9 @@
 package com.promptops.evalconsole.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.promptops.evalconsole.api.dto.ConsoleDtos;
 import com.promptops.evalconsole.api.dto.ConsoleDtos.CaseResultDto;
 import com.promptops.evalconsole.api.dto.ConsoleDtos.ComparisonDto;
@@ -51,6 +54,8 @@ import java.util.stream.Collectors;
 public class PromptOpsService {
 
     private static final DateTimeFormatter DISPLAY_TIME = DateTimeFormatter.ofPattern("MM-dd HH:mm");
+    private static final TypeReference<List<PromptVariableDto>> PROMPT_VARIABLE_LIST_TYPE = new TypeReference<>() {
+    };
 
     private final PromptTemplateMapper promptTemplateMapper;
     private final PromptVersionMapper promptVersionMapper;
@@ -60,6 +65,7 @@ public class PromptOpsService {
     private final EvalRunMapper evalRunMapper;
     private final EvalCaseResultMapper evalCaseResultMapper;
     private final GenerationTraceMapper generationTraceMapper;
+    private final ObjectMapper objectMapper;
     private final RuleEvaluator ruleEvaluator;
     private final MockOutputGenerator mockOutputGenerator;
     private final EvaluationPolicy evaluationPolicy;
@@ -73,6 +79,7 @@ public class PromptOpsService {
             EvalRunMapper evalRunMapper,
             EvalCaseResultMapper evalCaseResultMapper,
             GenerationTraceMapper generationTraceMapper,
+            ObjectMapper objectMapper,
             RuleEvaluator ruleEvaluator,
             MockOutputGenerator mockOutputGenerator,
             EvaluationPolicy evaluationPolicy
@@ -85,6 +92,7 @@ public class PromptOpsService {
         this.evalRunMapper = evalRunMapper;
         this.evalCaseResultMapper = evalCaseResultMapper;
         this.generationTraceMapper = generationTraceMapper;
+        this.objectMapper = objectMapper;
         this.ruleEvaluator = ruleEvaluator;
         this.mockOutputGenerator = mockOutputGenerator;
         this.evaluationPolicy = evaluationPolicy;
@@ -570,24 +578,61 @@ public class PromptOpsService {
     }
 
     private List<PromptVariableDto> variables(String json) {
-        if (json == null || json.isBlank() || "[]".equals(json)) {
+        if (json == null || json.isBlank()) {
             return List.of();
         }
-        String normalized = json.replace("[", "").replace("]", "").replace("{", "").replace("}", "");
-        List<PromptVariableDto> variables = new ArrayList<>();
-        for (String item : normalized.split("\\|")) {
-            String[] parts = item.split("::");
-            if (parts.length >= 3) {
-                variables.add(new PromptVariableDto(parts[0], parts[1], Boolean.parseBoolean(parts[2])));
-            }
+        String normalized = json.trim();
+        if ("[]".equals(normalized)) {
+            return List.of();
         }
-        return variables;
+        try {
+            List<PromptVariableDto> parsed = objectMapper.readValue(normalized, PROMPT_VARIABLE_LIST_TYPE);
+            return parsed == null ? List.of() : parsed;
+        } catch (JsonProcessingException ex) {
+            if (looksLikeLegacyVariables(normalized)) {
+                return legacyVariables(normalized);
+            }
+            throw new IllegalStateException("Invalid prompt_version.variables_json; expected standard JSON array", ex);
+        }
     }
 
     private String toVariablesJson(List<PromptVariableDto> variables) {
-        return variables.stream()
-                .map(variable -> variable.name() + "::" + variable.description() + "::" + variable.required())
-                .collect(Collectors.joining("|", "[", "]"));
+        try {
+            return objectMapper.writeValueAsString(variables == null ? List.of() : variables);
+        } catch (JsonProcessingException ex) {
+            throw new IllegalStateException("Failed to serialize prompt variables to JSON", ex);
+        }
+    }
+
+    private boolean looksLikeLegacyVariables(String value) {
+        String normalized = trimArrayBrackets(value);
+        return normalized.contains("::");
+    }
+
+    private List<PromptVariableDto> legacyVariables(String value) {
+        String normalized = trimArrayBrackets(value);
+        if (normalized.isBlank()) {
+            return List.of();
+        }
+        List<PromptVariableDto> result = new ArrayList<>();
+        for (String item : normalized.split("\\|")) {
+            if (item.isBlank()) {
+                continue;
+            }
+            String[] parts = item.split("::", 3);
+            if (parts.length >= 3) {
+                result.add(new PromptVariableDto(parts[0], parts[1], Boolean.parseBoolean(parts[2])));
+            }
+        }
+        return result;
+    }
+
+    private String trimArrayBrackets(String value) {
+        String normalized = value.trim();
+        if (normalized.startsWith("[") && normalized.endsWith("]")) {
+            return normalized.substring(1, normalized.length() - 1);
+        }
+        return normalized;
     }
 
     private String toJsonArray(List<String> values) {

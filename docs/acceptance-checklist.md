@@ -3,7 +3,7 @@
 ## 状态口径
 
 - 已验证：仓库已有证据或历史验收记录支持的能力。
-- 未验证：本轮 P0-1 文档任务未重新运行的构建、测试、安装或启动验证。
+- 未验证：本轮未重新运行的前端构建、截图、安装或启动验证。
 - 当前不支持：源码和文档均明确没有实现的能力。
 - 后续可扩展：适合未来任务补充，但不能当作当前能力宣传的方向。
 
@@ -28,7 +28,7 @@
 - [x] `npm install` 成功，审计结果为 0 个已知漏洞。
 - [x] `npm run typecheck` 通过。
 - [x] `npm run build` 通过。
-- [x] `mvn test` 通过，9 个测试、0 失败（2 个集成测试、7 个领域单元测试）。
+- [x] `mvn test` 通过，11 个测试、0 失败（4 个集成测试、7 个领域单元测试）。
 - [x] `npm run screenshots` 通过搜索、筛选、Prompt/Case/Trace/Review 交互断言，并生成 8 张真实浏览器截图。
 - [x] 1440/1920 截图、1366/390 页面无横向溢出，浏览器无 console/page error。
 - [x] 截图脚本使用独立端口，只关闭自身启动的后端、Vite 与浏览器，并确认端口释放。
@@ -41,11 +41,11 @@
 - [x] `docs/images/trace-review.png`
 - [x] `docs/images/large/` 下包含对应 1920px 版本。
 
-## 未验证：本轮 P0-1
+## 未验证：本轮 P0-2
 
 - [ ] 本轮未运行 `npm install`。
 - [ ] 本轮未运行 `npm run typecheck` / `npm run build` / `npm run screenshots`。
-- [ ] 本轮未运行 `mvn test` / `mvn package`。
+- [ ] 本轮未运行 `mvn package`。
 - [ ] 本轮未启动后端、前端、数据库或 Docker。
 
 ## 当前不支持
@@ -57,7 +57,6 @@
 - [ ] 真实模型 latency 统计。
 - [ ] 向量数据库 / RAG。
 - [ ] 持久化 Review 审批流、用户权限与完整审计日志。
-- [ ] `variables_json` 字段的真实 JSON 数组存储。
 
 ## 后续可扩展
 
@@ -65,4 +64,3 @@
 - [ ] 增加 LLM-as-Judge，同时保留确定性规则评分基线。
 - [ ] 将 Eval Run 改为异步任务，补充幂等键、队列状态和失败重放。
 - [ ] 为 Review 增加持久化审批、角色权限、状态机和审计记录。
-- [ ] 修复 `variables_json` 命名与真实 JSON 存储问题。

@@ -1,10 +1,18 @@
 package com.promptops.evalconsole;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.promptops.evalconsole.api.dto.ConsoleDtos.CreatePromptTemplateRequest;
+import com.promptops.evalconsole.api.dto.ConsoleDtos.CreatePromptVersionRequest;
+import com.promptops.evalconsole.api.dto.ConsoleDtos.PromptProfileDto;
+import com.promptops.evalconsole.api.dto.ConsoleDtos.PromptVariableDto;
+import com.promptops.evalconsole.persistence.mapper.PromptVersionMapper;
 import com.promptops.evalconsole.service.PromptOpsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,6 +22,12 @@ class EvalConsoleApplicationTests {
 
     @Autowired
     private PromptOpsService promptOpsService;
+
+    @Autowired
+    private PromptVersionMapper promptVersionMapper;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     void contextLoadsAndSeedsDemoData() {
@@ -42,5 +56,57 @@ class EvalConsoleApplicationTests {
         assertThat(summary.evalRuns()).isPositive();
         assertThat(summary.promptVersions()).isGreaterThanOrEqualTo(2);
         assertThat(summary.testCases()).isPositive();
+    }
+
+    @Test
+    void storesPromptVariablesAsStandardJsonArray() throws Exception {
+        String suffix = Long.toString(System.nanoTime());
+        var template = promptOpsService.createPromptTemplate(new CreatePromptTemplateRequest(
+                "json-vars-" + suffix, "JSON 变量测试", "变量序列化",
+                "验证 variables_json 使用真实 JSON 数组存储。", "Backend", "Draft"));
+        var variables = List.of(
+                new PromptVariableDto("customerType", "客户类型", true),
+                new PromptVariableDto("riskLevel", "风险等级", false)
+        );
+
+        var version = promptOpsService.createPromptVersion(new CreatePromptVersionRequest(
+                template.getId(), "v-json", "Return JSON with customerType and riskLevel.",
+                variables, "JSON", "Candidate", "codex-test"));
+
+        String stored = promptVersionMapper.selectById(version.getId()).getVariablesJson();
+        var json = objectMapper.readTree(stored);
+        assertThat(json.isArray()).isTrue();
+        assertThat(json.size()).isEqualTo(2);
+        assertThat(json.get(0).get("name").asText()).isEqualTo("customerType");
+        assertThat(json.get(0).get("description").asText()).isEqualTo("客户类型");
+        assertThat(json.get(0).get("required").asBoolean()).isTrue();
+        assertThat(stored).doesNotContain("::");
+        assertThat(profile(template.getId()).variables()).containsExactlyElementsOf(variables);
+    }
+
+    @Test
+    void readsLegacyPipeVariablesForExistingData() {
+        String suffix = Long.toString(System.nanoTime());
+        var template = promptOpsService.createPromptTemplate(new CreatePromptTemplateRequest(
+                "legacy-vars-" + suffix, "旧变量格式测试", "变量兼容",
+                "验证旧管道格式仍能被读取。", "Backend", "Draft"));
+        var version = promptOpsService.createPromptVersion(new CreatePromptVersionRequest(
+                template.getId(), "v-legacy", "Return text.",
+                List.of(new PromptVariableDto("placeholder", "占位变量", true)),
+                "TEXT", "Candidate", "codex-test"));
+        version.setVariablesJson("[legacyName::历史字段::true|riskLevel::风险等级::false]");
+        promptVersionMapper.updateById(version);
+
+        assertThat(profile(template.getId()).variables()).containsExactly(
+                new PromptVariableDto("legacyName", "历史字段", true),
+                new PromptVariableDto("riskLevel", "风险等级", false)
+        );
+    }
+
+    private PromptProfileDto profile(Long templateId) {
+        return promptOpsService.listPromptProfiles().stream()
+                .filter(profile -> profile.id().equals(templateId))
+                .findFirst()
+                .orElseThrow();
     }
 }

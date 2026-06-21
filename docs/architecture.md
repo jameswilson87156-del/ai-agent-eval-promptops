@@ -27,7 +27,7 @@ prompt_version + eval_dataset ──> eval_run ──< eval_case_result
 
 `Eval Run` 保存一次版本与评测集组合的聚合结果；`Eval Case Result` 保存逐 Case 状态、评分、模拟耗时、输出与解释；`Generation Trace` 保存输入/输出摘要和失败原因，支持按 Run 与 Case 查询。
 
-当前 `prompt_version.variables_json` 字段名保留了历史命名，但服务层实际使用 `name|description|required` 的行分隔格式序列化变量列表，并不是真正 JSON。该问题作为 P0-2 处理，本轮只记录风险，不修改 schema 或 Java 代码。
+`prompt_version.variables_json` 存储标准 JSON 数组，例如 `[{"name":"customerType","description":"客户类型","required":true}]`。Java 侧由 Jackson 负责序列化 / 反序列化为 `PromptVariableDto` 列表；H2 demo/test schema 使用 CLOB 承载 JSON 字符串以保持兼容。前端接口仍返回 `variables` 数组，不感知底层存储格式。
 
 ## 运行模式
 

@@ -4,6 +4,46 @@
 
 ## 当前待处理交接
 
+### 2026-06-22 — Codex — P0-2 修复 variables_json 命名与真实 JSON 存储问题
+
+- 当前分支：`resume-optimization-v1`
+- 本轮任务：P0-2 修复 `variables_json` 命名与真实 JSON 存储问题
+- 方案选择：方案 A，保留 `variables_json` 字段名并改为标准 JSON 数组存储。
+- 选择理由：MySQL schema 已使用 JSON 类型，项目已有 Jackson；改成真实 JSON 数组能让字段名、数据库设计、Java 序列化逻辑和面试解释一致，同时保持前端接口不变。
+
+### P0-2 修改文件
+
+- `backend/src/main/java/com/promptops/evalconsole/service/PromptOpsService.java`：`toVariablesJson()` 改为 Jackson JSON 序列化，`variables()` 改为 Jackson JSON 反序列化，并兼容旧管道格式读取。
+- `backend/src/main/java/com/promptops/evalconsole/persistence/entity/PromptVersionEntity.java`：补充 `variablesJson` 字段语义注释。
+- `backend/src/main/resources/schema.sql`：补充 `variables_json` 存储标准 JSON 数组的注释。
+- `backend/src/main/resources/schema-h2.sql`：补充 H2 使用 CLOB 承载 JSON 字符串的注释。
+- `backend/src/test/resources/schema-h2.sql`：补充 H2 测试 schema 注释。
+- `backend/src/test/java/com/promptops/evalconsole/EvalConsoleApplicationTests.java`：新增 JSON 数组写入与旧管道格式兼容读取测试。
+- `TODO.md`：将 P0-1、P0-2 状态更新为已完成。
+- `docs/architecture.md`、`docs/interview-guide.md`、`docs/acceptance-checklist.md`、`README.md`：同步当前 JSON 存储和测试基线。
+- `HANDOFF.md`：追加本轮交接记录。
+
+### P0-2 结果与边界
+
+- `variables_json` 当前已经用于存储真实 JSON 数组，例如 `[{"name":"customerType","description":"客户类型","required":true}]`。
+- Java 侧使用 Jackson 序列化 / 反序列化 `List<PromptVariableDto>`。
+- 旧数据如 `[name::description::true|risk::风险等级::false]` 仍可兼容解析。
+- 前端接口保持不变，仍返回 `variables` 数组；未修改 Vue 源码。
+- 未修改 `package.json` / `package-lock.json` / `pom.xml`。
+- 未安装依赖，未启动后端、前端、数据库或 Docker。
+
+### P0-2 验证结果
+
+- 已执行：`mvn -pl backend test`
+- 结果：BUILD SUCCESS，Tests run: 11, Failures: 0, Errors: 0, Skipped: 0。
+- 已执行：`git diff --check`，结果退出码 0；仅有 Windows 换行符提示。
+- 已执行：`git status`，结果仅显示本轮相关文件 modified，未暂存。
+- 已执行本轮 diff 范围检查，未出现前端 Vue、`package.json` / `package-lock.json` 或 `pom.xml` 改动。
+
+### P0-2 下一轮唯一建议任务
+
+P1-1 补全局异常处理器。P0 风险修完后，下一步应提升 Java 后端工程可信度，让项目更适合写进简历。
+
 ### 2026-06-21 — Codex — P0-1 项目定位去虚夸 + 文档基线补齐
 
 - 当前分支：`resume-optimization-v1`
