@@ -10,14 +10,23 @@ import com.promptops.evalconsole.service.PromptOpsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @SpringBootTest
+@AutoConfigureMockMvc
 class EvalConsoleApplicationTests {
 
     @Autowired
@@ -28,6 +37,9 @@ class EvalConsoleApplicationTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     void contextLoadsAndSeedsDemoData() {
@@ -101,6 +113,30 @@ class EvalConsoleApplicationTests {
                 new PromptVariableDto("legacyName", "历史字段", true),
                 new PromptVariableDto("riskLevel", "风险等级", false)
         );
+    }
+
+    @Test
+    void returnsUnifiedErrorForMissingPromptTemplate() throws Exception {
+        mockMvc.perform(get("/api/prompts/{promptId}/eval-runs/current", 999_999_999L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(404))
+                .andExpect(jsonPath("$.message").isNotEmpty())
+                .andExpect(jsonPath("$.timestamp").isNotEmpty());
+    }
+
+    @Test
+    void returnsFieldErrorsForInvalidPromptTemplateRequest() throws Exception {
+        mockMvc.perform(post("/api/prompt-templates")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.errors[*].field", hasItem("name")))
+                .andExpect(jsonPath("$.errors[*].field", hasItem("scenario")))
+                .andExpect(jsonPath("$.errors[*].field", hasItem("templateKey")))
+                .andExpect(jsonPath("$.errors[*].message", hasItem("must not be blank")));
     }
 
     private PromptProfileDto profile(Long templateId) {

@@ -28,7 +28,7 @@
 - [x] `npm install` 成功，审计结果为 0 个已知漏洞。
 - [x] `npm run typecheck` 通过。
 - [x] `npm run build` 通过。
-- [x] `mvn test` 通过，11 个测试、0 失败（4 个集成测试、7 个领域单元测试）。
+- [x] `mvn test` 通过，13 个测试、0 失败（6 个集成测试、7 个领域单元测试）。
 - [x] `npm run screenshots` 通过搜索、筛选、Prompt/Case/Trace/Review 交互断言，并生成 8 张真实浏览器截图。
 - [x] 1440/1920 截图、1366/390 页面无横向溢出，浏览器无 console/page error。
 - [x] 截图脚本使用独立端口，只关闭自身启动的后端、Vite 与浏览器，并确认端口释放。

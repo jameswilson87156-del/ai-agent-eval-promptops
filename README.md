@@ -129,7 +129,7 @@ npm run build
 npm run screenshots
 ```
 
-当前验收基线：11 个后端测试通过（4 个集成测试、7 个领域单元测试）；前端 TypeScript 检查与 Vite 构建通过；Playwright 交互/响应式断言通过并可重复生成 8 张截图。详细清单见 [`docs/acceptance-checklist.md`](docs/acceptance-checklist.md)。
+当前验收基线：13 个后端测试通过（6 个集成测试、7 个领域单元测试）；前端 TypeScript 检查与 Vite 构建通过；Playwright 交互/响应式断言通过并可重复生成 8 张截图。详细清单见 [`docs/acceptance-checklist.md`](docs/acceptance-checklist.md)。
 
 ## 项目结构
 

@@ -42,7 +42,11 @@
 
 ### P1-1 补全局异常处理器
 
-- 状态：待执行
+- 状态：已完成
+- 结果：
+  - 新增 `GlobalExceptionHandler`，统一处理 `ResponseStatusException`、参数校验异常和兜底异常。
+  - API 错误响应统一为 `code` / `message` / `timestamp`，参数校验错误额外返回字段级 `errors`。
+  - 后端测试基线更新为 13 个。
 
 ### P1-2 增加分页支持
 

@@ -4,6 +4,41 @@
 
 ## 当前待处理交接
 
+### 2026-06-22 — Codex — P1-1 补全局异常处理器
+
+- 当前分支：`resume-optimization-v1`
+- 本轮任务：P1-1 补全局异常处理器。
+- 新增文件：`backend/src/main/java/com/promptops/evalconsole/api/GlobalExceptionHandler.java`
+- 修改文件：`backend/src/main/java/com/promptops/evalconsole/api/dto/ConsoleDtos.java`、`backend/src/test/java/com/promptops/evalconsole/EvalConsoleApplicationTests.java`、`TODO.md`、`HANDOFF.md`、`docs/architecture.md`、`docs/acceptance-checklist.md`、`README.md`
+
+### P1-1 实现内容
+
+- 使用 `@RestControllerAdvice` 新增全局异常处理器。
+- 统一处理 `ResponseStatusException`：使用异常自身 HTTP status 和 reason。
+- 统一处理 `MethodArgumentNotValidException`：返回 400、`Validation failed` 和字段级 `errors`。
+- 统一处理通用 `Exception`：返回 500 和通用消息 `Internal server error`，不暴露堆栈、SQL、类名等内部细节。
+- 在 `ConsoleDtos` 中新增 `ErrorResponse` 和 `FieldErrorItem` record。
+
+### P1-1 ErrorResponse 结构
+
+- `code`：HTTP 状态码数字。
+- `message`：可展示错误信息。
+- `timestamp`：`LocalDateTime` 时间戳。
+- `errors`：字段级错误列表；非校验错误为空时不输出。
+
+### P1-1 测试与验证
+
+- 新增测试：`returnsUnifiedErrorForMissingPromptTemplate`，覆盖 404 `ResponseStatusException` 统一响应。
+- 新增测试：`returnsFieldErrorsForInvalidPromptTemplateRequest`，覆盖 400 参数校验错误和字段级 `errors`。
+- 已执行：`mvn -pl backend test`。
+- 结果：BUILD SUCCESS，Tests run: 13, Failures: 0, Errors: 0, Skipped: 0。
+- 未改前端 Vue，未改 `pom.xml`，未改 `package.json` / `package-lock.json`，未改数据库 schema。
+- 未安装依赖，未启动后端、前端、数据库或 Docker。
+
+### P1-1 下一轮唯一建议任务
+
+P1-3 补关键日志点。理由：异常响应已经统一，下一步补服务层关键业务日志能继续提升 Java 后端工程可信度；分页支持也有价值，但当前数据量小，日志对面试解释和问题定位更直接。
+
 ### 2026-06-22 — Codex — P0-2 修复 variables_json 命名与真实 JSON 存储问题
 
 - 当前分支：`resume-optimization-v1`
