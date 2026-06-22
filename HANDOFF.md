@@ -4,6 +4,31 @@
 
 ## 当前待处理交接
 
+### 2026-06-22 — Codex — P1-3 补关键日志点
+
+- 当前分支：`resume-optimization-v1`
+- 本轮任务：P1-3 补关键日志点。
+- 修改文件：`backend/src/main/java/com/promptops/evalconsole/service/PromptOpsService.java`、`backend/src/main/java/com/promptops/evalconsole/service/RuleEvaluator.java`、`backend/src/main/java/com/promptops/evalconsole/service/DemoDataInitializer.java`、`TODO.md`、`HANDOFF.md`、`docs/architecture.md`
+
+### P1-3 实现内容
+
+- `PromptOpsService` 新增 `Logger`，记录 Eval Run 开始时的 `promptVersionId`、`datasetId`、`caseCount`，以及完成时的 `runKey`、`passedCases`、`failedCases`、`passRate`。
+- `PromptOpsService` 在 `toVariablesJson()` 序列化失败时记录 `log.error`，只记录变量数量和异常；在 `variables()` 解析失败且即将抛出 `IllegalStateException` 前记录 `log.warn`，只记录截断摘要。
+- `RuleEvaluator` 新增 `Logger`，当规则评分产生失败项时记录 debug 日志，包含 `status`、失败数量和 `score`。
+- `DemoDataInitializer` 新增 `Logger`，记录 demo 数据因配置关闭或已有模板而跳过初始化、三个种子模板完成写入，以及初始化完成后的 profile 数量。
+- 未修改业务逻辑，未修改 API 合约，未新增依赖。
+
+### P1-3 测试与验证
+
+- 已执行：`mvn -pl backend test`。
+- 结果：BUILD SUCCESS，Tests run: 13, Failures: 0, Errors: 0, Skipped: 0。
+- 未改前端 Vue，未改 `pom.xml`，未改 `package.json` / `package-lock.json`，未改数据库 schema。
+- 未安装依赖，未启动后端、前端、外部数据库或 Docker 服务；仅运行 Maven 测试内存 H2 上下文。
+
+### P1-3 下一轮唯一建议任务
+
+P1-2 增加分页支持。理由：当前服务层关键日志已经补齐，下一步先补列表分页能降低数据增长后的 API 风险；OpenAPI 文档更适合在分页合约确定后再补。
+
 ### 2026-06-22 — Codex — P1-1 补全局异常处理器
 
 - 当前分支：`resume-optimization-v1`

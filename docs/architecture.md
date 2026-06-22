@@ -12,6 +12,7 @@
 - `PromptOpsService`：协调版本选择、Run 执行、Case 结果落库、Trace 写入和版本对比。
 - `MockOutputGenerator`：根据版本与 Case 生成确定性输出，不进行模型调用。
 - `RuleEvaluator`：执行 `MUST_CONTAIN`、`FORBIDDEN_WORD`、`RISK_NOTICE_REQUIRED`、`FORMAT` 四类规则并计算加权分数；JSON 规则使用 Jackson 做确定性语法解析。
+- Service 层可观测性：使用 SLF4J 记录 Eval Run 开始 / 完成、demo 数据初始化、规则评分失败、`variables_json` 序列化 / 解析异常等关键事件。日志只记录 ID、数量、状态和截断摘要，不记录密码、Token、完整 prompt 或完整大字段；这是后端工程化和可观测性能力，不是 AI 能力。
 - `EvaluationPolicy`：统一判断 Review 队列与版本回归风险。规则失败或 high/critical 风险 Case 需要 Review；该判断不等同于持久化审批。
 - MyBatis-Plus Mapper：持久化 PromptOps 领域实体。
 

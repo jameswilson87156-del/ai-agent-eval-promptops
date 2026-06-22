@@ -33,6 +33,8 @@ import com.promptops.evalconsole.persistence.mapper.GenerationTraceMapper;
 import com.promptops.evalconsole.persistence.mapper.PromptTemplateMapper;
 import com.promptops.evalconsole.persistence.mapper.PromptVersionMapper;
 import com.promptops.evalconsole.persistence.mapper.ScoreRuleMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +55,7 @@ import java.util.stream.Collectors;
 @Service
 public class PromptOpsService {
 
+    private static final Logger log = LoggerFactory.getLogger(PromptOpsService.class);
     private static final DateTimeFormatter DISPLAY_TIME = DateTimeFormatter.ofPattern("MM-dd HH:mm");
     private static final TypeReference<List<PromptVariableDto>> PROMPT_VARIABLE_LIST_TYPE = new TypeReference<>() {
     };
@@ -260,6 +263,7 @@ public class PromptOpsService {
         PromptVersionEntity version = version(promptVersionId);
         EvalDatasetEntity dataset = dataset(datasetId);
         List<EvalCaseEntity> cases = enabledCases(dataset.getId());
+        log.info("Starting eval run: promptVersionId={}, datasetId={}, caseCount={}", promptVersionId, datasetId, cases.size());
         LocalDateTime now = LocalDateTime.now();
 
         EvalRunEntity run = new EvalRunEntity();
@@ -301,6 +305,8 @@ public class PromptOpsService {
         run.setPassRate(cases.isEmpty() ? BigDecimal.ZERO : BigDecimal.valueOf(passed * 100.0 / cases.size()).setScale(2, RoundingMode.HALF_UP));
         run.setFinishedAt(LocalDateTime.now());
         evalRunMapper.updateById(run);
+        log.info("Completed eval run: runKey={}, passedCases={}, failedCases={}, passRate={}",
+                run.getRunKey(), run.getPassedCases(), run.getFailedCases(), run.getPassRate());
         return run;
     }
 
@@ -592,6 +598,7 @@ public class PromptOpsService {
             if (looksLikeLegacyVariables(normalized)) {
                 return legacyVariables(normalized);
             }
+            log.warn("Failed to parse variables_json: summary={}", summarize(normalized, 120));
             throw new IllegalStateException("Invalid prompt_version.variables_json; expected standard JSON array", ex);
         }
     }
@@ -600,6 +607,7 @@ public class PromptOpsService {
         try {
             return objectMapper.writeValueAsString(variables == null ? List.of() : variables);
         } catch (JsonProcessingException ex) {
+            log.error("Failed to serialize prompt variables to JSON: variableCount={}", variables == null ? 0 : variables.size(), ex);
             throw new IllegalStateException("Failed to serialize prompt variables to JSON", ex);
         }
     }

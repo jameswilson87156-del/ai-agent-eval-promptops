@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.promptops.evalconsole.api.dto.ConsoleDtos.RuleCheckDto;
 import com.promptops.evalconsole.persistence.entity.ScoreRuleEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -14,6 +16,8 @@ import java.util.Locale;
 
 @Component
 public class RuleEvaluator {
+
+    private static final Logger log = LoggerFactory.getLogger(RuleEvaluator.class);
 
     private final ObjectMapper objectMapper;
 
@@ -46,6 +50,9 @@ public class RuleEvaluator {
                 ? 100
                 : passedWeight.multiply(BigDecimal.valueOf(100)).divide(totalWeight, 0, java.math.RoundingMode.HALF_UP).intValue();
         String status = failures.isEmpty() ? "pass" : deriveFailureStatus(failures);
+        if (!failures.isEmpty()) {
+            log.debug("Rule evaluation produced failures: status={}, failureCount={}, score={}", status, failures.size(), score);
+        }
         return new RuleEvaluation(score, status, failures, checks);
     }
 
