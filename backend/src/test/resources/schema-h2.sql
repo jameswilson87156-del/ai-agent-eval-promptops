@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS prompt_version (
     template_id BIGINT NOT NULL,
     version_label VARCHAR(32) NOT NULL,
     template_text CLOB NOT NULL,
+    -- Standard JSON array string of Prompt variables for H2 test compatibility.
     variables_json CLOB NOT NULL,
     output_format VARCHAR(32) NOT NULL DEFAULT 'JSON',
     status VARCHAR(32) NOT NULL DEFAULT 'Draft',

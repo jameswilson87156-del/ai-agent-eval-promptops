@@ -7,11 +7,14 @@ import com.promptops.evalconsole.api.dto.ConsoleDtos.CreatePromptTemplateRequest
 import com.promptops.evalconsole.api.dto.ConsoleDtos.CreatePromptVersionRequest;
 import com.promptops.evalconsole.api.dto.ConsoleDtos.CreateRuleRequest;
 import com.promptops.evalconsole.api.dto.ConsoleDtos.PromptVariableDto;
+import com.promptops.evalconsole.api.dto.ConsoleDtos.PromptProfileDto;
 import com.promptops.evalconsole.persistence.entity.EvalCaseEntity;
 import com.promptops.evalconsole.persistence.entity.EvalDatasetEntity;
 import com.promptops.evalconsole.persistence.entity.PromptTemplateEntity;
 import com.promptops.evalconsole.persistence.entity.PromptVersionEntity;
 import com.promptops.evalconsole.persistence.mapper.PromptTemplateMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -22,6 +25,8 @@ import java.util.List;
 
 @Component
 public class DemoDataInitializer implements ApplicationRunner {
+
+    private static final Logger log = LoggerFactory.getLogger(DemoDataInitializer.class);
 
     private final PromptTemplateMapper promptTemplateMapper;
     private final PromptOpsService service;
@@ -39,14 +44,24 @@ public class DemoDataInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        if (!enabled || promptTemplateMapper.selectCount(new LambdaQueryWrapper<PromptTemplateEntity>()
+        if (!enabled) {
+            log.info("Demo data initialization skipped: disabled by configuration");
+            return;
+        }
+        if (promptTemplateMapper.selectCount(new LambdaQueryWrapper<PromptTemplateEntity>()
                 .eq(PromptTemplateEntity::getTemplateKey, "ticket-router")) > 0) {
+            log.info("Demo data initialization skipped: existing prompt templates found");
             return;
         }
         seedTicketRouter();
+        log.info("Seeded prompt template: ticket-router");
         seedLogAnalyzer();
+        log.info("Seeded prompt template: log-analyzer");
         seedJdReviewer();
-        service.listPromptProfiles().forEach(profile -> service.latestRunForTemplate(profile.id()));
+        log.info("Seeded prompt template: jd-screen");
+        List<PromptProfileDto> profiles = service.listPromptProfiles();
+        profiles.forEach(profile -> service.latestRunForTemplate(profile.id()));
+        log.info("Demo data initialization complete: {} profiles seeded", profiles.size());
     }
 
     private void seedTicketRouter() {

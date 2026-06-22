@@ -1,14 +1,52 @@
 ﻿# PromptOps Evaluation Lab
 
-AI Agent 评测中心 / PromptOps 实验室。这个个人作品集项目用一套可本地复现的工程闭环，演示如何管理 Prompt 版本、执行规则评测、定位失败 Case、查看 Trace、完成人工 Review，并据此提出下一轮 Prompt 迭代建议。
+![Java](https://img.shields.io/badge/Java-17-007396)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3-6DB33F)
+![MyBatis-Plus](https://img.shields.io/badge/MyBatis--Plus-3.5-2F74C0)
+![MySQL](https://img.shields.io/badge/MySQL-8-4479A1)
+![H2](https://img.shields.io/badge/H2-demo-1F78C1)
+![Vue](https://img.shields.io/badge/Vue-3-4FC08D)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6)
+![OpenAPI](https://img.shields.io/badge/OpenAPI-Springdoc-6BA539)
+![Tests](https://img.shields.io/badge/Tests-13_passing-brightgreen)
+
+PromptOps 本地实验台：规则评测引擎 + Prompt 版本管理 + Eval Run 落库闭环。这个个人作品集项目用一套可本地复现的工程闭环，演示如何管理 Prompt 版本、执行规则评测、定位失败 Case、查看 Trace、完成人工 Review，并据此提出下一轮 Prompt 迭代建议。
 
 > [!IMPORTANT]
-> 这是用于 GitHub、实习简历和面试演示的本地项目，不是生产系统。页面数据来自种子 Demo；模型输出由确定性 Mock 生成器产生，评分来自可解释规则。项目不包含真实用户数据，不承诺真实 LLM 稳定接入，页面中的人工 Review 结论也不持久化。
+> 这是用于 GitHub、实习简历和面试演示的本地项目，不是生产系统。页面数据来自种子 Demo；输出由确定性 Mock 生成器产生，评分来自可解释规则。项目不包含真实用户数据，不包含真实 LLM 调用，页面中的人工 Review 结论也不持久化。
+
+## 诚实边界
+
+- 当前无真实 LLM 调用。
+- 当前无真实 AI Agent。
+- 当前无多模型对比。
+- 当前无 LLM-as-Judge。
+- MockOutputGenerator 基于确定性规则生成输出，用于验证评测流程。
+- RuleEvaluator 基于规则评分，不是 AI 语义评分。
+- Review 结论当前部分为前端演示状态，不是后端持久化审批流。
+- Swagger UI 是本地接口文档，不代表线上部署或公网演示地址。
 
 ![PromptOps 实验室概览](docs/images/dashboard.png)
 
+## 技术亮点速览
+
+| 能力点 | 实现方式 | 真实程度 |
+| --- | --- | --- |
+| Prompt 模板 / 版本管理 | Spring Boot + MyBatis-Plus + MySQL/H2 落库 | 已实现 |
+| Eval Run / Case Result | 批量规则评测后写入 EvalRun / EvalCaseResult | 已实现 |
+| Generation Trace | 保存 Mock 输出、评分摘要、模拟耗时 | 已实现，输出为 Mock |
+| 规则评分引擎 | RuleEvaluator 支持关键词、禁用词、风险提示、格式校验 | 已实现 |
+| Prompt 变量 JSON 存储 | Jackson 序列化 PromptVariableDto 数组到 variables_json | 已实现 |
+| 全局异常处理 | @RestControllerAdvice 统一 code / message / timestamp / errors | 已实现 |
+| 关键日志点 | SLF4J 记录 Eval Run、规则失败、Demo 初始化、JSON 异常 | 已实现 |
+| OpenAPI 接口文档 | Springdoc + @Tag / @Operation，访问 /swagger-ui.html | 已实现 |
+| MockOutputGenerator | 确定性 Mock 输出，用于验证评测流程 | Mock / 演示 |
+| Review 状态 | 前端页面内状态展示 | 前端演示，未完整落库 |
+
 ## 项目亮点
 
+- 技术栈扎实：Spring Boot 3 + Java 17 + MyBatis-Plus，前端使用 Vue 3 + TypeScript 真实 fetch 后端 API。
+- 数据建模完整：Prompt 模板 / 版本、Eval Dataset / Eval Case / Rule / Run / Result / Trace 均有领域对象和落库结构。
 - 完整闭环：`Prompt Version → Eval Dataset → Eval Run → Case Result → Rule Scoring → Trace → Human Review → Version Compare`。
 - 可解释评测：支持必含词、禁用词、风险提示与输出格式规则；JSON 使用确定性解析校验，Case 结果可回溯到逐条规则检查。
 - 双运行模式：默认 MySQL 配置用于完整后端演示；`demo` profile 使用内存 H2，无需外部数据库即可复现页面与截图。
@@ -78,6 +116,8 @@ npm run dev
 
 打开 `http://localhost:5174`。Demo 后端使用内存 H2，启动时写入虚构评测集并执行确定性 Mock Eval；进程停止后数据清空。
 
+后端启动后可访问 `http://localhost:18080/swagger-ui.html` 查看 Springdoc OpenAPI 接口文档。
+
 ### 2. MySQL 模式
 
 先创建数据库：
@@ -101,6 +141,30 @@ mvn -pl backend spring-boot:run
 
 配置示例见 [`backend/src/main/resources/application-example.yml`](backend/src/main/resources/application-example.yml)，数据库结构见 [`backend/src/main/resources/schema.sql`](backend/src/main/resources/schema.sql)。
 
+## 本地运行演示
+
+后端 demo profile：
+
+```powershell
+$env:SPRING_PROFILES_ACTIVE="demo"
+mvn -pl backend spring-boot:run
+```
+
+前端开发服务：
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+本地访问：
+
+- 前端页面：`http://localhost:5174`
+- Swagger UI：`http://localhost:18080/swagger-ui.html`
+
+演示数据来自 `DemoDataInitializer`，输出来自 `MockOutputGenerator`，评分来自 `RuleEvaluator`。这些数据和指标用于本地流程展示，不是真实模型结果；本项目没有线上部署地址。
+
 ## 测试与验收
 
 ```powershell
@@ -117,35 +181,46 @@ npm run build
 npm run screenshots
 ```
 
-当前验收基线：9 个后端测试通过（2 个集成测试、7 个领域单元测试）；前端 TypeScript 检查与 Vite 构建通过；Playwright 交互/响应式断言通过并可重复生成 8 张截图。详细清单见 [`docs/acceptance-checklist.md`](docs/acceptance-checklist.md)。
+当前验收基线：13 个后端测试通过（6 个集成测试、7 个领域单元测试）；前端 TypeScript 检查与 Vite 构建通过；Playwright 交互/响应式断言通过并可重复生成 8 张截图。详细清单见 [`docs/acceptance-checklist.md`](docs/acceptance-checklist.md)。
 
 ## 项目结构
 
 ```text
 .
 ├── backend/                 # Spring Boot + MyBatis-Plus + MySQL/H2
+│   ├── src/main/java/com/promptops/evalconsole/api/
+│   │   ├── GlobalExceptionHandler.java
+│   │   └── PromptOpsController.java
+│   ├── src/main/java/com/promptops/evalconsole/service/
+│   │   ├── DemoDataInitializer.java
+│   │   ├── PromptOpsService.java
+│   │   └── RuleEvaluator.java
+│   └── src/main/resources/
+│       └── application.yml
 ├── frontend/                # Vue 3 PromptOps Evaluation Lab
 │   └── scripts/             # Playwright 截图脚本
 ├── docs/
 │   ├── images/              # 1440px 截图
 │   │   └── large/           # 1920px 截图
+│   ├── acceptance-checklist.md
 │   ├── architecture.md
-│   ├── demo-script.md
 │   ├── interview-guide.md
-│   └── acceptance-checklist.md
+│   └── demo-script.md
+├── HANDOFF.md
+├── TODO.md
 └── pom.xml                  # Maven 聚合项目
 ```
 
 ## 项目边界
 
 - 已实现：Prompt/版本/评测集/Case/规则/Run/Result/Trace 的后端闭环，规则评分、版本对比与本地 Demo 展示。
-- 未实现：真实 LLM Provider、LLM-as-Judge、RAG、向量数据库、异步队列、生产监控、多租户、权限系统和持久化审批。
+- 未实现：真实 LLM Provider、真实 AI Agent、多模型对比、LLM-as-Judge、RAG、向量数据库、异步队列、生产监控、多租户、权限系统和持久化审批。
 - Demo 语义：种子数据、运行指标和截图仅用于展示 PromptOps 工作流，不代表真实线上评测平台或企业使用情况。
 - Review 语义：后端领域策略只判断 Case 是否需要 Review（规则失败，或风险等级为 high/critical）；前端 Review 结论仅是页面内交互状态。真正上线决策仍需后端审批模型、审计日志和权限控制。
 
 ## 简历可写亮点
 
-- 设计并实现 Prompt 版本、评测集、规则评分、Case Result、Generation Trace、人工 Review 与版本对比的 PromptOps 闭环。
+- 设计并实现 PromptOps 本地实验台：基于 Spring Boot 3 + MyBatis-Plus 建模 Prompt 模板、版本、评测集、评测结果与 Generation Trace；实现可解释规则评分引擎，支持 Eval Run 批量评测、结果落库、版本对比与 Vue 3 可视化展示。（当前阶段为规则层闭环，未接入真实 LLM。）
 - 使用 Spring Boot + MyBatis-Plus 建模评测领域对象，并通过领域单元测试与 H2 集成测试验证评分、风险队列和核心工作流。
 - 使用 Vue 3 + TypeScript 构建可搜索、可筛选、可交互的评测实验室，并明确区分 Mock 结果与生产数据。
 - 编写 Playwright 自动验收与截图流程，在 Windows 下验证关键交互、响应式和端口释放，生成可用于 GitHub/简历的展示资产。

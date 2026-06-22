@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS prompt_version (
     template_id BIGINT NOT NULL,
     version_label VARCHAR(32) NOT NULL,
     template_text MEDIUMTEXT NOT NULL,
+    -- Standard JSON array of Prompt variables: [{"name":"...","description":"...","required":true}]
     variables_json JSON NOT NULL,
     output_format VARCHAR(32) NOT NULL DEFAULT 'JSON',
     status VARCHAR(32) NOT NULL DEFAULT 'Draft',

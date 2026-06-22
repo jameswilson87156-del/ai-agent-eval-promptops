@@ -14,6 +14,7 @@ public class PromptVersionEntity {
     private Long templateId;
     private String versionLabel;
     private String templateText;
+    /** Standard JSON array of PromptVariableDto stored in prompt_version.variables_json. */
     private String variablesJson;
     private String outputFormat;
     private String status;

@@ -1,5 +1,6 @@
 package com.promptops.evalconsole.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -127,6 +128,20 @@ public final class ConsoleDtos {
             String status,
             String errorReason,
             LocalDateTime createdAt
+    ) {
+    }
+
+    public record ErrorResponse(
+            int code,
+            String message,
+            LocalDateTime timestamp,
+            @JsonInclude(JsonInclude.Include.NON_EMPTY) List<FieldErrorItem> errors
+    ) {
+    }
+
+    public record FieldErrorItem(
+            String field,
+            String message
     ) {
     }
 
