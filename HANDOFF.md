@@ -4,6 +4,38 @@
 
 ## 当前待处理交接
 
+### 2026-06-22 — Codex — frontend-redesign-v1 前端页面重设计
+
+- 当前分支：`frontend-redesign-v1`
+- 本轮任务：frontend-redesign-v1 前端页面重设计。
+- 修改文件：`frontend/src/App.vue`、`frontend/src/styles.css`、`frontend/src/components/MetricCard.vue`、`frontend/src/components/StatusBadge.vue`、`TODO.md`、`HANDOFF.md`
+
+### frontend-redesign-v1 实现内容
+
+- 顶部重构为 `PromptOps Evaluation Lab` / `Rule-based Prompt Evaluation Console`，保留 Local Demo、Mock Output、Rule-based Eval、No real LLM connected、No agent runtime 等边界提示。
+- Overview 调整为四张核心指标卡：Prompt Profiles、Latest Pass Rate、Cases Evaluated、Review Required，并保留 Prompt Profile 选择、搜索和场景标签入口。
+- Eval Run 页面保留 Case Result 列表和原有筛选逻辑，新增 selected case 的 Rule Audit 面板，明确展示 `RuleEvaluator`、`MockOutputGenerator` 和 simulated latency。
+- Prompt Versions 页面保留版本链路、Prompt 模板、variables、output format 和版本对比，并新增 `variables_json` 使用标准 JSON 数组存储说明。
+- Trace Review 页面保留 Generation Trace、Mock 输出、评分规则检查和前端 Review 操作，并明确写出 `Review state is frontend-only demo state`。
+- 新增纯前端展示组件：`MetricCard.vue` 与 `StatusBadge.vue`；未引入第三方 UI 库，未新增依赖。
+- `styles.css` 新增统一 CSS tokens，页面宽度调整到 1280px 左右，卡片统一 16px 圆角，并补充移动端纵向堆叠处理。
+
+### frontend-redesign-v1 测试与验证
+
+- 已执行：`npm run typecheck`。
+- 结果：通过，`vue-tsc --noEmit` 无错误。
+- 已执行：`npm run build`。
+- 结果：通过，`vue-tsc --noEmit && vite build` 成功，生成生产构建产物。
+- 未运行：`npm run screenshots`。原因：现有截图脚本会启动后端与 Vite，并覆盖 `docs/images` 截图资产；本轮限制要求不启动服务、不覆盖截图。
+- 未运行：`npm install`。原因：本轮限制禁止安装依赖，且本地 `node_modules` 已存在，可直接执行验证。
+- 未启动后端、前端、数据库或 Docker。
+- 未修改后端 Java、`pom.xml`、schema、`application.yml`、README 或依赖清单。
+
+### frontend-redesign-v1 剩余风险
+
+- 本轮没有浏览器截图验证，也没有启动真实前端页面人工查看；视觉结果仅通过类型检查与生产构建验证。
+- 截图脚本仍可在用户允许启动服务和覆盖截图资产的后续轮次中单独运行。
+
 ### 2026-06-22 — Codex — P2-2 README / GitHub 展示强化
 
 - 当前分支：`resume-optimization-v1`

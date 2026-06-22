@@ -2,6 +2,28 @@
 
 本文件用于 Claude / Codex 本地接力。每轮只处理一个名称明确、范围可验收的任务；未被用户确认前，不自动进入下一项。
 
+## Frontend
+
+### frontend-redesign-v1 前端页面重设计
+
+- 状态：已完成
+- 目标：
+  - 将前端从普通 demo 页面重设计为简历 / GitHub 展示级 PromptOps 控制台。
+  - 保留真实 fetch 后端 API、Prompt 选择、Eval Run 触发、Trace 查询、Version Comparison 和前端 Review 演示状态。
+  - 保持 Local Demo、Mock Output、Rule-based Eval、No real LLM connected、No agent runtime 等诚实边界。
+- 结果：
+  - 顶部产品名更新为 `PromptOps Evaluation Lab`，导航改为 Overview / Eval Run / Prompt Versions / Trace Review。
+  - 新增统一 CSS tokens：`--bg` / `--surface` / `--surface-soft` / `--border` / `--text` / `--muted` / `--primary` / `--success` / `--warning` / `--danger`。
+  - 新增 `MetricCard` 与 `StatusBadge` 前端展示组件。
+  - Eval Run 页面补充 selected case 的 Rule Audit 面板，并明确展示 `RuleEvaluator` / `MockOutputGenerator` / Simulated latency。
+  - Prompt Versions 页面补充 `variables_json` 使用标准 JSON 数组存储的说明。
+  - Trace Review 页面明确写出 `Review state is frontend-only demo state`。
+  - 已运行 `npm run typecheck` 和 `npm run build`，均通过。
+- 未做事项：
+  - 未运行 `npm install`。
+  - 未启动后端、前端、数据库或 Docker。
+  - 未运行 `npm run screenshots`，因为现有截图脚本会启动服务并覆盖 `docs/images` 截图资产。
+
 ## P0
 
 ### P0-1 项目定位去虚夸 + 文档基线补齐
