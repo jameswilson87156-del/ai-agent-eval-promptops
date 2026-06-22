@@ -90,6 +90,8 @@ npm run dev
 
 打开 `http://localhost:5174`。Demo 后端使用内存 H2，启动时写入虚构评测集并执行确定性 Mock Eval；进程停止后数据清空。
 
+后端启动后可访问 `http://localhost:18080/swagger-ui.html` 查看 Springdoc OpenAPI 接口文档。
+
 ### 2. MySQL 模式
 
 先创建数据库：

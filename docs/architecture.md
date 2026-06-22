@@ -8,6 +8,7 @@
 
 - Vue 前端：读取摘要、Prompt、当前 Run、版本对比和 Trace；消费后端给出的 `riskLevel` / `reviewRequired`，负责搜索、筛选、Case 导航与非持久化 Review 结论演示。
 - Spring MVC API：暴露 Prompt、Dataset、Case、Rule、Eval Run 和 Trace 接口。
+- API 文档：后端引入 Springdoc OpenAPI，`PromptOpsController` 使用 `@Tag` / `@Operation` 描述接口，启动后可通过 `/swagger-ui.html` 查看接口文档；这是后端接口展示和协作能力，不是 AI 能力。
 - `GlobalExceptionHandler`：API 层使用 `@RestControllerAdvice` 统一错误响应；`ResponseStatusException`、参数校验异常和兜底异常统一返回 `code` / `message` / `timestamp`，参数校验错误额外返回字段级 `errors`。这是后端工程化能力，不是 AI 能力。
 - `PromptOpsService`：协调版本选择、Run 执行、Case 结果落库、Trace 写入和版本对比。
 - `MockOutputGenerator`：根据版本与 Case 生成确定性输出，不进行模型调用。

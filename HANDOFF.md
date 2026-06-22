@@ -4,6 +4,32 @@
 
 ## 当前待处理交接
 
+### 2026-06-22 — Codex — P2-1 补 Springdoc OpenAPI 接口文档
+
+- 当前分支：`resume-optimization-v1`
+- 本轮任务：P2-1 补 Springdoc OpenAPI 接口文档。
+- 修改文件：`backend/pom.xml`、`backend/src/main/java/com/promptops/evalconsole/api/PromptOpsController.java`、`backend/src/main/resources/application.yml`、`README.md`、`TODO.md`、`HANDOFF.md`、`docs/architecture.md`
+
+### P2-1 实现内容
+
+- 新增 Maven 依赖：`org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0`。
+- `PromptOpsController` 增加类级别 `@Tag`，并为全部 11 个接口方法增加 `@Operation(summary = "...")`。
+- `application.yml` 增加 Springdoc 路径配置：`/api-docs` 和 `/swagger-ui.html`，并按 method 排序。
+- `README.md` 增加本地 Swagger UI 访问说明：`http://localhost:18080/swagger-ui.html`。
+- `docs/architecture.md` 补充 OpenAPI / Swagger UI 是接口展示和协作能力，不是 AI 能力。
+- 未修改业务逻辑、接口路径、方法签名、参数、返回类型或前端代码。
+
+### P2-1 测试与验证
+
+- 已执行：`mvn -pl backend test`。
+- 结果：BUILD SUCCESS，Tests run: 13, Failures: 0, Errors: 0, Skipped: 0。
+- 未改 Service / Mapper / Entity，未改 `ConsoleDtos.java`，未改 `GlobalExceptionHandler.java`，未改前端 Vue，未改数据库 schema。
+- 未安装 npm 依赖，未启动后端、前端、外部数据库或 Docker 服务；仅运行 Maven 测试内存 H2 上下文。
+
+### P2-1 下一轮唯一建议任务
+
+P2-2 README / GitHub 展示强化。理由：OpenAPI 文档已经补齐，下一步先把 GitHub 展示路径、截图和本地访问说明打磨清楚，更能承接本轮面试展示目标；P1-2 分页支持仍有价值，但当前 demo 数据量小，紧急度较低。
+
 ### 2026-06-22 — Codex — P1-3 补关键日志点
 
 - 当前分支：`resume-optimization-v1`
