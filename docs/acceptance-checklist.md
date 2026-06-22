@@ -41,6 +41,13 @@
 - [x] `docs/images/trace-review.png`
 - [x] `docs/images/large/` 下包含对应 1920px 版本。
 
+## 已验证：README / GitHub 展示
+
+- [x] README 顶部使用静态 Shields.io 技术栈徽章，不依赖 CI 状态、License 或公网演示地址。
+- [x] README 的技术亮点速览区分已实现能力、Mock 输出和前端演示状态。
+- [x] README 引用的截图路径均来自已有 `docs/images/` 文件，未新增或覆盖截图。
+- [x] README 明确 Swagger UI 是本地接口文档，不是线上部署能力。
+
 ## 未验证：本轮 P0-2
 
 - [ ] 本轮未运行 `npm install`。

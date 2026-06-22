@@ -4,6 +4,32 @@
 
 ## 当前待处理交接
 
+### 2026-06-22 — Codex — P2-2 README / GitHub 展示强化
+
+- 当前分支：`resume-optimization-v1`
+- 本轮任务：P2-2 README / GitHub 展示强化。
+- 修改文件：`README.md`、`TODO.md`、`HANDOFF.md`、`docs/acceptance-checklist.md`
+
+### P2-2 实现内容
+
+- README 顶部新增静态 Shields.io 技术栈徽章：Java 17、Spring Boot 3、MyBatis-Plus、MySQL、H2、Vue 3、TypeScript、OpenAPI、Tests 13 passing。
+- README 新增“技术亮点速览”表格，按“能力点 / 实现方式 / 真实程度”区分已实现能力、Mock 输出和前端演示状态。
+- README 新增“本地运行演示”章节，列出后端 demo profile、前端启动命令、本地页面和 Swagger UI 地址，并说明 DemoDataInitializer、MockOutputGenerator、RuleEvaluator 的真实边界。
+- README 更新“项目结构”目录树，显式列出 P0-P2 关键后端入口、Service、配置、docs、`HANDOFF.md` 和 `TODO.md`。
+- README 继续引用已有截图：`docs/images/dashboard.png`、`docs/images/eval-run.png`、`docs/images/prompt-versions.png`、`docs/images/trace-review.png` 和 `docs/images/large/`；未新增或覆盖截图。
+- README 保持项目边界诚实：无真实 LLM、无真实 AI Agent、无多模型对比、无 LLM-as-Judge，Swagger UI 是本地接口文档，不是线上部署。
+
+### P2-2 测试与验证
+
+- 已执行：`mvn -pl backend test`。
+- 结果：BUILD SUCCESS，Tests run: 13, Failures: 0, Errors: 0, Skipped: 0。
+- 未改后端 Java 源码，未改前端 Vue，未改 `pom.xml`，未改 `package.json` / `package-lock.json`，未改数据库 schema，未改 application 配置。
+- 未安装依赖，未启动后端、前端、外部数据库或 Docker 服务，未运行截图脚本。
+
+### P2-2 下一轮唯一建议任务
+
+resume-optimization-v1 最终只读验收。理由：P0-P2 的工程化与展示强化已经完成，下一轮先做全项目只读核对、测试记录和简历口径收敛，比继续引入 P1-2 分页改动更适合收尾。
+
 ### 2026-06-22 — Codex — P2-1 补 Springdoc OpenAPI 接口文档
 
 - 当前分支：`resume-optimization-v1`
