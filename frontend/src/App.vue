@@ -25,16 +25,18 @@ import {
   XCircle,
 } from 'lucide-vue-next'
 import EvalDashboard from './components/EvalDashboard.vue'
+import BatchEvaluation from './components/BatchEvaluation.vue'
 import MetricCard from './components/MetricCard.vue'
 import StatusBadge from './components/StatusBadge.vue'
 import type { CaseResultStatus, EvalCase, EvalRun, GenerationTrace, PromptProfile, Summary, VersionComparison } from './types'
 
-type ViewKey = 'overview' | 'run' | 'versions' | 'review'
+type ViewKey = 'overview' | 'batch' | 'run' | 'versions' | 'review'
 type FilterKey = 'all' | 'running' | 'review' | 'pass' | 'risk'
 type ReviewState = 'pending' | 'approved' | 'revision'
 
 const viewOptions: Array<{ key: ViewKey; label: string }> = [
   { key: 'overview', label: 'Overview' },
+  { key: 'batch', label: 'Batch Evaluation' },
   { key: 'run', label: 'Eval Run' },
   { key: 'versions', label: 'Prompt Versions' },
   { key: 'review', label: 'Trace Review' },
@@ -49,6 +51,7 @@ const filterOptions: Array<{ key: FilterKey; label: string }> = [
 
 const initialView = new URLSearchParams(window.location.search).get('view') as ViewKey | null
 const activeView = shallowRef<ViewKey>(viewOptions.some((item) => item.key === initialView) ? initialView! : 'overview')
+const isShowcaseView = computed(() => activeView.value === 'overview' || activeView.value === 'batch')
 const statusFilter = shallowRef<FilterKey>('all')
 const searchQuery = ref('')
 const prompts = shallowRef<PromptProfile[]>([])
@@ -340,9 +343,9 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
 </script>
 
 <template>
-  <div class="app-shell" :class="{ 'dashboard-mode': activeView === 'overview' }" :data-ready="!loading && activePrompt && activeRun ? 'true' : 'false'">
+  <div class="app-shell" :class="{ 'dashboard-mode': isShowcaseView }" :data-ready="!loading && activePrompt && activeRun ? 'true' : 'false'">
     <a class="skip-link" href="#main">跳到主要内容</a>
-    <header v-if="activeView !== 'overview'" class="hero-panel">
+    <header v-if="!isShowcaseView" class="hero-panel">
       <div class="brand-lockup">
         <div class="brand-mark" aria-hidden="true"><Activity :size="20" /></div>
         <div>
@@ -365,12 +368,12 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
       </div>
     </header>
 
-    <div v-if="activeView !== 'overview'" class="trust-note" role="note">
+    <div v-if="!isShowcaseView" class="trust-note" role="note">
       <ShieldCheck :size="16" />
       <span>No real LLM connected. No agent runtime. Results come from MockOutputGenerator and RuleEvaluator, and review decisions stay in the browser demo state.</span>
     </div>
 
-    <nav v-if="activeView !== 'overview'" class="view-tabs" aria-label="Console views">
+    <nav v-if="!isShowcaseView" class="view-tabs" aria-label="Console views">
       <button
         v-for="item in viewOptions"
         :key="item.key"
@@ -383,7 +386,7 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
       </button>
     </nav>
 
-    <section v-if="activeView !== 'overview'" class="toolbar" aria-label="Search and filters">
+    <section v-if="!isShowcaseView" class="toolbar" aria-label="Search and filters">
       <label class="search-box">
         <Search :size="18" />
         <span class="sr-only">搜索 Prompt、Eval Run、测试用例或 Trace</span>
@@ -404,7 +407,7 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
       </div>
     </section>
 
-    <section v-if="activeView !== 'overview'" class="scenario-strip" aria-label="Prompt profile scenarios">
+    <section v-if="!isShowcaseView" class="scenario-strip" aria-label="Prompt profile scenarios">
       <span>Scenario tags</span>
       <button type="button" @click="searchQuery = 'ticket-router'">ticket-router</button>
       <button type="button" @click="searchQuery = 'log-analyzer'">log-analyzer</button>
@@ -431,6 +434,13 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
         @open-view="setView"
         @run-eval="runMockBatch"
         @select-prompt="selectPrompt"
+      />
+
+      <BatchEvaluation
+        v-else-if="activeView === 'batch'"
+        :running-eval="runningEval"
+        @open-view="setView"
+        @run-eval="runMockBatch"
       />
 
       <template v-else>

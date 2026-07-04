@@ -23,7 +23,7 @@ import {
 import { evalDashboardMockData } from '../data/evalDashboardMockData'
 import type { PromptProfile } from '../types'
 
-type DashboardView = 'overview' | 'run' | 'versions' | 'review'
+type DashboardView = 'overview' | 'batch' | 'run' | 'versions' | 'review'
 
 const props = defineProps<{
   activePromptId: number | null
@@ -43,7 +43,7 @@ const data = evalDashboardMockData
 const navItems = [
   { id: 'dashboard', label: '评测总览', icon: BarChart3, view: 'overview' as const },
   { id: 'prompt', label: 'Prompt 工作台', icon: Code2, view: 'versions' as const },
-  { id: 'batch', label: '批量评测', icon: FileText, view: 'run' as const },
+  { id: 'batch', label: '批量评测', icon: FileText, view: 'batch' as const },
   { id: 'compare', label: '输出对比', icon: GitCompare, view: 'versions' as const },
   { id: 'trace', label: '运行追踪', icon: CircleDashed, view: 'review' as const },
   { id: 'failure', label: '失败归因', icon: AlertTriangle, view: 'run' as const },

@@ -4,6 +4,24 @@
 
 ## Frontend
 
+### frontend-batch-evaluation-v1 批量评测工作台视觉升级
+
+- 状态：已完成
+- 目标：
+  - 在第一阶段 PromptOps Studio 视觉系统内落地 Batch Evaluation / 批量评测工作台。
+  - 在 `1440x810` 首屏展示评测配置、批量运行、核心指标、Score Matrix、Eval Run 时间线、失败样本分析、Provider 边界和批量评测闭环。
+  - 使用结构化本地演示数据，并保持 Local Demo、Mock Output、Rule-based Eval、无需 API Key 边界。
+- 结果：
+  - 新增 `BatchEvaluation.vue` 与 `batchEvaluationMockData.ts`，默认通过 `?view=batch` 或左侧“批量评测”导航进入。
+  - Score Matrix 展示 7 条代表性 Case，默认选中 `case_093`，切换 Case 会联动失败原因、修复建议与 Schema 对比。
+  - 新增 `npm run check:batch:16x9`，验证 Dashboard / Batch 双向导航、Case 联动、无首屏滚动、核心模块完整与浏览器无错误。
+  - 生成 `.local/promptops-batch-evaluation-16x9-check.png` 和本项目真实运行截图 `docs/images/batch-evaluation.png`，尺寸均为 `1440x810`，截图使用 `fullPage: false`。
+  - 已执行 `npm run build`、`npm run check:dashboard:16x9`、`npm run check:batch:16x9`，均通过。
+- 未做事项：
+  - 未修改后端业务逻辑或 `README.md`。
+  - 未接入真实 LLM、真实 Provider、API Key、LLM-as-Judge 或生产数据。
+  - 未把 image2 目标图或第三方参考截图作为正式项目截图。
+
 ### frontend-dashboard-16x9-layout-fix 评测总览 16:9 首屏布局修复
 
 - 状态：已完成

@@ -9,6 +9,7 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "check:dashboard:16x9": "node scripts/check-dashboard-16x9.mjs",
+    "check:batch:16x9": "node scripts/check-batch-16x9.mjs",
     "screenshots": "node scripts/screenshots.mjs"
   },
   "dependencies": {

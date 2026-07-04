@@ -4,6 +4,40 @@
 
 ## 当前待处理交接
 
+### 2026-07-04 — Codex — frontend-batch-evaluation-v1 批量评测工作台视觉升级
+
+- 当前分支：`main`
+- 本轮任务：在已提交的 Eval Dashboard 视觉系统上落地 Batch Evaluation / 批量评测工作台。
+- 修改文件：`frontend/src/App.vue`、`frontend/src/components/EvalDashboard.vue`、`frontend/package.json`、`TODO.md`、`HANDOFF.md`、`docs/demo-script.md`。
+- 新增文件：`frontend/src/components/BatchEvaluation.vue`、`frontend/src/data/batchEvaluationMockData.ts`、`frontend/scripts/check-batch-16x9.mjs`、`docs/images/batch-evaluation.png`。
+- 用户提供并允许保留的参考输入：`docs/design_refs/promptops_batch_evaluation_target_v1.png`；该文件仅作为 image2 原创视觉方向参考，不是项目真实运行截图。
+
+### frontend-batch-evaluation-v1 实现内容
+
+- `App.vue` 新增 `batch` 视图，`?view=batch` 可直接访问；Dashboard 与 Batch 左侧导航可双向切换，旧 Eval Run / Prompt Versions / Trace Review 视图保留。
+- `BatchEvaluation.vue` 延续浅色开发者控制台、克制蓝色状态和右侧深色 Eval Run 时间线，并将配置流、Score Matrix、失败定位作为页面主要证据。
+- 页面包含评测配置流程、`run_batch_2048` 批量运行状态、4 个核心指标、趋势图、7 条 Case 结果矩阵、7 节点时间线、失败原因排行、当前 Case 与 Schema 对比、Provider 状态和批量评测闭环。
+- `batchEvaluationMockData.ts` 集中保存页面结构化本地演示数据；默认选中 `case_093`，切换矩阵行会更新失败样本分析。
+- 顶部和侧栏持续标明 Local Demo、Mock Output、Rule-based Eval、无需 API Key、非生产环境；未把本地演示指标包装为线上模型结果。
+- `check-batch-16x9.mjs` 使用独立端口启动 demo 后端与 Vite，从 Dashboard 导航进入 Batch，验证返回总览、再次进入 Batch 和 Case 联动，再生成首屏截图。
+
+### frontend-batch-evaluation-v1 测试与验证
+
+- 已执行：`npm run build`，通过。
+- 已执行：`npm run check:dashboard:16x9`，通过；第一阶段 Eval Dashboard 未被破坏。
+- 已执行：`npm run check:batch:16x9`，通过。
+- Batch 检查固定使用 `1440x810` viewport 与 `fullPage: false`，验证页面无横向或纵向滚动、11 个核心模块完整入镜、7 个 Timeline 节点和 7 条示例 Case 均存在。
+- 本地检查截图：`.local/promptops-batch-evaluation-16x9-check.png`。
+- 正式项目截图：`docs/images/batch-evaluation.png`；与检查截图来自同一 Playwright screenshot buffer。
+- 检查脚本结束后释放本轮启动的后端、Vite 和浏览器进程。
+
+### frontend-batch-evaluation-v1 边界与下一步
+
+- 未修改 `backend/`、`README.md`、`.local/reference_screenshots/` 或任何 `.env` / 密钥文件。
+- 未接入真实模型、真实 API Key、真实 Provider、LLM-as-Judge、异步任务队列或持久化人工复核。
+- 本轮未自动 commit；等待用户验收真实截图后再决定是否提交。
+- 下一步建议先验收 Batch Evaluation 截图，再决定是否进入 Trace / Run Detail 页面升级。
+
 ### 2026-07-04 — Codex — frontend-dashboard-16x9-layout-fix 评测总览首屏修复
 
 - 当前分支：`main`
