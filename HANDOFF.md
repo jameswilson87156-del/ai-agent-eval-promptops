@@ -4,6 +4,15 @@
 
 ## 当前待处理交接
 
+### 2026-07-04 — Codex — docs-readme-showcase-v1 README 展示版整理
+
+- 当前分支：`main`；起始 checkpoint：`32dbcb3 fix: polish promptops showcase screenshots`。
+- 本轮任务：仅整理 `README.md`，并同步 `TODO.md`、`HANDOFF.md`；未修改前端、后端、截图或设计参考。
+- README 结构：PromptOps Studio 定位、Trace Detail 首图、七页功能截图、Core Features、Workflow、Tech Stack、Local Run、Verification、Project Boundary、Resume Pitch 与面试可讲点。
+- 截图引用：`trace-detail.png`、`eval-dashboard.png`、`batch-evaluation.png`、`output-compare.png`、`prompt-studio.png`、`failure-cases.png`、`dataset.png`、`system-boundary.png`，均为仓库已有正式截图。
+- 能力边界：明确 Local Demo、Mock Output、Rule-based Eval、无需 API Key、非生产环境、未接入真实模型、未使用真实用户数据、LLM-as-Judge 未启用或接入。
+- 本轮仅做文档与路径检查，不重新运行构建、服务或截图脚本；未 commit、未 push。
+
 ### 2026-07-04 — Codex — Failure Cases / Dataset 最终验收确认
 
 - 当前分支：`main`

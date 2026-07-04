@@ -2,6 +2,16 @@
 
 本文件用于 Claude / Codex 本地接力。每轮只处理一个名称明确、范围可验收的任务；未被用户确认前，不自动进入下一项。
 
+## Documentation
+
+### docs-readme-showcase-v1 PromptOps Studio README 展示版整理
+
+- 状态：已完成
+- 目标：使用已验收的 8 张本地真实页面截图，整理适合 GitHub、简历与面试展示的 PromptOps Studio README。
+- 结果：README 已按项目定位、Showcase、页面导览、Core Features、Workflow、Tech Stack、Local Run、Verification、Project Boundary 与 Resume Pitch 重组。
+- 边界：保留 Local Demo、Mock Output、Rule-based Eval、无需 API Key、非生产环境、未接入真实模型与 LLM-as-Judge 未启用说明。
+- 验收：已确认全部截图引用存在，并执行 `git diff --check`；本轮不重新构建、不重新截图、不修改前后端。
+
 ## Frontend
 
 ### frontend-batch-evaluation-visual-v2 批量评测工作台目标图重做
