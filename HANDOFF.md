@@ -4,6 +4,71 @@
 
 ## 当前待处理交接
 
+### 2026-07-04 — Codex — frontend-dashboard-16x9-layout-fix 评测总览首屏修复
+
+- 当前分支：`main`
+- 本轮任务：将 Eval Dashboard 从长页面调整为 `1440x810` 的 16:9 桌面首屏控制台。
+- 修改文件：`frontend/src/components/EvalDashboard.vue`、`frontend/scripts/check-dashboard-16x9.mjs`、`frontend/package.json`、`TODO.md`、`HANDOFF.md`。
+- 未修改：后端业务逻辑、`README.md`、`docs/images/`、`.local/reference_screenshots/`、真实 API Key 或生产配置。
+
+### frontend-dashboard-16x9-layout-fix 实现内容
+
+- 为高度不超过 900px 的桌面视口增加紧凑布局，主列与洞察列约为 `58% / 42%`。
+- 主列保留当前评测实验、核心指标、评测健康度和最近 5 条评测运行；右列保留完整 7 节点 Trace、失败归因和 Provider 状态。
+- PromptOps 评测闭环改为底部紧凑横向 stepper，并在首屏内可见。
+- 新增独立检查脚本，固定使用 `1440x810` viewport、`fullPage: false`，输出到 `.local/promptops-dashboard-overview-16x9-check.png`。
+- 检查脚本会验证页面无横向或纵向滚动、核心模块均在 viewport 内、7 个 Trace 节点未被裁切，并读取 PNG 文件头确认截图尺寸。
+
+### frontend-dashboard-16x9-layout-fix 测试与验证
+
+- 已执行：`npm run build`，通过。
+- 已执行：`npm run check:dashboard:16x9`，通过。
+- 截图实际尺寸：`1440x810`，不是长图。
+- 本地检查截图：`.local/promptops-dashboard-overview-16x9-check.png`。
+- 检查脚本结束后已关闭本轮启动的后端与 Vite 服务。
+- 未运行后端 Maven 测试；本轮没有修改后端代码。
+- 未运行正式截图脚本；本轮没有覆盖 `docs/images/`。
+
+### frontend-dashboard-16x9-layout-fix 边界与下一步
+
+- 页面仍是 Local Demo / Mock Output / Rule-based Eval，不代表真实线上模型评测结果。
+- 当前本地 16:9 截图可作为正式 README 首图候选。
+- 下一步建议在用户明确确认后，再生成或替换 `docs/images/` 中的正式项目截图。
+
+### 2026-07-04 — Codex — frontend-dashboard-visual-v1 评测总览首页视觉升级
+
+- 当前分支：`main`
+- 本轮任务：基于已确认目标图，优先落地 Eval Dashboard / 评测总览首页。
+- 修改文件：`frontend/src/App.vue`、`frontend/src/styles.css`、`frontend/src/components/EvalDashboard.vue`、`frontend/src/data/evalDashboardMockData.ts`、`TODO.md`、`HANDOFF.md`、`docs/demo-script.md`
+- 未修改：后端业务逻辑、`README.md`、截图脚本、`docs/images/`、`.local/reference_screenshots/`、依赖清单和任何 API Key / `.env` 文件。
+
+### frontend-dashboard-visual-v1 实现内容
+
+- 新增中文企业级 `EvalDashboard.vue` 首页，默认 `overview` 视图进入新的 PromptOps Studio 评测总览。
+- 首页包含左侧中文导航、顶部状态栏、页面标题区、当前评测实验、3 个核心指标、3 个辅助指标、评测健康度趋势、右侧深色运行 Trace、最近评测运行、回归风险与失败归因、Provider 状态与本地规则、PromptOps 评测闭环。
+- 右侧深色 Trace 面板围绕 `run_1022` 展示 Input、Prompt Build、Mock Output、Rule Evaluator、Score、Failure Case、Human Review。
+- 新增 `frontend/src/data/evalDashboardMockData.ts`，集中声明本轮首页展示用的结构化本地演示数据，明确属于 Mock Output / Rule-based Eval / 非生产环境。
+- `App.vue` 保留原有后端 API 加载、Prompt 选择、Eval Run、Prompt Versions 和 Trace Review 分支；仅将 `overview` 视图切换为新首页组件。
+- `styles.css` 新增 `dashboard-mode` 全宽容器覆盖，避免旧 1280px 居中布局压缩首页。
+
+### frontend-dashboard-visual-v1 测试与验证
+
+- 已执行：`npm run build`。
+- 结果：通过，`vue-tsc --noEmit && vite build` 成功。
+- 已启动本地 demo 后端：`mvn -pl backend spring-boot:run`，profile 为 `demo`，端口 `18081`。
+- 已启动本地 Vite：`npm run dev -- --host 127.0.0.1 --port 5175 --strictPort`，代理到 `http://127.0.0.1:18081`。
+- 已执行 Playwright 桌面检查：打开 `http://127.0.0.1:5175/?view=overview`，等待 `[data-ready="true"]`，无浏览器错误，无横向溢出，截图保存到 `.local/promptops-dashboard-overview-check.png`。
+- 已执行 Playwright 移动端检查：390px viewport 无横向溢出，截图保存到 `.local/promptops-dashboard-overview-mobile-check.png`。
+- 未运行：`npm run screenshots`。原因：该脚本会覆盖 `docs/images`，本轮未得到覆盖项目正式截图资产的确认。
+- 未运行后端 Maven 测试。原因：本轮未修改后端业务逻辑，验证重点是前端构建与页面视觉。
+
+### frontend-dashboard-visual-v1 边界与剩余风险
+
+- 首页中的 `run_1022`、91.2%、0.86/1.00、失败样本等为前端本地演示数据，不是线上真实模型指标。
+- 未接入真实 LLM、真实 AI Agent Runtime、真实 API Key、真实 Provider 或 LLM-as-Judge。
+- 本轮只完整升级评测总览首页；其它页面仍保留上一版交互和视觉，后续可按 Batch Evaluation、Trace Detail、Output Compare、Failure Cases 顺序继续升级。
+- README 仍未更新，后续只能使用本项目真实运行截图，不能使用 image2 目标图或第三方参考截图。
+
 ### 2026-06-22 — Codex — frontend-redesign-v1 前端页面重设计
 
 - 当前分支：`frontend-redesign-v1`

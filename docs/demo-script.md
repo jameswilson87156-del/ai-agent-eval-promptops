@@ -2,11 +2,11 @@
 
 ## 0:00–0:30 项目定位
 
-打开“实验室概览”，说明这是本地 Demo：输出由 Mock 生成器产生，分数来自确定性规则，不是真实 LLM、真实 AI Agent 或线上模型指标。指出页面顶部的边界提示和核心指标。
+打开“评测总览”，先看 PromptOps Studio 首页：左侧是中文控制台导航，顶部标明本地演示、规则评测、无需 API Key。说明这是本地 Demo：输出由 Mock 生成器产生，分数来自确定性规则，不是真实 LLM、真实 AI Agent 或线上模型指标。指出当前评测实验、核心指标和右侧 `run_1022` 运行 Trace 都围绕同一次本地评测展开。
 
 ## 0:30–1:10 Prompt 与 Eval Run
 
-切换左侧 Prompt，观察当前 Run、版本快照、通过率与风险 Case 更新。进入“评测运行”，使用搜索或“高风险 / 待 Review”筛选定位 Case，说明 Run → Case Result 的聚合关系，以及规则失败或 high/critical 风险进入 Review 队列的本地策略。
+在首页查看“当前评测实验”、最近评测运行和回归风险归因，说明 Dataset、Prompt、规则集、Eval Run、失败样本和 Trace 指向同一个 `run_1022`。进入“批量评测 / Eval Run”，使用搜索或“高风险 / 待 Review”筛选定位 Case，说明 Run → Case Result 的聚合关系，以及规则失败或 high/critical 风险进入 Review 队列的本地策略。
 
 ## 1:10–1:50 Trace 与规则解释
 

@@ -24,6 +24,7 @@ import {
   Sparkles,
   XCircle,
 } from 'lucide-vue-next'
+import EvalDashboard from './components/EvalDashboard.vue'
 import MetricCard from './components/MetricCard.vue'
 import StatusBadge from './components/StatusBadge.vue'
 import type { CaseResultStatus, EvalCase, EvalRun, GenerationTrace, PromptProfile, Summary, VersionComparison } from './types'
@@ -339,9 +340,9 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
 </script>
 
 <template>
-  <div class="app-shell" :data-ready="!loading && activePrompt && activeRun ? 'true' : 'false'">
+  <div class="app-shell" :class="{ 'dashboard-mode': activeView === 'overview' }" :data-ready="!loading && activePrompt && activeRun ? 'true' : 'false'">
     <a class="skip-link" href="#main">跳到主要内容</a>
-    <header class="hero-panel">
+    <header v-if="activeView !== 'overview'" class="hero-panel">
       <div class="brand-lockup">
         <div class="brand-mark" aria-hidden="true"><Activity :size="20" /></div>
         <div>
@@ -364,12 +365,12 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
       </div>
     </header>
 
-    <div class="trust-note" role="note">
+    <div v-if="activeView !== 'overview'" class="trust-note" role="note">
       <ShieldCheck :size="16" />
       <span>No real LLM connected. No agent runtime. Results come from MockOutputGenerator and RuleEvaluator, and review decisions stay in the browser demo state.</span>
     </div>
 
-    <nav class="view-tabs" aria-label="Console views">
+    <nav v-if="activeView !== 'overview'" class="view-tabs" aria-label="Console views">
       <button
         v-for="item in viewOptions"
         :key="item.key"
@@ -382,7 +383,7 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
       </button>
     </nav>
 
-    <section class="toolbar" aria-label="Search and filters">
+    <section v-if="activeView !== 'overview'" class="toolbar" aria-label="Search and filters">
       <label class="search-box">
         <Search :size="18" />
         <span class="sr-only">搜索 Prompt、Eval Run、测试用例或 Trace</span>
@@ -403,7 +404,7 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
       </div>
     </section>
 
-    <section class="scenario-strip" aria-label="Prompt profile scenarios">
+    <section v-if="activeView !== 'overview'" class="scenario-strip" aria-label="Prompt profile scenarios">
       <span>Scenario tags</span>
       <button type="button" @click="searchQuery = 'ticket-router'">ticket-router</button>
       <button type="button" @click="searchQuery = 'log-analyzer'">log-analyzer</button>
@@ -422,126 +423,32 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
     </section>
 
     <template v-else-if="activePrompt && activeRun && activeComparison">
-      <section id="main" class="metrics-grid" tabindex="-1" aria-label="评测摘要指标">
-        <MetricCard
-          v-for="metric in topMetrics"
-          :key="metric.label"
-          :data-metric="metric.dataMetric"
-          :helper="metric.helper"
-          :icon="metric.icon"
-          :label="metric.label"
-          :tone="metric.tone"
-          :unit="metric.unit"
-          :value="metric.value"
-        />
-      </section>
+      <EvalDashboard
+        v-if="activeView === 'overview'"
+        :active-prompt-id="activePromptId"
+        :prompts="prompts"
+        :running-eval="runningEval"
+        @open-view="setView"
+        @run-eval="runMockBatch"
+        @select-prompt="selectPrompt"
+      />
 
-      <main v-if="activeView === 'overview'" class="overview-layout">
-        <section class="panel prompt-panel">
-          <div class="panel-heading">
-            <div><p class="eyebrow">PROMPT REGISTRY</p><h2>Prompt Profiles</h2></div>
-            <GitBranch :size="18" />
-          </div>
-          <div v-if="filteredPrompts.length" class="prompt-list">
-            <button
-              v-for="prompt in filteredPrompts"
-              :key="prompt.id"
-              type="button"
-              class="prompt-row"
-              :class="{ active: prompt.id === activePrompt.id }"
-              :data-prompt-id="prompt.id"
-              :aria-pressed="prompt.id === activePrompt.id"
-              @click="selectPrompt(prompt)"
-            >
-              <span class="status-dot" :data-status="prompt.status"></span>
-              <span class="prompt-copy"><strong>{{ prompt.name }}</strong><small>{{ prompt.tags[0] }} · {{ prompt.owner }}</small></span>
-              <span class="prompt-version"><b>{{ prompt.currentVersion }}</b><small>{{ promptStatusLabel(prompt.status) }}</small></span>
-            </button>
-          </div>
-          <div v-else class="compact-empty">没有匹配的 Prompt。</div>
-          <button class="text-button" type="button" @click="setView('versions')">Open version details <ArrowRight :size="15" /></button>
+      <template v-else>
+        <section id="main" class="metrics-grid" tabindex="-1" aria-label="评测摘要指标">
+          <MetricCard
+            v-for="metric in topMetrics"
+            :key="metric.label"
+            :data-metric="metric.dataMetric"
+            :helper="metric.helper"
+            :icon="metric.icon"
+            :label="metric.label"
+            :tone="metric.tone"
+            :unit="metric.unit"
+            :value="metric.value"
+          />
         </section>
 
-        <section class="panel run-panel">
-          <div class="panel-heading">
-            <div><p class="eyebrow">LATEST EVAL RUN</p><h2>Current Run Snapshot</h2></div>
-            <StatusBadge tone="success">{{ runStatusLabel(activeRun.status) }}</StatusBadge>
-          </div>
-          <div class="run-identity">
-            <div><span>Run ID</span><strong>{{ activeRun.runKey }}</strong></div>
-            <div><span>Dataset</span><strong>{{ activeRun.name }}</strong></div>
-            <div><span>Prompt snapshot</span><strong>{{ activeRun.promptSnapshot }}</strong></div>
-          </div>
-          <div class="run-scoreboard">
-            <div class="score-ring" :style="{ '--score': `${activeRun.passRate}%` }">
-              <strong>{{ activeRun.passRate }}%</strong><span>Pass rate</span>
-            </div>
-            <div class="run-bars">
-              <div><span>Passed</span><b>{{ statusCounts.pass }}</b><i><em :style="{ width: `${activeRun.passRate}%` }"></em></i></div>
-              <div><span>Review</span><b>{{ pendingReviewCount }}</b><i><em class="warning-bar" :style="{ width: `${pendingReviewRate}%` }"></em></i></div>
-              <p>{{ activeRun.totalCases }} cases · {{ activeRun.averageLatencyMs }}ms simulated average · {{ activeRun.riskCaseCount }} risk cases</p>
-            </div>
-          </div>
-          <div class="case-preview-list">
-            <button
-              v-for="testCase in filteredCases.slice(0, 4)"
-              :key="testCase.resultId"
-              type="button"
-              :class="{ active: testCase.caseId === activeCase?.caseId }"
-              :data-case-id="testCase.caseId"
-              :aria-pressed="testCase.caseId === activeCase?.caseId"
-              @click="selectCase(testCase); setView('review')"
-            >
-              <span class="case-status" :data-status="testCase.result"><component :is="statusIcon(testCase.result)" :size="14" /></span>
-              <span><strong>{{ testCase.name }}</strong><small>{{ testCase.caseKey }} · {{ statusLabel(testCase.result) }}</small></span>
-              <b>{{ testCase.score }}</b>
-              <ChevronRight :size="15" />
-            </button>
-          </div>
-          <div v-if="!filteredCases.length" class="compact-empty">当前筛选下没有 Case 结果。</div>
-        </section>
-
-        <aside class="overview-side">
-          <section class="panel review-card">
-            <div class="panel-heading compact"><div><p class="eyebrow">REVIEW GATE</p><h2>Risk / Review Queue</h2></div><ShieldCheck :size="18" /></div>
-            <div class="risk-summary" :data-risk="activeComparison.regressionRisk">
-              <span>Regression risk</span><strong>{{ riskLabel(activeComparison.regressionRisk) }}</strong>
-              <p>{{ activeComparison.regressionRisk === 'low' ? 'Ready for human review; not an approval record.' : 'Resolve failed cases before any release recommendation.' }}</p>
-            </div>
-            <dl class="review-facts">
-              <div><dt>Current version</dt><dd>{{ activePrompt.currentVersion }}</dd></div>
-              <div><dt>Review required</dt><dd>{{ pendingReviewCount }}</dd></div>
-              <div><dt>Frontend state</dt><dd>{{ reviewState(activeCase) === 'pending' ? 'Pending' : 'Recorded' }}</dd></div>
-            </dl>
-            <button class="secondary-button" type="button" @click="setView('review')">Open Trace Review <ArrowRight :size="15" /></button>
-          </section>
-
-          <section class="panel trace-card">
-            <div class="panel-heading compact"><div><p class="eyebrow">TRACE SNAPSHOT</p><h2>当前 Trace</h2></div><CircleDashed :size="18" /></div>
-            <template v-if="activeCase">
-              <span class="mono-label">{{ activeCase.caseKey }}</span>
-              <strong>{{ activeCase.name }}</strong>
-              <p>{{ activeCase.outputSummary }}</p>
-              <div class="trace-meta"><span>{{ traces[0]?.status ?? '—' }}</span><span>{{ traces[0]?.latencyMs ?? activeCase.latencyMs }}ms</span></div>
-            </template>
-          </section>
-        </aside>
-
-        <section class="panel compare-panel">
-          <div class="panel-heading">
-            <div><p class="eyebrow">VERSION COMPARISON</p><h2>{{ activeComparison.fromVersion }} → {{ activeComparison.toVersion }}</h2></div>
-            <GitCompare :size="18" />
-          </div>
-          <div class="comparison-grid">
-            <div><span>Pass rate delta</span><strong :class="passRateDelta >= 0 ? 'positive' : 'negative'">{{ passRateDelta > 0 ? '+' : '' }}{{ passRateDelta }}%</strong><small>{{ activeComparison.passRateBefore }}% → {{ activeComparison.passRateAfter }}%</small></div>
-            <div><span>Simulated latency delta</span><strong :class="latencyDelta <= 0 ? 'positive' : 'negative'">{{ latencyDelta > 0 ? '+' : '' }}{{ latencyDelta }}ms</strong><small>{{ activeComparison.latencyBeforeMs }}ms → {{ activeComparison.latencyAfterMs }}ms</small></div>
-            <div class="failure-reasons"><span>Failure attribution</span><ul><li v-for="reason in activeComparison.topFailureReasons" :key="reason">{{ reason }}</li></ul></div>
-            <div class="suggestion-block"><Sparkles :size="17" /><span>Prompt iteration note</span><p>{{ iterationSuggestion }}</p></div>
-          </div>
-        </section>
-      </main>
-
-      <main v-else-if="activeView === 'run'" class="run-layout">
+      <main v-if="activeView === 'run'" class="run-layout">
         <aside class="panel prompt-panel sticky-panel">
           <div class="panel-heading"><div><p class="eyebrow">PROMPT REGISTRY</p><h2>Prompt Profiles</h2></div><SlidersHorizontal :size="18" /></div>
           <div class="prompt-list">
@@ -708,6 +615,7 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
         <span>PromptOps Evaluation Lab · Local Demo</span>
         <span>Mock Output · RuleEvaluator · Frontend-only Review</span>
       </footer>
+      </template>
     </template>
 
     <section v-else-if="!apiError" class="state-panel empty-state">
