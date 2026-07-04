@@ -4,6 +4,71 @@
 
 ## 当前待处理交接
 
+### 2026-07-04 — Codex — frontend-showcase-pages-v1 命名收口与 checkpoint 验收
+
+- 当前分支：`main`
+- 本轮任务：按用户要求恢复上一轮中断状态，只做截图命名收口、验收复跑和 checkpoint 提交准备；未继续开发新页面。
+- 命名收口：`frontend/scripts/check-dashboard-16x9.mjs` 已确认会写出 `docs/images/eval-dashboard.png`；`frontend/scripts/check-dataset-view-page.mjs` 通过 `slug: 'dataset'` 写出 `docs/images/dataset.png`；已清除 Dataset 正式截图旧命名引用和旧命名未跟踪截图。
+- 正式截图清单：`docs/images/eval-dashboard.png`、`docs/images/batch-evaluation.png`、`docs/images/trace-detail.png`、`docs/images/output-compare.png`、`docs/images/prompt-studio.png`、`docs/images/failure-cases.png`、`docs/images/dataset.png`、`docs/images/system-boundary.png`。
+- 截图来源：全部由本项目本地 Vite 页面通过 Playwright 生成，固定 `1440x810` viewport，`fullPage: false`；`.local` 仅保留检查图，未纳入 Git。
+- 已执行：`npm run build`，通过。
+- 已执行：`npm run check:dashboard:16x9`，通过，并刷新 `docs/images/eval-dashboard.png`。
+- 已执行：`npm run check:batch:16x9`，通过，并刷新 `docs/images/batch-evaluation.png`。
+- 已执行：`npm run check:trace:16x9`，通过，并刷新 `docs/images/trace-detail.png`。
+- 已执行：`npm run check:showcase-pages`，通过；该命令串行覆盖 Batch、Trace、Output Compare、Prompt Studio、Failure Cases、Dataset、System Boundary 七个页面检查。
+- 已执行：`git diff --check`，通过；仅输出 Windows 换行提示。
+- 边界确认：未修改 `README.md` 或 `backend/`；未接入真实模型、真实 Provider、API Key、LLM-as-Judge、生产数据、第三方参考截图或 `.env`；页面仍保留 Local Demo / Mock Output / Rule-based Eval / 无需 API Key / 非生产环境边界。
+
+### 2026-07-04 — Codex — frontend-showcase-pages-v1 多页面展示页验收收口
+
+- 当前分支：`main`
+- 本轮任务：继续收口前端 showcase 页面，统一检查七个展示页并刷新真实本地运行截图。
+- 涉及页面：Batch Evaluation、Trace Detail、Output Compare、Prompt Studio、Failure Cases、Dataset View、System Boundary。
+- 涉及脚本：`frontend/scripts/check-batch-page.mjs`、`frontend/scripts/check-trace-page.mjs`、`frontend/scripts/check-output-compare-page.mjs`、`frontend/scripts/check-prompt-studio-page.mjs`、`frontend/scripts/check-failure-cases-page.mjs`、`frontend/scripts/check-dataset-view-page.mjs`、`frontend/scripts/check-system-boundary-page.mjs`、`frontend/scripts/page-check-common.mjs`。
+- 输出截图：`docs/images/batch-evaluation.png`、`docs/images/trace-detail.png`、`docs/images/output-compare.png`、`docs/images/prompt-studio.png`、`docs/images/failure-cases.png`、`docs/images/dataset.png`、`docs/images/system-boundary.png`。
+
+### frontend-showcase-pages-v1 实现与验证
+
+- Batch Evaluation 首屏已进一步压缩布局密度；`1440x810` 截图中右侧 Run State、Timeline、Failure、Provider 区域没有明显模块裁切。
+- `docs/images/failure-cases.png` 已目检，顶部指标、失败样本表、失败原因分布、选中案例详情、修复任务与底部闭环在首屏内可读。
+- 已执行：`npm run check:showcase-pages`，通过；脚本依次完成七个页面检查并生成对应项目截图。
+- 已执行：`npm run build`，通过；`vue-tsc --noEmit && vite build` 成功。
+- 本轮未修改 `backend/`、`.env`、API Key 或生产配置；未自动 commit。
+
+### 2026-07-04 — Codex — frontend-trace-detail-v1 运行追踪详情页面前端落地
+
+- 当前分支：`main`
+- 本轮任务：在已完成的 Eval Dashboard 与 Batch Evaluation 视觉系统上落地 Trace / Run Detail / 运行追踪详情页面。
+- 修改文件：`frontend/src/App.vue`、`frontend/src/components/EvalDashboard.vue`、`frontend/src/components/BatchEvaluation.vue`、`frontend/package.json`、`TODO.md`、`HANDOFF.md`、`docs/demo-script.md`。
+- 新增文件：`frontend/src/components/TraceDetail.vue`、`frontend/src/data/traceDetailMockData.ts`、`frontend/scripts/check-trace-16x9.mjs`、`docs/images/trace-detail.png`。
+- 用户提供并允许保留的参考输入：`docs/design_refs/promptops_trace_detail_target_v1.png`；该文件仅作为 image2 原创视觉方向参考，不是项目真实运行截图。
+
+### frontend-trace-detail-v1 实现内容
+
+- `App.vue` 新增 `trace` 视图，`?view=trace` 可直接访问；Dashboard 与 Batch 左侧“运行追踪”导航会进入新 Trace Detail 页面。
+- `TraceDetail.vue` 延续浅色企业级控制台、左侧中文导航、顶部 Local Demo / Rule-based Eval / 无需 API Key 标签和右侧深色 Trace 主视觉。
+- 页面围绕 `run_1022` 与 `case_093` 展示当前运行上下文、运行摘要、输入与 Prompt 构建、输出与 Schema 对比、规则评分、失败原因与修复建议、运行 Trace、人工复核区、Provider 状态与边界和 PromptOps 运行追踪链路。
+- `traceDetailMockData.ts` 集中保存结构化本地演示数据；页面明确使用 Mock Output 与 Rule-based Eval，不连接真实模型或 API Key。
+- `check-trace-16x9.mjs` 使用独立端口启动 demo 后端与 Vite，从 Dashboard 和 Batch 导航进入 Trace，验证 13 个核心模块、7 个 Trace 节点、Failure Case 高亮、Human Review、边界说明、无浏览器错误和 `1440x810` 非长图截图。
+
+### frontend-trace-detail-v1 测试与验证
+
+- 已执行：`npm run build`，通过。
+- 已执行：`npm run check:dashboard:16x9`，通过；第一阶段 Eval Dashboard 未被破坏。
+- 已执行：`npm run check:batch:16x9`，通过；第二阶段 Batch Evaluation 未被破坏。
+- 已执行：`npm run check:trace:16x9`，通过。
+- Trace 检查固定使用 `1440x810` viewport 与 `fullPage: false`，验证页面无横向或纵向滚动、核心模块均在 viewport 内、7 个 Trace 节点未被裁切，并读取 PNG 文件头确认截图尺寸。
+- 本地检查截图：`.local/promptops-trace-detail-16x9-check.png`。
+- 正式项目截图：`docs/images/trace-detail.png`；与检查截图来自同一 Playwright screenshot buffer。
+- 检查脚本结束后释放本轮启动的后端、Vite 和浏览器进程。
+
+### frontend-trace-detail-v1 边界与下一步
+
+- 未修改 `backend/`、`README.md`、`.local/reference_screenshots/` 或任何 `.env` / 密钥文件。
+- 未接入真实模型、真实 API Key、真实 Provider、LLM-as-Judge、异步任务队列或持久化人工复核。
+- 本轮未自动 commit；等待用户验收真实截图后再决定是否提交。
+- 下一步建议先验收 `docs/images/trace-detail.png` 的视觉质量，再决定是否提交第三阶段变更。
+
 ### 2026-07-04 — Codex — frontend-batch-evaluation-v1 批量评测工作台视觉升级
 
 - 当前分支：`main`

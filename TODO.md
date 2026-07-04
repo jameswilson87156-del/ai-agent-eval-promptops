@@ -4,6 +4,42 @@
 
 ## Frontend
 
+### frontend-showcase-pages-v1 多页面展示页与截图验收收口
+
+- 状态：已完成
+- 目标：
+  - 将 Batch Evaluation、Trace Detail、Output Compare、Prompt Studio、Failure Cases、Dataset View、System Boundary 七个展示页统一纳入本地页面检查。
+  - 使用真实本地运行页面生成 `1440x810` 首屏截图，避免把参考图或第三方截图当作项目截图。
+  - 收口 Batch Evaluation 首屏密度，保证右侧 Run State 与主要评测信息在 16:9 viewport 内可读、不重叠。
+- 结果：
+  - 新增统一脚本 `npm run check:showcase-pages`，串行执行七个页面检查脚本。
+  - 已生成/刷新项目截图：`docs/images/eval-dashboard.png`、`docs/images/batch-evaluation.png`、`docs/images/trace-detail.png`、`docs/images/output-compare.png`、`docs/images/prompt-studio.png`、`docs/images/failure-cases.png`、`docs/images/dataset.png`、`docs/images/system-boundary.png`。
+  - 已目检 `docs/images/batch-evaluation.png` 与 `docs/images/failure-cases.png`，首屏没有明显文字重叠或模块裁切。
+  - 已重新执行 `npm run build`、`npm run check:dashboard:16x9`、`npm run check:batch:16x9`、`npm run check:trace:16x9`、`npm run check:showcase-pages` 与 `git diff --check`，均通过。
+  - `npm run check:showcase-pages` 已覆盖 Output Compare、Prompt Studio、Failure Cases、Dataset 与 System Boundary 页面检查。
+- 未做事项：
+  - 未修改后端业务逻辑、`.env`、API Key 或生产配置。
+  - 未修改 `README.md`；未接入真实 LLM、真实 Provider、LLM-as-Judge、生产数据或任何密钥。
+
+### frontend-trace-detail-v1 运行追踪详情页面前端落地
+
+- 状态：已完成
+- 目标：
+  - 在已有 PromptOps Studio 视觉系统内落地 Trace / Run Detail / 运行追踪详情页面。
+  - 在 `1440x810` 首屏展示当前运行上下文、运行摘要、输入与 Prompt 构建、输出与 Schema 对比、规则评分、失败原因与修复建议、运行 Trace、人工复核区、Provider 状态与边界和运行追踪链路。
+  - 使用结构化本地演示数据，并保持 Local Demo、Mock Output、Rule-based Eval、无需 API Key、非生产环境边界。
+- 结果：
+  - 新增 `TraceDetail.vue` 与 `traceDetailMockData.ts`，可通过 `?view=trace` 或左侧“运行追踪”导航进入。
+  - “评测总览”“批量评测”“运行追踪”三页左侧导航可互相切换，当前页面有正确高亮。
+  - Trace 页面围绕 `run_1022` / `case_093` 展示缺少 `confidence` 字段的 Schema 校验失败、规则评分、修复建议和待人工复核闭环。
+  - 新增 `npm run check:trace:16x9`，验证 Dashboard / Batch 到 Trace 的导航、无首屏滚动、13 个核心模块完整入镜、7 个 Trace 节点未裁切与浏览器无错误。
+  - 生成 `.local/promptops-trace-detail-16x9-check.png` 和本项目真实运行截图 `docs/images/trace-detail.png`，尺寸均为 `1440x810`，截图使用 `fullPage: false`。
+  - 已执行 `npm run build`、`npm run check:dashboard:16x9`、`npm run check:batch:16x9`、`npm run check:trace:16x9`，均通过。
+- 未做事项：
+  - 未修改后端业务逻辑或 `README.md`。
+  - 未接入真实 LLM、真实 Provider、API Key、LLM-as-Judge 或生产数据。
+  - 未把 image2 目标图当作正式项目截图；正式截图来自本项目本地真实运行页面。
+
 ### frontend-batch-evaluation-v1 批量评测工作台视觉升级
 
 - 状态：已完成

@@ -10,7 +10,7 @@
 
 ## 1:10–1:50 Trace 与规则解释
 
-在 Batch 页面查看 `case_093` 的失败样本分析、缺少 `confidence` 字段、修复建议与 Schema 对比，再进入“运行追踪 / Trace Review”查看输入摘要、Mock 输出、逐条规则 PASS/FAIL、Generation Trace 和模拟耗时。标记通过或退回修订，强调结论只保存在当前页面，不是生产审批记录。
+在 Batch 页面查看 `case_093` 的失败样本分析、缺少 `confidence` 字段、修复建议与 Schema 对比，再进入“运行追踪”页面。说明 Trace / Run Detail 围绕 `run_1022` 和 `case_093` 展示输入、Prompt 构建、Mock Output、Schema 校验、规则评分、Failure Case 和 Human Review 的完整链路。重点指出 `confidence` 缺失导致 Schema 校验失败、质量分降到 `0.86 / 1.00`，人工复核区给出确认失败原因、更新 Prompt 示例和复跑评测的下一步。强调本页仍是 Local Demo / Rule-based Eval / Mock Output，不是生产审批记录。
 
 ## 1:50–2:30 版本对比与迭代
 

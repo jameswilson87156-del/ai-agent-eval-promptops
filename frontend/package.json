@@ -9,7 +9,16 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "check:dashboard:16x9": "node scripts/check-dashboard-16x9.mjs",
-    "check:batch:16x9": "node scripts/check-batch-16x9.mjs",
+    "check:batch:16x9": "node scripts/check-batch-page.mjs",
+    "check:trace:16x9": "node scripts/check-trace-page.mjs",
+    "check:batch-page": "node scripts/check-batch-page.mjs",
+    "check:trace-page": "node scripts/check-trace-page.mjs",
+    "check:output-compare-page": "node scripts/check-output-compare-page.mjs",
+    "check:prompt-studio-page": "node scripts/check-prompt-studio-page.mjs",
+    "check:failure-cases-page": "node scripts/check-failure-cases-page.mjs",
+    "check:dataset-view-page": "node scripts/check-dataset-view-page.mjs",
+    "check:system-boundary-page": "node scripts/check-system-boundary-page.mjs",
+    "check:showcase-pages": "npm run check:batch-page && npm run check:trace-page && npm run check:output-compare-page && npm run check:prompt-studio-page && npm run check:failure-cases-page && npm run check:dataset-view-page && npm run check:system-boundary-page",
     "screenshots": "node scripts/screenshots.mjs"
   },
   "dependencies": {

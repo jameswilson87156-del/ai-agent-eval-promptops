@@ -1,13 +1,3 @@
-export type BatchTone = 'green' | 'blue' | 'red' | 'amber' | 'gray'
-
-export interface BatchMetric {
-  label: string
-  value: string
-  helper: string
-  tone: BatchTone
-  progress: number
-}
-
 export interface BatchMatrixRow {
   caseId: string
   inputType: string
@@ -22,13 +12,6 @@ export interface BatchMatrixRow {
   expectedOutput: string
   actualOutput: string
   suggestion: string
-}
-
-export interface BatchTimelineNode {
-  label: string
-  time: string
-  state: '已完成' | '运行中' | '等待中'
-  summary: string
 }
 
 export const batchEvaluationMockData = {
@@ -61,41 +44,20 @@ export const batchEvaluationMockData = {
     { label: '输出质量分', value: '0.86 / 1.00', helper: 'local-rule 加权结果', tone: 'blue', progress: 86 },
     { label: '格式有效率', value: '94.5%', helper: 'JSON / Schema 规则', tone: 'green', progress: 94.5 },
     { label: '回归风险等级', value: '高风险 3 / 10', helper: '需要人工复核', tone: 'red', progress: 70 },
-  ] satisfies BatchMetric[],
+  ],
   trend: {
     labels: ['09:30', '09:40', '09:50', '10:00', '10:10', '10:18'],
     avgScore: [48, 58, 66, 72, 82, 86],
     passRate: [36, 48, 55, 71, 84, 91],
   },
   matrix: [
-    {
-      caseId: 'case_089', inputType: '账户查询', promptVersion: 'v3.1', format: '通过', completeness: '通过', relevance: '通过', compliance: '通过', stability: '通过', result: '通过', failureReason: '-',
-      expectedOutput: '{ "answer": "账户状态", "confidence": 0.92 }', actualOutput: '{ "answer": "账户状态", "confidence": 0.91 }', suggestion: '当前规则全部通过，无需修复。',
-    },
-    {
-      caseId: 'case_090', inputType: '退款政策', promptVersion: 'v3.1', format: '通过', completeness: '通过', relevance: '通过', compliance: '通过', stability: '通过', result: '通过', failureReason: '-',
-      expectedOutput: '{ "answer": "退款说明", "confidence": 0.90 }', actualOutput: '{ "answer": "退款说明", "confidence": 0.88 }', suggestion: '当前规则全部通过，无需修复。',
-    },
-    {
-      caseId: 'case_093', inputType: '退款咨询', promptVersion: 'v3.1', format: '通过', completeness: '缺失', relevance: '通过', compliance: '通过', stability: '通过', result: '失败', failureReason: '缺少 confidence 字段',
-      expectedOutput: '{ "answer": "示例", "confidence": 0.86 }', actualOutput: '{ "answer": "示例" }', suggestion: '补充 Schema 约束，并在 Prompt 示例中明确 confidence 字段。',
-    },
-    {
-      caseId: 'case_094', inputType: '账户解冻', promptVersion: 'v3.1', format: '通过', completeness: '通过', relevance: '不足', compliance: '通过', stability: '通过', result: '失败', failureReason: '相关性不足',
-      expectedOutput: '{ "answer": "解冻步骤", "confidence": 0.84 }', actualOutput: '{ "answer": "请联系支持", "confidence": 0.62 }', suggestion: '补充账户解冻步骤的必含关键词规则。',
-    },
-    {
-      caseId: 'case_101', inputType: '风险提示', promptVersion: 'v3.1', format: '无效', completeness: '缺失', relevance: '不足', compliance: '通过', stability: '通过', result: '失败', failureReason: '格式无效，缺少 answer',
-      expectedOutput: '{ "answer": "风险提示", "confidence": 0.90 }', actualOutput: '{ "message": "风险提示" }', suggestion: '收紧输出字段白名单，并增加 FORMAT 规则。',
-    },
-    {
-      caseId: 'case_107', inputType: '投诉提交', promptVersion: 'v3.1', format: '通过', completeness: '通过', relevance: '通过', compliance: '缺失', stability: '通过', result: '失败', failureReason: '合规性不足',
-      expectedOutput: '{ "answer": "投诉流程", "risk_notice": "隐私提醒" }', actualOutput: '{ "answer": "请提交个人证明" }', suggestion: '为敏感信息场景增加 risk_notice 必填规则。',
-    },
-    {
-      caseId: 'case_115', inputType: '活动咨询', promptVersion: 'v3.1', format: '通过', completeness: '通过', relevance: '通过', compliance: '通过', stability: '通过', result: '通过', failureReason: '-',
-      expectedOutput: '{ "answer": "活动说明", "confidence": 0.88 }', actualOutput: '{ "answer": "活动说明", "confidence": 0.90 }', suggestion: '当前规则全部通过，无需修复。',
-    },
+    { caseId: 'case_089', inputType: '账户查询', promptVersion: 'v3.1', format: '通过', completeness: '通过', relevance: '通过', compliance: '通过', stability: '通过', result: '通过', failureReason: '-', expectedOutput: '{ "answer": "账户状态", "confidence": 0.92 }', actualOutput: '{ "answer": "账户状态", "confidence": 0.91 }', suggestion: '当前规则全部通过，无需修复。' },
+    { caseId: 'case_090', inputType: '退款政策', promptVersion: 'v3.1', format: '通过', completeness: '通过', relevance: '通过', compliance: '通过', stability: '通过', result: '通过', failureReason: '-', expectedOutput: '{ "answer": "退款说明", "confidence": 0.90 }', actualOutput: '{ "answer": "退款说明", "confidence": 0.88 }', suggestion: '当前规则全部通过，无需修复。' },
+    { caseId: 'case_093', inputType: '退款咨询', promptVersion: 'v3.1', format: '通过', completeness: '缺失', relevance: '通过', compliance: '通过', stability: '通过', result: '失败', failureReason: '缺少 confidence 字段', expectedOutput: '{ "answer": "示例", "confidence": 0.86 }', actualOutput: '{ "answer": "示例" }', suggestion: '补充 Schema 约束，并在 Prompt 示例中明确 confidence 字段。' },
+    { caseId: 'case_094', inputType: '账户解冻', promptVersion: 'v3.1', format: '通过', completeness: '通过', relevance: '不足', compliance: '通过', stability: '通过', result: '失败', failureReason: '相关性不足', expectedOutput: '{ "answer": "解冻步骤", "confidence": 0.84 }', actualOutput: '{ "answer": "请联系支持", "confidence": 0.62 }', suggestion: '补充账户解冻步骤的必含关键词规则。' },
+    { caseId: 'case_101', inputType: '风险提示', promptVersion: 'v3.1', format: '无效', completeness: '缺失', relevance: '不足', compliance: '通过', stability: '通过', result: '失败', failureReason: '格式无效，缺少 answer', expectedOutput: '{ "answer": "风险提示", "confidence": 0.90 }', actualOutput: '{ "message": "风险提示" }', suggestion: '收紧输出字段白名单，并增加 FORMAT 规则。' },
+    { caseId: 'case_107', inputType: '投诉提交', promptVersion: 'v3.1', format: '通过', completeness: '通过', relevance: '通过', compliance: '缺失', stability: '通过', result: '失败', failureReason: '合规性不足', expectedOutput: '{ "answer": "投诉流程", "risk_notice": "隐私提醒" }', actualOutput: '{ "answer": "请提交个人证明" }', suggestion: '为敏感信息场景增加 risk_notice 必填规则。' },
+    { caseId: 'case_115', inputType: '活动咨询', promptVersion: 'v3.1', format: '通过', completeness: '通过', relevance: '通过', compliance: '通过', stability: '通过', result: '通过', failureReason: '-', expectedOutput: '{ "answer": "活动说明", "confidence": 0.88 }', actualOutput: '{ "answer": "活动说明", "confidence": 0.90 }', suggestion: '当前规则全部通过，无需修复。' },
   ] satisfies BatchMatrixRow[],
   timeline: [
     { label: 'Load Dataset', time: '10:18:32', state: '已完成', summary: '加载测试集“客服意图分类”，120 条样本' },
@@ -105,7 +67,7 @@ export const batchEvaluationMockData = {
     { label: 'Compute Score', time: '10:18:47', state: '运行中', summary: '计算评分与通过率' },
     { label: 'Collect Failure Cases', time: '--:--:--', state: '等待中', summary: '收集失败样本与原因归类' },
     { label: 'Ready for Human Review', time: '--:--:--', state: '等待中', summary: '生成复核清单，待人工复核' },
-  ] satisfies BatchTimelineNode[],
+  ],
   failureRanking: [
     { label: '缺少 confidence 字段', count: 5, percent: 31 },
     { label: '格式无效', count: 4, percent: 25 },

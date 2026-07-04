@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawn, spawnSync } from 'node:child_process'
-import { mkdir, stat } from 'node:fs/promises'
+import { mkdir, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
@@ -10,6 +10,7 @@ const frontendDir = path.resolve(scriptDir, '..')
 const repoRoot = path.resolve(frontendDir, '..')
 const outputDir = path.join(repoRoot, '.local')
 const outputPath = path.join(outputDir, 'promptops-dashboard-overview-16x9-check.png')
+const formalOutputPath = path.join(repoRoot, 'docs', 'images', 'eval-dashboard.png')
 const isWindows = process.platform === 'win32'
 const backendPort = 18082
 const frontendPort = 5176
@@ -99,7 +100,10 @@ const requiredSelectors = [
 
 let browser
 try {
-  await mkdir(outputDir, { recursive: true })
+  await Promise.all([
+    mkdir(outputDir, { recursive: true }),
+    mkdir(path.dirname(formalOutputPath), { recursive: true }),
+  ])
   startProcess(isWindows ? 'mvn.cmd' : 'mvn', ['-pl', 'backend', 'spring-boot:run'], repoRoot, {
     SPRING_PROFILES_ACTIVE: 'demo',
     SERVER_PORT: String(backendPort),
@@ -183,11 +187,14 @@ try {
   const screenshot = await page.screenshot({ path: outputPath, fullPage: false })
   assert.equal(screenshot.readUInt32BE(16), viewport.width, 'Screenshot width is not 1440px')
   assert.equal(screenshot.readUInt32BE(20), viewport.height, 'Screenshot height is not 810px')
-  const metadata = await stat(outputPath)
-  assert.ok(metadata.size > 10_000, 'Dashboard screenshot is unexpectedly small')
+  await writeFile(formalOutputPath, screenshot)
+  const [localMetadata, formalMetadata] = await Promise.all([stat(outputPath), stat(formalOutputPath)])
+  assert.ok(localMetadata.size > 10_000, 'Dashboard screenshot is unexpectedly small')
+  assert.equal(formalMetadata.size, localMetadata.size, 'Formal dashboard screenshot differs from checked screenshot')
 
   await context.close()
   process.stdout.write(`Captured ${viewport.width}x${viewport.height} dashboard screenshot at ${outputPath}\n`)
+  process.stdout.write(`Wrote verified project screenshot to ${formalOutputPath}\n`)
 } finally {
   await browser?.close()
   children.reverse().forEach(stopProcess)
