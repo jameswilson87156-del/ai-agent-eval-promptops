@@ -4,6 +4,23 @@
 
 ## Frontend
 
+### frontend-batch-evaluation-visual-v2 批量评测工作台目标图重做
+
+- 状态：已完成
+- 目标：
+  - 仅按 `docs/design_refs/promptops_batch_evaluation_target_v2.png` 重做 Batch Evaluation 页面视觉。
+  - 在 `1440x810` 首屏内完整展示评测配置、核心指标、5 行样本评分矩阵、评测工作流、运行状态、执行时间线、高风险样本 TOP 3 与提供者状态。
+  - 保持 Local Demo、Rule-based Eval、Mock Output、无需 API Key、非生产环境边界。
+- 结果：
+  - `BatchEvaluation.vue` 已重构为固定顶栏、左侧主工作区与右侧运行信息栏；底部评测工作流完整进入首屏。
+  - 运行状态使用居中 80% 进度环，`96 / 120 完成` 与状态列表分栏展示；样本评分矩阵首屏固定显示 5 行。
+  - 顶部状态统一为“本地演示 / 规则评测 / 无需 API Key / 环境：Local Demo / Dev User”。
+  - `docs/images/batch-evaluation.png` 已由本项目本地 Vite 页面重新生成，尺寸 `1440x810`，`fullPage: false`。
+  - 已执行 `npm run check:batch:16x9`、`npm run build`、`npm run check:showcase-pages` 与 `git diff --check`，均通过。
+- 未做事项：
+  - 未修改 `README.md`、`backend/`、其它页面组件或其它 7 张正式截图。
+  - 未接入真实模型、真实 Provider、API Key、LLM-as-Judge 或生产数据；未自动 commit、未 push。
+
 ### frontend-showcase-pages-v1 多页面展示页与截图验收收口
 
 - 状态：已完成

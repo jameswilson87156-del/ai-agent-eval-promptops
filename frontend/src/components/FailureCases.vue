@@ -34,7 +34,7 @@ const navItems = [
     <section class="failure-workspace">
       <header class="failure-topbar">
         <label class="failure-search"><Search :size="17" /><span class="sr-only">搜索 Prompt、Run 或 Dataset</span><input v-model="failureSearch" type="search" aria-label="搜索 Prompt、Run 或 Dataset" placeholder="搜索失败样本 / Prompt / Dataset" /></label>
-        <div class="failure-pills"><span>本地演示</span><span>Rule-based Eval</span><span>无需 API Key</span></div>
+        <div class="failure-pills"><span>本地演示</span><span>规则评测</span><span>无需 API Key</span></div>
         <div class="failure-user"><span>环境：<strong>Local Demo</strong></span><span><UserRound :size="15" />Dev User</span></div>
         <button class="failure-primary" type="button" :disabled="runningEval" @click="emit('runEval')">重新运行评测</button>
       </header>

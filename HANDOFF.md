@@ -4,6 +4,31 @@
 
 ## 当前待处理交接
 
+### 2026-07-04 — Codex — Failure Cases / Dataset 最终验收确认
+
+- 当前分支：`main`
+- 本轮任务：仅确认 Failure Cases / 失败归因与 Dataset / 测试集两页，不再修改 Batch Evaluation 或开发新页面。
+- 页面结果：Failure Cases 未出现 `LLM-as-Judge`，页面维持规则评测器、人工复核、回归任务与 Local Demo 边界；Dataset 顶部指标副文案完整，右侧样本预览无明显挤压，仍保持 Prompt / Eval 测试集管理语义。
+- 独立检查：`npm run check:failure-cases-page` 与 `npm run check:dataset-view-page` 均通过，并分别重新生成 `docs/images/failure-cases.png`、`docs/images/dataset.png`。
+- 截图证据：两张正式截图均为 `1440x810`，与对应 `.local/promptops-*-16x9-check.png` SHA-256 完全一致；检查脚本固定 `fullPage: false`，截图来自本项目本地 Vite 页面与 Playwright，不是第三方截图。
+- 综合验证：`npm run build`、`npm run check:showcase-pages`、`git diff --check` 均通过；总验收明确串行覆盖 Failure Cases 与 Dataset 的独立检查。
+- 变更保护：总验收后按 SHA-256 确认 Batch、Trace、Output Compare、Prompt Studio、System Boundary 五张非本轮正式截图与运行前一致。
+- 边界确认：未修改 `README.md`、`backend/` 或 Batch 页面；未接入 API Key、真实模型、真实模型裁判或第三方截图；未自动 commit、未 push。
+
+### 2026-07-04 — Codex — frontend-batch-evaluation-visual-v2 批量评测页面目标图重做
+
+- 当前分支：`main`
+- 本轮任务：仅按 `docs/design_refs/promptops_batch_evaluation_target_v2.png` 重做 Batch Evaluation / 批量评测页面视觉。
+- 修改文件：`frontend/src/components/BatchEvaluation.vue`、`frontend/src/data/batchEvaluationMockData.ts`、`docs/images/batch-evaluation.png`、`TODO.md`、`HANDOFF.md`。
+- 页面结构：顶部保留搜索、状态标签、环境与用户；标题为“批量评测工作台”，右上提供“回到总览 / 启动评测”；左栏依次为评测配置、核心指标、5 行样本评分矩阵、评测工作流；右栏依次为运行状态、执行时间线、高风险样本 TOP 3、提供者状态。
+- 首屏结果：评测工作流完整进入 `1440x810` viewport；80% 圆环居中，`96 / 120 完成` 与右侧状态列表未发生文字挤压；顶部状态统一为“本地演示 / 规则评测 / 无需 API Key / 环境：Local Demo / Dev User”。
+- 截图来源：`docs/images/batch-evaluation.png` 由本项目本地 Vite 页面经 Playwright 生成，固定 `1440x810` viewport，`fullPage: false`，不是目标参考图或第三方截图。
+- 已执行：`npm run check:batch:16x9`，通过并重新生成正式 Batch 截图。
+- 已执行：`npm run build`，通过；`vue-tsc --noEmit && vite build` 成功。
+- 已执行：`npm run check:showcase-pages`，通过；运行前备份并在运行后按 SHA-256 恢复 Batch 之外的 7 张正式截图。
+- 已执行：`git diff --check`，通过。
+- 边界确认：未修改 `README.md`、`backend/`、其它页面组件、`.env` 或 `.local/reference_screenshots/`；未接入真实模型、真实 Provider、API Key、LLM-as-Judge 或生产数据；未自动 commit、未 push。
+
 ### 2026-07-04 — Codex — frontend-showcase-pages-v1 命名收口与 checkpoint 验收
 
 - 当前分支：`main`
