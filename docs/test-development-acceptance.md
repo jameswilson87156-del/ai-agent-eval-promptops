@@ -2,7 +2,7 @@
 
 日期：2026-10-28
 分支：`main`
-更新：2026-10-29。Agent Eval 与测试开发扩展已通过 PR [#1](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/pull/1) 合入 `main`；CI 运行时维护通过 PR [#2](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/pull/2) 合入。最新主分支质量门禁 Actions run [40757858959](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40757858959) 成功。下文标为历史快照的旧 run ID 保留其原有时点语境。
+更新：2026-10-29。Agent Eval 与测试开发扩展已通过 PR [#1](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/pull/1) 合入 `main`；CI 运行时维护通过 PR [#2](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/pull/2) 合入。应用代码主分支门禁 run [40757858959](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40757858959) 成功；验收页文档更新 PR [#3](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/pull/3) 的 push、PR 和合并后 main runs [40759420614](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40759420614)、[40759439465](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40759439465)、[40759719820](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40759719820) 也均成功。下文标为历史快照的旧 run ID 保留其原有时点语境。
 
 ## 补强目标
 
@@ -132,7 +132,7 @@ Node 的 YAML 检查曾尝试使用仓库未安装的 `js-yaml`，因模块缺�
 
 ## 本轮远端质量门禁（2026-10-29）
 
-主分支最新门禁：[Actions run 40757858959](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40757858959)，在 `main` 提交 `f8b958c3646c097dd30d987361a1ccc223d1ec55` 完成，结论 `success`。该工作流执行 Maven、前端生产构建、依赖审计、Python/API 测试、固定数据集校验、Mock 稳定性采样、Playwright 浏览器验收并上传证据。
+应用代码主分支门禁：[Actions run 40757858959](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40757858959)，在 `main` 提交 `f8b958c3646c097dd30d987361a1ccc223d1ec55` 完成，结论 `success`。该工作流执行 Maven、前端生产构建、依赖审计、Python/API 测试、固定数据集校验、Mock 稳定性采样、Playwright 浏览器验收并上传证据。PR #3 是验收文档更新；该 PR 的 push、PR 与合并后 main 工作流也全部通过，运行编号见本文顶部。
 
 ### 本地回归
 
