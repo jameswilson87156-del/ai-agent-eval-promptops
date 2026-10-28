@@ -28,6 +28,7 @@ const runs = ref<Run[]>([])
 const currentRun = ref<Run | null>(null)
 const selectedCaseId = ref('')
 const providerStatus = ref<ProviderStatus | null>(null)
+const navigationRevision = ref(0)
 const selectedProvider = ref('mock')
 const promptVersion = ref('fixed-mock-prompt-v1')
 const agentConfigVersion = ref('mock-agent-v1')
@@ -124,6 +125,7 @@ async function selectRun(runId: string) {
 }
 
 async function executeRun() {
+  const navigationRevisionAtStart = navigationRevision.value
   errorMessage.value = ''
   const provider = selectedProviderInfo.value
   if (!provider?.configured) {
@@ -155,7 +157,7 @@ async function executeRun() {
     selectedCaseId.value = report.cases[0]?.case_id ?? ''
     await refresh()
     currentRun.value = report
-    page.value = 'run'
+    if (navigationRevision.value === navigationRevisionAtStart) page.value = 'run'
   } catch (reason) {
     errorMessage.value = reason instanceof Error ? reason.message : String(reason)
   } finally {
@@ -193,6 +195,7 @@ async function exportReport(run: Run | null = currentRun.value) {
 }
 
 function setPage(next: Page) {
+  navigationRevision.value += 1
   page.value = next
   errorMessage.value = ''
 }
