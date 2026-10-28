@@ -2,7 +2,7 @@
 
 日期：2026-10-28
 分支：`feat/agent-evaluation-platform`
-工作区：保留现有未提交改动；本轮没有提交或推送。
+更新：2026-10-29。功能分支已推送；实现提交 `8f99b7d0429923d3f11b864171c5c30b75be34f1`，导航竞态修复提交 `ea33d4610a0dc7ddad172c10c8519fc715c578df`。分支尚未合并 main。
 
 ## 补强目标
 
@@ -39,8 +39,8 @@ Node 的 YAML 检查曾尝试使用仓库未安装的 `js-yaml`，因模块缺�
 - 没有调用真实模型，不含 Token、费用或真实模型延迟数据。
 - 没有连接公司生产业务 API、真实外部工具、企业监控/告警或生产环境；本地合成订单 API、告警演练、Soak 和有界负载结果见下节。
 - 没有设定并验证生产 p95/SLO 预算；本机延迟只是观察值。
-- GitHub Actions workflow 已本地解析并包含采样步骤，但分支未推送，远端 Actions 尚未运行。
-- 本轮业务/API 与观测扩展没有改前端；浏览器、桌面/移动视口和错误态证据沿用 `docs/phase-3-acceptance.md` 的前一阶段验收。
+- GitHub Actions run [40723393664](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40723393664) 在 Ubuntu runner 通过全部步骤；详见本文“本轮远端质量门禁”。
+- 本轮已改进前端运行期间的导航状态，并用 Playwright 验证桌面/移动宽度、真实运行请求、失败详情、JSON 下载、刷新持久化和服务错误态。
 
 岗位对齐和简历草稿见 [job-delivery.md](job-delivery.md)。
 
@@ -117,7 +117,7 @@ Node 的 YAML 检查曾尝试使用仓库未安装的 `js-yaml`，因模块缺�
 | Web/UI 自动化 | Playwright 验收 Agent 运行、失败详情、刷新、错误态及窄屏 | Playwright Chromium 覆盖登录、建仓、Issue、评论和关闭 | 浏览器运行是本地环境 |
 | 数据库/持久化 | 文件型 H2 保存运行报告和仿真订单 | SQLite 数据持久化，验证容器重启后 API 数据仍存在 | 没有 MySQL/Redis 生产集成测试 |
 | 稳定性/性能 | 30 分钟低频 Soak；k6 四档本地阶梯负载；Prometheus/Alertmanager 本地告警演练 | CI 每次启动隔离 Gitea 服务并执行 API/UI/重启测试 | 本机 Docker 负载不等于生产容量或大规模生产压测 |
-| CI/CD 与报告 | GitHub Actions 已配置，但尚未触发托管运行；本地有 Maven/pytest/Playwright 验收 | GitHub Actions 已在 Ubuntu runner 运行并上传 JSON/JUnit/HTML/截图 | PromptOps 远端 Actions 尚待 push/CI 执行 |
+| CI/CD 与报告 | GitHub Actions run [40723393664](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40723393664) 在 Ubuntu runner 通过并上传证据 artifact | GitHub Actions run [40710451708](https://github.com/jameswilson87156-del/gitea-quality-lab/actions/runs/40710451708) 在 Ubuntu runner 通过并上传 JSON/JUnit/HTML/截图 | 两者都是隔离测试实例 / CI 临时环境，不代表生产系统 |
 | 缺陷定位与可复现 | 单条断言、失败原因、Trace、固定输入、Run ID | 用例 ID、失败详情、浏览器截图和脱敏 Trace | Trace 是可观察数据，不包含模型思维链 |
 | AI 质量评估 | 固定数据集、工具选择/参数/顺序/安全规则、运行比较 | 不面向 LLM，专注通用系统黑盒测试 | PromptOps 当前是 Mock/规则评测，不代表真实模型效果 |
 
@@ -129,3 +129,34 @@ Node 的 YAML 检查曾尝试使用仓库未安装的 `js-yaml`，因模块缺�
 - 分场景：5 工作流/秒档 301/至少 300；10/s 档 601/至少 600；20/s 档 1,200/至少 1,200；100/s 档 6,001/至少 6,000。各档检查失败、HTTP 失败、业务失败和掉队迭代均为 0。
 - 全阶段合并 HTTP p95 为 1.361 ms、工作流 p95 为 5.913 ms；两者是该 Docker Desktop/WSL2 本机运行的观察值，不是 SLA/SLO，不用于声称生产容量。没有独立测量压力档 HTTP RPS。
 - 原始及结构化证据：[`原始 k6 JSON`](reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3.json)、[`摘要 JSON`](reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3-summary.json)、[`摘要 Markdown`](reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3-summary.md)。汇总器单测 4 条通过；原始 k6 阈值结果也包含在 JSON 中。
+
+## 本轮远端质量门禁（2026-10-29）
+
+### 本地回归
+
+| 检查 | 命令 | 结果 | 证据 |
+| --- | --- | --- | --- |
+| 后端 | `mvn -pl backend test` | 退出码 0；36 通过、0 失败、0 错误、0 跳过 | `outputs/testdev-career-update/promptops-local-acceptance-20261028/maven-test.log` |
+| Python API / 工具单测 | `py -3.12 -m pytest backend/tests/test_agent_eval_stability.py backend/tests/test_business_soak.py backend/tests/test_k6_report_summary.py -q` | 退出码 0；19 通过、0 失败、0 跳过 | `outputs/testdev-career-update/promptops-local-acceptance-20261028/python-tests.log` |
+| 数据集校验 | `py -3.12 -m pytest backend/tests/test_agent_eval_api.py -q -k dataset` | 退出码 0；1 通过、1 跳过、5 deselected | `outputs/testdev-career-update/promptops-local-acceptance-20261028/dataset-validation.log` |
+| 前端类型检查与生产构建 | `npm run build` | 退出码 0；`vue-tsc --noEmit` 与 Vite production build 通过 | `outputs/testdev-career-update/promptops-local-acceptance-20261028/frontend-build.log` |
+| npm 依赖审计 | `npm audit --json`（在 `frontend/` 执行） | 退出码 0；0 项 info / low / moderate / high / critical 漏洞 | `outputs/testdev-career-update/promptops-local-acceptance-20261028/npm-audit-frontend.json` |
+| Workflow YAML | 使用 PyYAML 解析 `.github/workflows/quality.yml` | 退出码 0；YAML 有效，含 `verify` job | `outputs/testdev-career-update/promptops-local-acceptance-20261028/workflow-yaml-check.log` |
+| 浏览器端到端 | `npm run check:agent-eval:live` | 退出码 0；运行、失败复现、JSON 导出一致、同数据集比较、刷新持久化、错误态和无页面级水平溢出断言通过；浏览器 JS 错误 0 | `outputs/testdev-career-update/promptops-local-acceptance-20261028/browser-acceptance-r5.log` 与 `live-browser-r5/` |
+
+本地浏览器运行 ID：`00f9a964-b602-4c83-8d3c-2b701c4ad476` 与 `6ab56736-e112-440f-b7f0-7435b0731c01`。每次运行 26 条合成用例，保留 2 条 Agent 行为失败；`agent-014` 的错误工具选择可复现。浏览器下载 JSON 与保存运行内容一致。测试覆盖 1440px / 1366px 桌面与 390px 手机视口；结果来自本地 Mock 服务，不是模型质量或生产系统验收。
+
+首次远端运行 [40721964915](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40721964915) 失败在浏览器导航步骤。根因是执行结果刷新历史期间，异步完成回调覆盖用户刚切换的导航。修复已提交为 `ea33d4610a0dc7ddad172c10c8519fc715c578df`，前端通过导航版本号避免覆盖用户操作；本地 Playwright 全流程回归通过。
+
+### 通过的 GitHub Actions
+
+[GitHub Actions run 40723393664](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40723393664) 在 `feat/agent-evaluation-platform`、Ubuntu runner 完成，结论 `success`：
+
+- Maven：36 通过，0 失败、0 错误、0 跳过。
+- Python API / 工具：26 通过。
+- 固定数据集校验：1 通过、1 跳过、5 deselected。
+- Mock 稳定性采样：8/8 正式运行、1/1 预热成功，0 请求失败、输出确定；Runner HTTP p95 观测值 33.155 ms，仅为观察值。
+- Playwright：真实点击运行、26 条用例、失败归因、JSON 与持久化记录一致、重复 Mock 输出一致、刷新后历史存在、前端 503 错误显示、1440px / 1366px / 390px 视口无页面级横向溢出；通过。
+- CI 上传的 `agent-eval-evidence` artifact 为 1,332,468 bytes，保留至 2027-01-26；包含运行报告与浏览器截图：[查看 artifact](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40723393664/artifacts/12829964846)。
+
+远端 Actions 只验证 GitHub runner 中的自动化用例与临时 Mock 服务，不构成真实模型、企业生产系统或大规模并发容量证明。

@@ -179,7 +179,7 @@ docker compose -f compose.production-like.yml down
 
 此命令保留本地命名卷中的 H2 和 Prometheus 数据。不要给 `down` 加 `-v`，除非确定要删除这套演练数据。
 
-固定数据集生成器位于 backend/tools/generate-agent-dataset.mjs。CI 配置见 .github/workflows/quality.yml。GitHub Actions 有 push 和 pull_request 触发，本轮只做本地执行与 YAML 解析，没有推送分支，所以没有远端 CI 结果。命令、退出码和证据目录见 [docs/phase-3-acceptance.md](docs/phase-3-acceptance.md)。
+固定数据集生成器位于 backend/tools/generate-agent-dataset.mjs。CI 配置见 .github/workflows/quality.yml。功能分支 `feat/agent-evaluation-platform` 已公开；GitHub Actions run [40723393664](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40723393664) 通过 Maven 36 项、Python API / 工具 26 项、8 次 Mock 稳定性采样和 Playwright 浏览器验收。完整命令、退出码和本地证据路径见 [docs/test-development-acceptance.md](docs/test-development-acceptance.md)；CI 截图与报告见 Actions artifact。
 
 通用测试开发实习生岗位映射、稳定性采样口径与本轮验收结果见 [docs/job-delivery.md](docs/job-delivery.md) 和 [docs/test-development-acceptance.md](docs/test-development-acceptance.md)。
 
