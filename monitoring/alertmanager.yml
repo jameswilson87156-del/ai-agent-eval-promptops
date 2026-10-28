@@ -1,0 +1,14 @@
+route:
+  receiver: local-evidence
+  group_by: [alertname]
+  group_wait: 3s
+  group_interval: 5s
+  repeat_interval: 1h
+
+receivers:
+  - name: local-evidence
+    webhook_configs:
+      - url: http://alert-sink:8088/alerts
+        send_resolved: true
+        max_alerts: 20
+        timeout: 5s

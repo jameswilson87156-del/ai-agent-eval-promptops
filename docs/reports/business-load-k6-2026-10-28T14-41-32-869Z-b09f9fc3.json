@@ -1,0 +1,707 @@
+{
+  "root_group": {
+    "checks": [],
+    "name": "",
+    "path": "",
+    "id": "d41d8cd98f00b204e9800998ecf8427e",
+    "groups": [
+        {
+          "name": "create, pay, read, refund, read back",
+          "path": "::create, pay, read, refund, read back",
+          "id": "77fc01e78ec3d1dbcbb122303931a624",
+          "groups": [],
+          "checks": [
+              {
+                "name": "order created",
+                "path": "::create, pay, read, refund, read back::order created",
+                "id": "9b7f7267363bf99039370bae839a60e5",
+                "passes": 8103,
+                "fails": 0
+              },
+              {
+                "name": "create returned pending order",
+                "path": "::create, pay, read, refund, read back::create returned pending order",
+                "id": "3f99322003b17402b9c075e88458c059",
+                "passes": 8103,
+                "fails": 0
+              },
+              {
+                "fails": 0,
+                "name": "payment accepted",
+                "path": "::create, pay, read, refund, read back::payment accepted",
+                "id": "000b32f5b08a0e524d096059a4505f6f",
+                "passes": 8103
+              },
+              {
+                "path": "::create, pay, read, refund, read back::payment response is paid",
+                "id": "39e2c376ff8685f7bddda661773f8b5c",
+                "passes": 8103,
+                "fails": 0,
+                "name": "payment response is paid"
+              },
+              {
+                "fails": 0,
+                "name": "paid order can be retrieved",
+                "path": "::create, pay, read, refund, read back::paid order can be retrieved",
+                "id": "e414659ded1a912a270d7ac0ac0fac52",
+                "passes": 8103
+              },
+              {
+                "name": "retrieved status is paid",
+                "path": "::create, pay, read, refund, read back::retrieved status is paid",
+                "id": "dcbe6ecda9f19d5cb24840d6ae80f818",
+                "passes": 8103,
+                "fails": 0
+              },
+              {
+                "id": "549095069a0998b6abe54a6be6b9a958",
+                "passes": 8103,
+                "fails": 0,
+                "name": "refund accepted",
+                "path": "::create, pay, read, refund, read back::refund accepted"
+              },
+              {
+                "name": "refund response is complete",
+                "path": "::create, pay, read, refund, read back::refund response is complete",
+                "id": "29070294c0d27c36345a609f84902558",
+                "passes": 8103,
+                "fails": 0
+              },
+              {
+                "name": "refunded order can be retrieved",
+                "path": "::create, pay, read, refund, read back::refunded order can be retrieved",
+                "id": "96d8779276b8ee216338504d4baadd55",
+                "passes": 8103,
+                "fails": 0
+              },
+              {
+                "id": "88fdb1d159db754c5bb2b04e7af4c095",
+                "passes": 8103,
+                "fails": 0,
+                "name": "retrieved status is refunded",
+                "path": "::create, pay, read, refund, read back::retrieved status is refunded"
+              }
+            ]
+        }
+      ]
+  },
+  "options": {
+    "summaryTrendStats": [
+      "avg",
+      "min",
+      "med",
+      "max",
+      "p(90)",
+      "p(95)",
+      "p(99)"
+    ],
+    "summaryTimeUnit": "",
+    "noColor": false
+  },
+  "state": {
+    "isStdOutTTY": false,
+    "isStdErrTTY": false,
+    "testRunDurationMs": 269803.033798
+  },
+  "metrics": {
+    "http_req_duration{expected_response:true}": {
+      "contains": "time",
+      "values": {
+        "p(99)": 2.8327514000000007,
+        "avg": 0.547544898457363,
+        "min": 0.094391,
+        "med": 0.40939,
+        "max": 50.018156,
+        "p(90)": 0.8692953999999997,
+        "p(95)": 1.3611295999999977
+      },
+      "type": "trend"
+    },
+    "dropped_iterations{scenario:stress_rate}": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 0,
+        "rate": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      }
+    },
+    "checks": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 81030,
+        "fails": 0
+      },
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      }
+    },
+    "business_workflow_success": {
+      "values": {
+        "rate": 1,
+        "passes": 8103,
+        "fails": 0
+      },
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      },
+      "type": "rate",
+      "contains": "default"
+    },
+    "http_req_failed{scenario:low_rate}": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0,
+        "passes": 0,
+        "fails": 1505
+      },
+      "thresholds": {
+        "rate==0": {
+          "ok": true
+        }
+      }
+    },
+    "http_reqs": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 40515,
+        "rate": 150.1651016657335
+      }
+    },
+    "http_req_tls_handshaking": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(95)": 0,
+        "p(99)": 0,
+        "avg": 0,
+        "min": 0,
+        "med": 0,
+        "max": 0,
+        "p(90)": 0
+      }
+    },
+    "http_req_connecting": {
+      "values": {
+        "avg": 0.002184608885597926,
+        "min": 0,
+        "med": 0,
+        "max": 8.580128,
+        "p(90)": 0,
+        "p(95)": 0,
+        "p(99)": 0.09345215999999999
+      },
+      "type": "trend",
+      "contains": "time"
+    },
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 50.018156,
+        "p(90)": 0.8692953999999997,
+        "p(95)": 1.3611295999999977,
+        "p(99)": 2.8327514000000007,
+        "avg": 0.547544898457363,
+        "min": 0.094391,
+        "med": 0.40939
+      }
+    },
+    "http_req_waiting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 0,
+        "med": 0.357535,
+        "max": 49.917965,
+        "p(90)": 0.7712492,
+        "p(95)": 1.2336057999999996,
+        "p(99)": 2.66838584,
+        "avg": 0.48573224726644537
+      }
+    },
+    "iterations{scenario:stress_rate}": {
+      "thresholds": {
+        "count>=6000": {
+          "ok": true
+        }
+      },
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 6001,
+        "rate": 22.242151674591305
+      }
+    },
+    "group_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(99)": 8.744161379999985,
+        "avg": 3.1867977890904484,
+        "min": 1.719798,
+        "med": 2.723932,
+        "max": 54.615181,
+        "p(90)": 4.7581088,
+        "p(95)": 5.912638399999998
+      }
+    },
+    "data_sent": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 14162324,
+        "rate": 52491.34452136388
+      }
+    },
+    "http_req_failed{scenario:medium_rate}": {
+      "thresholds": {
+        "rate==0": {
+          "ok": true
+        }
+      },
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0,
+        "passes": 0,
+        "fails": 3005
+      }
+    },
+    "checks{scenario:low_rate}": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "passes": 3010,
+        "fails": 0,
+        "rate": 1
+      },
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      }
+    },
+    "dropped_iterations{scenario:high_rate}": {
+      "values": {
+        "count": 0,
+        "rate": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "business_workflow_success{scenario:high_rate}": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 1200,
+        "fails": 0
+      },
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      }
+    },
+    "iterations": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 8103,
+        "rate": 30.0330203331467
+      }
+    },
+    "http_req_failed{scenario:stress_rate}": {
+      "values": {
+        "rate": 0,
+        "passes": 0,
+        "fails": 30005
+      },
+      "thresholds": {
+        "rate==0": {
+          "ok": true
+        }
+      },
+      "type": "rate",
+      "contains": "default"
+    },
+    "vus_max": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "min": 120,
+        "max": 120,
+        "value": 120
+      }
+    },
+    "checks{scenario:medium_rate}": {
+      "values": {
+        "rate": 1,
+        "passes": 6010,
+        "fails": 0
+      },
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      },
+      "type": "rate",
+      "contains": "default"
+    },
+    "business_workflow_failures{scenario:low_rate}": {
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      },
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "rate": 0,
+        "count": 0
+      }
+    },
+    "http_req_receiving": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "max": 12.174215,
+        "p(90)": 0.0679264,
+        "p(95)": 0.0817953,
+        "p(99)": 0.14540448000000014,
+        "avg": 0.05049002406516072,
+        "min": 0.008851,
+        "med": 0.039862
+      }
+    },
+    "business_workflow_success{scenario:medium_rate}": {
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      },
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "passes": 601,
+        "fails": 0,
+        "rate": 1
+      }
+    },
+    "data_received": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 29362807,
+        "rate": 108830.52939272643
+      }
+    },
+    "business_workflow_failures{scenario:medium_rate}": {
+      "values": {
+        "count": 0,
+        "rate": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "dropped_iterations{scenario:low_rate}": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "rate": 0,
+        "count": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      }
+    },
+    "business_workflow_failures{scenario:high_rate}": {
+      "values": {
+        "count": 0,
+        "rate": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "http_req_sending": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(99)": 0.05118448000000001,
+        "avg": 0.01132262712575583,
+        "min": 0.002375,
+        "med": 0.006108,
+        "max": 5.700541,
+        "p(90)": 0.02152799999999999,
+        "p(95)": 0.027654399999999964
+      }
+    },
+    "business_workflow_failures": {
+      "values": {
+        "count": 0,
+        "rate": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "iterations{scenario:medium_rate}": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "rate": 2.2275509342491873,
+        "count": 601
+      },
+      "thresholds": {
+        "count>=600": {
+          "ok": true
+        }
+      }
+    },
+    "business_workflow_success{scenario:low_rate}": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 301,
+        "fails": 0
+      },
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_blocked": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0.005479841564852521,
+        "min": 0.000716,
+        "med": 0.001577,
+        "max": 8.659082,
+        "p(90)": 0.003862,
+        "p(95)": 0.005047,
+        "p(99)": 0.1417220000000001
+      }
+    },
+    "iteration_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "med": 2.766553,
+        "max": 54.658036,
+        "p(90)": 4.8360478,
+        "p(95)": 6.022011099999997,
+        "p(99)": 8.833495539999992,
+        "avg": 3.232584134271254,
+        "min": 1.743327
+      }
+    },
+    "vus": {
+      "contains": "default",
+      "values": {
+        "min": 0,
+        "max": 1,
+        "value": 0
+      },
+      "type": "gauge"
+    },
+    "http_req_failed": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "fails": 40515,
+        "rate": 0,
+        "passes": 0
+      },
+      "thresholds": {
+        "rate==0": {
+          "ok": true
+        }
+      }
+    },
+    "checks{scenario:high_rate}": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 12000,
+        "fails": 0
+      },
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      }
+    },
+    "dropped_iterations": {
+      "contains": "default",
+      "values": {
+        "count": 0,
+        "rate": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      },
+      "type": "counter"
+    },
+    "iterations{scenario:low_rate}": {
+      "thresholds": {
+        "count>=300": {
+          "ok": true
+        }
+      },
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 301,
+        "rate": 1.1156286708968477
+      }
+    },
+    "business_workflow_failures{scenario:stress_rate}": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 0,
+        "rate": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      }
+    },
+    "iterations{scenario:high_rate}": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "rate": 4.447689053409359,
+        "count": 1200
+      },
+      "thresholds": {
+        "count>=1200": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_failed{scenario:high_rate}": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0,
+        "passes": 0,
+        "fails": 6000
+      },
+      "thresholds": {
+        "rate==0": {
+          "ok": true
+        }
+      }
+    },
+    "business_workflow_success{scenario:stress_rate}": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 6001,
+        "fails": 0
+      },
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      }
+    },
+    "dropped_iterations{scenario:medium_rate}": {
+      "values": {
+        "rate": 0,
+        "count": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      },
+      "type": "counter",
+      "contains": "default"
+    },
+    "checks{scenario:stress_rate}": {
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      },
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 60010,
+        "fails": 0
+      }
+    }
+  },
+  "project_metadata": {
+    "scenario_plans": {
+      "low_rate": {
+        "target_workflows_per_second": 5,
+        "duration_seconds": 60,
+        "minimum_iterations": 300
+      },
+      "medium_rate": {
+        "target_workflows_per_second": 10,
+        "duration_seconds": 60,
+        "minimum_iterations": 600
+      },
+      "high_rate": {
+        "target_workflows_per_second": 20,
+        "duration_seconds": 60,
+        "minimum_iterations": 1200
+      },
+      "stress_rate": {
+        "target_workflows_per_second": 100,
+        "duration_seconds": 60,
+        "minimum_iterations": 6000
+      }
+    },
+    "run_id": "k6-2026-10-28T14-41-32-869Z-b09f9fc3",
+    "run_mode": "local-synthetic-load",
+    "target": "PromptOps isolated synthetic order/refund API"
+  }
+}

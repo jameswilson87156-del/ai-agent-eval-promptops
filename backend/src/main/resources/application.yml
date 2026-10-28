@@ -23,12 +23,33 @@ mybatis-plus:
 promptops:
   demo-data:
     enabled: ${PROMPTOPS_DEMO_DATA:true}
+  provider:
+    base-url: ${PROMPTOPS_PROVIDER_BASE_URL:https://api.openai.com/v1}
+    model-name: ${PROMPTOPS_PROVIDER_MODEL:}
+    api-key: ${PROMPTOPS_PROVIDER_API_KEY:${OPENAI_API_KEY:}}
+    config-version: ${PROMPTOPS_PROVIDER_CONFIG_VERSION:provider-config-v1}
+    timeout-seconds: ${PROMPTOPS_PROVIDER_TIMEOUT_SECONDS:30}
+    max-retries: ${PROMPTOPS_PROVIDER_MAX_RETRIES:2}
+    max-tool-rounds: ${PROMPTOPS_PROVIDER_MAX_TOOL_ROUNDS:2}
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include:
+          - health
+          - info
+  endpoint:
+    prometheus:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
 
 springdoc:
   api-docs:

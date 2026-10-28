@@ -1,65 +1,69 @@
-﻿# 面试讲解指南
+# PromptOps Studio 面试讲解指南
 
 ## 一句话定位
 
-这是一个把 Prompt 迭代过程工程化的本地实验室：同一评测集驱动版本评测，Case 结果由规则解释，Trace 支持追溯，人工 Review 决定下一步，而不是把模型输出直接当结论。
+用固定合成数据驱动的本地 Agent 评测控制台：可重复执行 Mock Harness，也提供可选 OpenAI-compatible Provider；保存逐条断言、失败原因、Trace 和 JSON 快照。本轮实际通过的是 Mock 与本地 Stub 验收，没有真实模型评测结果。
 
-## 重点问题
+## 重点问题与回答
 
-### 这个项目有没有真实 LLM？
+### 这是一个真实 AI Agent 产品吗？
 
-没有。当前阶段不调用任何真实模型 Provider，输出由 `MockOutputGenerator` 根据 Prompt 版本、Case 和本地规则确定性生成，用于验证评测链路、落库模型和页面交互。
+它是一个 Agent 行为评测 Harness 与本地控制台，不是具备通用规划、长期记忆和外部业务工具的生产 Agent。Mock Agent 用确定性规则验证工具选择、安全边界和任务完成；OpenAI-compatible Provider 已实现，但它仍将工具请求交给本地 Stub。
 
-### 这个项目有没有真实 Agent？
+### 它有没有真实模型运行数据？
 
-没有。项目里没有任务规划、工具调用、记忆、循环执行或自主决策的 Agent Runtime。它更准确的定位是 PromptOps 本地实验台和规则评测工作台。
+没有。本轮浏览器验收在 Provider 状态未配置时运行；Provider API 测试使用 loopback HTTP Stub，没有请求外部服务。报告中的通过率只描述本地确定性 Mock。
 
-### 为什么还叫 PromptOps？
+### 如何定义测试预期？
 
-因为核心对象围绕 Prompt 版本、评测集、Eval Run、Case Result、Trace、规则评分和迭代建议组织，展示的是 Prompt 迭代与评测流程的工程化管理，而不是宣称已经接入真实模型或 Agent。
+测试集 1.0.2 有 26 条原创合成场景，每条含输入、预期行为和可执行断言。类别包括正常任务、输入边界、工具路由/参数、工具错误、安全和完成/Trace。安全用例要求拒绝越权；当模型正确拒绝，断言应通过。
 
-### 为什么第一阶段使用规则评分？
+### 如何区分执行器故障和 Agent 行为失败？
 
-规则评分快、稳定、可复现，也容易定位失败原因，适合先验证数据模型和闭环。它无法覆盖语义质量，因此后续可以增加 LLM-as-Judge，但不应删除规则基线。
+execution_status 描述测试执行链路是否成功得到可检查结果；case_status 描述 Agent 是否满足预期。agent-014 的 Mock Agent 成功执行并返回了工具调用，但调用了 web_search 而不是 weather_lookup，因此 execution_status=success 且 case_status=failed。Provider 请求失败会单独记录，不把它当作 Agent 行为失败。
 
-### 规则评分和 AI 评分有什么区别？
+### 如何发现不可重复或静态结果？
 
-规则评分按必含词、禁用词、风险提示和输出格式等确定性条件给分，可解释、可复现，但不理解深层语义。AI 评分通常依赖模型判断语义质量、完整性或风格，覆盖面更广，但成本、稳定性、可解释性和一致性都需要额外治理。
+运行接口每次生成新的 Run ID，按固定输入再次运行；对比相同 case 的 actual_output 与 case_status。数据库历史、详情接口、报告接口和浏览器下载可相互核对。H2 服务重启后继续读取相同报告快照。
 
-### MockOutputGenerator 的作用是什么？
+### Trace 为什么有用？
 
-它用确定性 Mock 输出替代真实模型调用，让 Eval Run、Case Result、RuleEvaluator、Generation Trace 和前端展示可以在本地闭环验证。它的模拟耗时来自本地 hash 计算，不是真实模型 latency。
+Trace 记录可观察步骤、顺序、工具名、参数、结果、耗时和错误；可定位从输入、路由到断言失败的位置。Trace 不是模型内部推理，也不作为 Chain-of-Thought 展示。
 
-### 如何保证版本对比公平？
+### Provider 怎么工作？
 
-比较相邻 Prompt 版本在同一 Dataset 上的最近 Run，观察通过率、模拟耗时、失败数与归因。更完整的生产实现还需要锁定数据集版本、模型参数和随机种子。
+AgentProvider 提供 Mock 和 OpenAI-compatible 实现。OpenAI-compatible Provider 使用服务端环境变量，具有超时、有限重试、对 429/5xx/非法 JSON/空响应/结构错误分类和脱敏；真实 Provider 错误与断言失败分离。测试使用本地 Stub，不需要 Key，也不产生外部调用。
 
-### Eval Run / Case Result / Trace 怎么落库？
+### 为什么当前比较不叫 Prompt V1/V2？
 
-`PromptOpsService` 执行某个 Prompt Version 与 Dataset 的组合后写入一条 `eval_run` 聚合记录；每个 Case 的状态、规则分、Mock 输出、失败原因和模拟耗时写入 `eval_case_result`；输入/输出摘要、失败原因和关联键写入 `generation_trace`，用于按 Run、Case、Prompt Version 追溯。
+界面上 Prompt 与 Agent 版本值目前是标签元数据。比较 API 基于实际保存的两次报告、数据集与运行时配置指纹区分比较语义；改变标签而未改变实际运行配置时，UI 明确显示 metadata-only comparison。要做真正版本比较，需要把标签绑定到不可变 Prompt/Agent 配置快照，再执行同一数据集。
 
-### MySQL 和 H2 demo profile 怎么解释？
+### 通过率有什么限制？
 
-默认配置面向 MySQL，用于展示真实持久化结构；`demo` 和 `test` 使用内存 H2，方便零配置演示、截图和测试。两种模式复用同一套服务代码，差异主要是数据源和种子数据生命周期。
+本轮两次完整浏览器 Mock 运行都保留 agent-014 和 agent-015 两个失败：各 24/26 行为通过、2 失败、0 执行错误、0 跳过，门禁为 failed。该比例只是一轮固定 Mock 执行的描述统计，不能代表真实模型或外部任务成功率。
 
-### Trace 与普通日志有什么区别？
+### 为什么使用 H2 快照？
 
-Trace 以 Run、Case 和 Prompt Version 为关联键，保存输入/输出摘要、状态、模拟耗时和失败原因，用于解释一个评测结果；普通系统日志主要服务运行诊断，两者的检索维度和保留策略不同。
+本地演示无需安装独立数据库，同时文件可跨本地进程重启保存运行快照。生产多人使用还需迁移、备份、并发、权限和保留策略；当前版本没有这些运维能力。
 
-### 为什么 Review 只做本地状态？
+### CI 验收边界是什么？
 
-本轮重点是展示评测工作流，不虚构审批系统。后端 `EvaluationPolicy` 只负责判断哪些 Case 应进入队列：规则失败，或风险等级为 high/critical。通过/退回结论保存在当前页面并驱动本地计数与筛选；真实 Review 仍需要用户身份、权限、审批记录、意见、状态机和审计日志。
+仓库有 push / pull_request workflow，涵盖 Java 17 Maven、Node 生产构建、npm audit、pytest 和 Playwright。当前只在本机运行各项检查并本地解析 YAML；分支未推送，所以没有 GitHub 远端 Actions 结果。
 
-### 真实 LLM 接入要补什么？
+### 如何证明监控告警链路不是静态配置？
 
-Provider 抽象、请求幂等、超时重试、并发与速率限制、Token/成本统计、敏感信息脱敏、原始响应保留策略、异步队列、失败重放和供应商降级。
+订单/退款仿真 API 在隔离 Docker 环境运行，Actuator/Micrometer 暴露低基数指标给 Prometheus。演练时仅停止该项目自己的 backend 容器，等待 `PromptOpsBackendUnavailable` 触发，再启动原容器，检查 Alertmanager webhook sink 收到 firing 和 resolved，并核对业务 H2 记录仍可读取。这个证据说明本地规则和通知链路可用；不代表接入了真实公司的生产指标、值班系统或告警策略。
 
-## 可继续追问的技术取舍
+### 业务压测的结果可以代表线上容量吗？
 
-- 为什么 Run 与 Case Result 分表，而不是把结果直接写回 Case。
-- 为什么 Mock 输出仍然落库并生成 Trace。
-- 规则加权分数的优点、失真场景和校准方法。
-- H2 Demo 与 MySQL 默认模式如何共享业务代码。
-- 为什么 `variables_json` 保留字段名，但内部已经改为标准 JSON 数组存储。
-- 为什么 JSON 格式规则使用真实解析，而不是首尾括号判断。
-- 截图脚本为何使用独立端口，以及如何用交互、响应式和端口释放断言避免“只生成了图片”的假验收。
+不可以。k6 对本地 H2 订单/退款模拟 API 以 5、10、20、100 个完整工作流/秒的目标到达率分阶段运行。最新复跑实际完成 8,102 个工作流、40,510 个 HTTP 请求，81,020 项检查通过，HTTP 错误、业务失败和 dropped iterations 均为 0。`vus` 活跃峰值是 2；`vus_max=120` 是最大可分配 VU 资源，不是并发用户数。报告的 HTTP RPS 是跨阶段总体值，没有独立给出 100/s 压力阶段 RPS。30 分钟 Soak 也只在本地隔离环境执行；这些数据证明本地脚本和仿真 API 可重复，不能证明企业生产容量或生产 SLO。
+
+## 深挖方向
+
+- 如何拆分测试定义、运行报告与 Trace？
+- 为什么断言工具顺序比只检查工具是否存在更有用？
+- Provider 的超时/重试如何防止将请求错误算成 Agent 行为错误？
+- 如何安全缓存敏感输入、模型原始响应和日志？
+- 怎样把配置指纹与真实不可变 Prompt/Agent 版本绑定？
+- 当用例扩到数千条时，如何加入异步队列、取消、并发和预算门禁？
+- Mock 能覆盖哪些危险场景，哪些必须用隔离环境的真实 Agent 集成测试？

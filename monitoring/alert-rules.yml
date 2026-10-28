@@ -1,0 +1,30 @@
+groups:
+  - name: promptops-local-quality
+    interval: 5s
+    rules:
+      - alert: PromptOpsBackendUnavailable
+        expr: up{job="promptops-backend"} == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: PromptOps backend is unavailable in the local quality stack.
+          description: Prometheus has failed to scrape the isolated local backend for 30 seconds.
+
+      - alert: PromptOpsBackendHigh5xxRate
+        expr: sum(rate(http_server_requests_seconds_count{job="promptops-backend",status=~"5.."}[2m])) / clamp_min(sum(rate(http_server_requests_seconds_count{job="promptops-backend"}[2m])), 0.001) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: Local PromptOps backend 5xx ratio is above the diagnostic threshold.
+          description: More than 5 percent of observed HTTP requests returned 5xx over the last 2 minutes.
+
+      - alert: PromptOpsAgentProviderErrors
+        expr: increase(promptops_agent_eval_provider_errors_total[5m]) > 0
+        for: 0s
+        labels:
+          severity: warning
+        annotations:
+          summary: Agent evaluation recorded provider errors.
+          description: A provider error was recorded by the deterministic evaluation service.

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, shallowRef } from 'vue'
+import LiveEvaluation from './components/LiveEvaluation.vue'
 import EvalDashboard from './components/EvalDashboard.vue'
 import BatchEvaluation from './components/BatchEvaluation.vue'
 import TraceDetail from './components/TraceDetail.vue'
@@ -13,6 +14,7 @@ import type { PromptProfile } from './types'
 type ViewKey = 'overview' | 'batch' | 'compare' | 'trace' | 'prompt' | 'failure' | 'dataset' | 'boundary' | 'metrics' | 'run' | 'versions' | 'review'
 
 const viewKeys: ViewKey[] = ['overview', 'batch', 'compare', 'trace', 'prompt', 'failure', 'dataset', 'boundary', 'metrics', 'run', 'versions', 'review']
+const isLegacy = new URLSearchParams(window.location.search).get('view') === 'legacy'
 const initialView = new URLSearchParams(window.location.search).get('view') as ViewKey | null
 const activeView = shallowRef<ViewKey>(initialView && viewKeys.includes(initialView) ? initialView : 'overview')
 const runningEval = ref(false)
@@ -46,12 +48,7 @@ function setView(view: ViewKey) {
   window.history.replaceState({}, '', url)
 }
 
-function runMockBatch() {
-  runningEval.value = true
-  window.setTimeout(() => {
-    runningEval.value = false
-  }, 400)
-}
+function runMockBatch() { window.alert("原展示页不支持运行，请在评测工作台执行。") }
 
 function selectPrompt(prompt: PromptProfile) {
   activePromptId.value = prompt.id
@@ -59,7 +56,8 @@ function selectPrompt(prompt: PromptProfile) {
 </script>
 
 <template>
-  <div class="app-shell dashboard-mode" data-ready="true">
+  <LiveEvaluation v-if="!isLegacy" />
+  <div v-else class="app-shell dashboard-mode" data-ready="true">
     <EvalDashboard
       v-if="activeView === 'overview'"
       :active-prompt-id="activePromptId"

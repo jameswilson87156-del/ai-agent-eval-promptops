@@ -34,7 +34,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:5174", "http://127.0.0.1:5174", "http://localhost:5173", "http://127.0.0.1:5173"})
+@CrossOrigin(origins = {"http://localhost:5174", "http://127.0.0.1:5174", "http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5179"})
 @Tag(name = "PromptOps", description = "Prompt templates, versions, eval runs, case results, and generation traces")
 public class PromptOpsController {
 
@@ -92,6 +92,12 @@ public class PromptOpsController {
         EvalRunEntity run = promptOpsService.runEval(request.promptVersionId(), request.datasetId());
         return promptOpsService.toEvalRunDto(run);
     }
+
+    @GetMapping("/eval-runs")
+    public List<EvalRunDto> runs() { return promptOpsService.listRuns(); }
+
+    @GetMapping("/eval-runs/{id}")
+    public EvalRunDto run(@PathVariable Long id) { return promptOpsService.getRun(id); }
 
     @GetMapping("/prompts/{promptId}/eval-runs/current")
     @Operation(summary = "Get current eval run")

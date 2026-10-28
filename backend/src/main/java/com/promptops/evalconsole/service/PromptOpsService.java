@@ -267,7 +267,7 @@ public class PromptOpsService {
         LocalDateTime now = LocalDateTime.now();
 
         EvalRunEntity run = new EvalRunEntity();
-        run.setRunKey("run-" + promptVersionId + "-" + datasetId + "-" + System.currentTimeMillis());
+        run.setRunKey("run-" + java.util.UUID.randomUUID());
         run.setPromptVersionId(promptVersionId);
         run.setDatasetId(datasetId);
         run.setStatus("running");
@@ -335,6 +335,18 @@ public class PromptOpsService {
                 run.getAverageLatencyMs(),
                 caseDtos
         );
+    }
+
+    public EvalRunDto getRun(Long id) {
+        EvalRunEntity run = evalRunMapper.selectById(id);
+        if (run == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Eval run not found: " + id);
+        return toEvalRunDto(run);
+    }
+
+    public List<EvalRunDto> listRuns() {
+        return evalRunMapper.selectList(new LambdaQueryWrapper<EvalRunEntity>()
+                .orderByDesc(EvalRunEntity::getId).last("LIMIT 100"))
+                .stream().map(this::toEvalRunDto).toList();
     }
 
     private void insertCaseResult(EvalRunEntity run, EvalCaseEntity evalCase, MockGeneration generation, RuleEvaluation evaluation) {

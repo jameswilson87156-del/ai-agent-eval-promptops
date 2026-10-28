@@ -134,3 +134,40 @@ CREATE TABLE IF NOT EXISTS generation_trace (
     CONSTRAINT fk_generation_trace_prompt_version
         FOREIGN KEY (prompt_version_id) REFERENCES prompt_version(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS promptops_business_order (
+    order_id VARCHAR(64) PRIMARY KEY,
+    create_idempotency_key VARCHAR(128) NOT NULL UNIQUE,
+    cancel_idempotency_key VARCHAR(128) UNIQUE,
+    customer_id VARCHAR(80) NOT NULL,
+    item_name VARCHAR(160) NOT NULL,
+    currency VARCHAR(3) NOT NULL,
+    total_amount DECIMAL(12,2) NOT NULL,
+    refunded_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
+    order_status VARCHAR(24) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS promptops_business_payment (
+    payment_id VARCHAR(36) PRIMARY KEY,
+    order_id VARCHAR(64) NOT NULL UNIQUE,
+    idempotency_key VARCHAR(128) NOT NULL UNIQUE,
+    actor_id VARCHAR(80) NOT NULL,
+    amount DECIMAL(12,2) NOT NULL,
+    payment_status VARCHAR(24) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_business_payment_order FOREIGN KEY (order_id) REFERENCES promptops_business_order(order_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS promptops_business_refund (
+    refund_id VARCHAR(36) PRIMARY KEY,
+    order_id VARCHAR(64) NOT NULL,
+    idempotency_key VARCHAR(128) NOT NULL UNIQUE,
+    actor_id VARCHAR(80) NOT NULL,
+    amount DECIMAL(12,2) NOT NULL,
+    reason VARCHAR(256) NOT NULL,
+    refund_status VARCHAR(24) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_business_refund_order FOREIGN KEY (order_id) REFERENCES promptops_business_order(order_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

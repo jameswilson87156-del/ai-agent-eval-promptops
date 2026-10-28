@@ -1,0 +1,89 @@
+name: quality
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Backend tests
+        run: mvn -pl backend test
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Frontend production build
+        working-directory: frontend
+        run: npm run build
+      - name: Dependency audit
+        working-directory: frontend
+        run: npm audit --audit-level=high
+      - name: Install pytest
+        run: python -m pip install pytest
+      - name: Validate evaluation dataset
+        run: python -m pytest backend/tests/test_agent_eval_api.py -q -k dataset
+      - name: Start local evaluation API
+        shell: bash
+        run: |
+          SPRING_PROFILES_ACTIVE=demo mvn -pl backend spring-boot:run > backend-startup.log 2>&1 &
+          echo $! > backend.pid
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://localhost:18080/api/agent-eval/dataset > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat backend-startup.log
+          exit 1
+      - name: Agent evaluation API acceptance
+        env:
+          PROMPTOPS_API_URL: http://localhost:18080
+        run: python -m pytest backend/tests -q --junitxml=agent-eval-junit.xml
+      - name: Local Mock API stability sample
+        run: python backend/tools/check_agent_eval_stability.py --base-url http://localhost:18080 --iterations 8 --concurrency 3 --warmup-runs 1 --output "${{ runner.temp }}/agent-eval-evidence/agent-eval-stability.json"
+      - name: Install Chromium for browser acceptance
+        working-directory: frontend
+        run: npx playwright install --with-deps chromium
+      - name: Start local frontend
+        working-directory: frontend
+        shell: bash
+        run: |
+          VITE_API_PROXY_TARGET=http://localhost:18080 npm run dev -- --port 5179 --strictPort > frontend-startup.log 2>&1 &
+          echo $! > frontend.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://localhost:5179/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat frontend-startup.log
+          exit 1
+      - name: Agent evaluation browser acceptance
+        env:
+          AGENT_EVAL_OUTPUT_DIR: ${{ runner.temp }}/agent-eval-evidence
+        working-directory: frontend
+        run: npm run check:agent-eval:live
+      - name: Stop local evaluation API
+        if: always()
+        shell: bash
+        run: |
+          if [ -f frontend/frontend.pid ]; then kill "$(cat frontend/frontend.pid)" || true; fi
+          if [ -f backend.pid ]; then kill "$(cat backend.pid)" || true; fi
+      - name: Upload evaluation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-eval-evidence
+          path: ${{ runner.temp }}/agent-eval-evidence/
+          if-no-files-found: ignore

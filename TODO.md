@@ -205,3 +205,54 @@
 ### P2-2 README / GitHub 展示强化
 
 - 状态：已完成
+
+## 第二阶段：真实执行链路与前端升级
+
+- 状态：已完成（Mock Agent 评测范围）
+- 结果：26 条原创合成用例；前端真实 HTTP 触发同步执行；H2 文件库保存运行/逐条结果/Trace/JSON 报告；历史和报告跨服务重启可读；浏览器可查看失败并导出报告；支持同版本数据集运行比较。
+- 实际演示运行：`82b67bd7-0647-4dc5-9272-80730765037a`，24/26 行为通过、2 失败、0 错误、0 跳过。失败 `agent-014` 和 `agent-015` 是当前 Mock Agent 的真实行为结果，保留用于后续修复。
+- 验收：17 Maven 测试、5 pytest、Vue 类型检查/生产构建、npm audit 与 Playwright 全流程均通过；跨重启报告一致性证据和截图路径见 `docs/phase-2-acceptance.md`。
+- CI：`.github/workflows/quality.yml` 已配置；未推送分支，因此远程 GitHub Actions 尚未运行。
+
+### 后续项
+
+- 接入可选真实 Agent / Model Provider：密钥仅通过环境变量，本地明确启用，不在默认 CI 触发付费调用。
+- 建立 Prompt / Agent 版本适配后，再把当前同数据集 run-to-run 对比扩展为真正的 V1/V2 回归。
+- 根据真实执行需求评估异步任务、鉴权/多租户、生产数据库、脱敏、审计与成本统计。
+- 先定位并修复 `agent-014` 工具路由和 `agent-015` 重复调用问题，再保持固定断言进行回归。
+
+## 2026-10-28 Phase 3 发布候选验收（本轮已完成）
+
+- 状态：本轮范围已完成，工作区变更保留，未提交、未推送。
+- 结果：Provider 抽象与本地 Stub 错误测试、数据集 1.0.2、运行快照/比较语义、前端 Agent Eval 控制台、报告和验收文档均已核验。
+- 实际验收：Maven 29 项、pytest 7 项、前端类型检查/生产构建、npm audit 0 漏洞、Playwright 两次完整 26 条 Mock 运行、H2 跨进程重启一致性。
+- 证据目录：outputs/agent-eval-release-candidate-20261028/；详细记录见 docs/phase-3-acceptance.md。
+- 下一阶段候选项（不属于本轮）：真实模型样本与预算策略；不可变 Prompt/Agent 配置版本；异步队列和并发；鉴权/审计/生产部署。
+- 边界：本轮未调用真实模型；Mock 通过率不是模型指标；远端 GitHub Actions 未运行。
+
+### testdev-production-like-quality-v1 本地业务 API、监控告警、Soak 与负载验收
+
+- 状态：已完成（用户明确要求补齐这些能力，并选择本地订单/退款业务场景）
+- 目标：在现有 Spring Boot/Vue 工程中搭建隔离的本地订单支付/退款业务 API；增加业务集成测试；接入 Micrometer/Prometheus/Alertmanager；实现可配置长时间稳定性运行和可重复负载场景，并保留可核验报告。
+- 验收范围：订单状态机、支付/退款幂等与权限场景有 HTTP 集成测试；Prometheus 可抓取业务/Agent Eval 技术指标；告警规则可校验，至少验证一次告警触发与恢复；Soak 默认 30 分钟且可安全中止；k6 运行渐进并发/到达率业务流程，结果有错误率、延迟分布和证据。
+- 安全边界：业务 API 是本地合成系统，不能声称为外部真实生产业务；演示身份头不是真实认证；压测只针对本项目隔离服务和隔离 H2；监控端口只绑定本机，不配置外部通知或密钥。
+- 不做：访问未经授权的公司系统、真实支付渠道、真实客户数据、生产环境压测或真实模型付费调用。
+- 结果：Maven 36 项通过、Soak 脚本单测 4 项通过；Prometheus/Alertmanager 配置校验通过，本地告警完成 firing/resolved 演练；k6 四档负载退出码 0，8,103 个工作流/40,515 个请求/81,030 项检查全通过，0 HTTP/工作流失败、0 dropped iteration。
+- Soak：首次运行因 Docker Desktop 停止而中断（49/49 轮、294 请求，无最终退出码），单独保留；第二次独立运行状态 `COMPLETED`、运行器退出码 0、耗时 1,799.211 秒，60/60 轮通过、0 失败，300 个业务请求 + 60 次健康检查，共 360 个请求。
+- 验收报告：`outputs/testdev-production-like-20261028/production-like-final-acceptance.md`；该目录包含原始 Soak/k6 JSON、测试日志、告警事件、H2 卷证据、最终链接检查和前序阶段浏览器截图。
+- 安全边界：仅本地隔离合成订单/支付/退款 API 与 H2；无真实生产系统、支付、客户数据、外部告警、真实模型或生产 SLO 验证；未推送、未提交。
+- 结束条件：已满足。本轮命令、退出码、测试计数、告警样本、完整 Soak/负载 JSON 和 H2 数据路径均已写入本轮验收报告；未运行的外部/企业检查明确列为未验证。
+
+## 2026-10-28 通用测试开发岗位证据加固（本轮）
+
+### testdev-k6-scenario-gates-v1 分场景负载门禁与报告
+
+- 状态：已完成
+- 开始 HEAD：`d608cc28a2fae8246ad33712d31199185c538639`；开始分支：`feat/agent-evaluation-platform`。
+- 开始时工作区：有大量前序未提交改动；本轮保留，不做 reset、覆盖或清理。
+- 目标：让四档 k6 负载各自校验计划工作流数、零掉队、零 HTTP/业务失败和全量检查通过，并生成带 Run ID、逐场景结果、阈值状态和边界说明的 JSON/Markdown 报告。
+- 范围：仅修改 k6 负载脚本，新增标准库报告汇总器及单测，并为本轮实际运行生成独立证据；不改业务服务、容量阈值或真实 Provider。
+- 验收：4 个汇总器单测通过；完整 k6 运行退出码 0；逐场景和汇总门禁全部通过；本轮 Python API/dataset/runner 测试 26 通过；Maven 36 通过；前端类型检查与生产构建通过；npm audit 0 漏洞；`git diff --check` 退出码 0。
+- 实际数据：8,103 workflows、40,515 HTTP requests、81,030 checks；四档为 301/601/1,200/6,001 workflows；0 HTTP/业务失败、0 dropped；活跃 VU 峰值 1，`vus_max=120` 仅为资源容量上限。
+- 报告：`docs/reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3.json` 及同前缀 `-summary.json`/`-summary.md`；完整运行证据和 JD 矩阵见 `docs/test-development-acceptance.md`。
+- 边界：所有负载和报告均为本地隔离合成服务数据；合并 p95 是本机观察值，无真实生产系统、生产容量、SLO 或真实模型结论。

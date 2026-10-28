@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "generated_at_utc": "2026-10-28T14:42:24.760090+00:00",
+  "source_file": "business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3.json",
+  "run_id": "k6-2026-10-28T14-41-32-869Z-b09f9fc3",
+  "execution_mode": "local-synthetic-load",
+  "target": "PromptOps isolated synthetic order/refund API",
+  "measurement_boundary": "Local synthetic service only; not production traffic or capacity evidence.",
+  "summary": {
+    "quality_gate": "passed",
+    "workflow_count": 8103,
+    "http_request_count": 40515,
+    "checks_passed": 81030,
+    "checks_failed": 0,
+    "http_failure_rate": 0.0,
+    "workflow_success_rate": 1.0,
+    "business_failures": 0,
+    "dropped_iterations": 0,
+    "active_vus_peak": 1,
+    "maximum_vu_capacity": 120,
+    "combined_http_duration_ms": {
+      "p50": 0.40939,
+      "p95": 1.3611295999999977,
+      "p99": 2.8327514000000007
+    },
+    "combined_workflow_duration_ms": {
+      "p95": 5.912638399999998,
+      "p99": 8.744161379999985
+    },
+    "failed_thresholds": [],
+    "missing_scenario_metrics": []
+  },
+  "scenarios": [
+    {
+      "name": "low_rate",
+      "target_workflows_per_second": 5.0,
+      "duration_seconds": 60,
+      "minimum_iterations": 300,
+      "measured_iterations": 301,
+      "checks_passed": 3010,
+      "checks_failed": 0,
+      "http_failure_rate": 0.0,
+      "workflow_success_rate": 1.0,
+      "business_failures": 0,
+      "dropped_iterations": 0,
+      "threshold_status": "passed",
+      "threshold_failures": []
+    },
+    {
+      "name": "medium_rate",
+      "target_workflows_per_second": 10.0,
+      "duration_seconds": 60,
+      "minimum_iterations": 600,
+      "measured_iterations": 601,
+      "checks_passed": 6010,
+      "checks_failed": 0,
+      "http_failure_rate": 0.0,
+      "workflow_success_rate": 1.0,
+      "business_failures": 0,
+      "dropped_iterations": 0,
+      "threshold_status": "passed",
+      "threshold_failures": []
+    },
+    {
+      "name": "high_rate",
+      "target_workflows_per_second": 20.0,
+      "duration_seconds": 60,
+      "minimum_iterations": 1200,
+      "measured_iterations": 1200,
+      "checks_passed": 12000,
+      "checks_failed": 0,
+      "http_failure_rate": 0.0,
+      "workflow_success_rate": 1.0,
+      "business_failures": 0,
+      "dropped_iterations": 0,
+      "threshold_status": "passed",
+      "threshold_failures": []
+    },
+    {
+      "name": "stress_rate",
+      "target_workflows_per_second": 100.0,
+      "duration_seconds": 60,
+      "minimum_iterations": 6000,
+      "measured_iterations": 6001,
+      "checks_passed": 60010,
+      "checks_failed": 0,
+      "http_failure_rate": 0.0,
+      "workflow_success_rate": 1.0,
+      "business_failures": 0,
+      "dropped_iterations": 0,
+      "threshold_status": "passed",
+      "threshold_failures": []
+    }
+  ]
+}

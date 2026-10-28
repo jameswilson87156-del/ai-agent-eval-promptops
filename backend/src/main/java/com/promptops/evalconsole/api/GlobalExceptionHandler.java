@@ -5,6 +5,7 @@ import com.promptops.evalconsole.api.dto.ConsoleDtos.FieldErrorItem;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,6 +32,11 @@ public class GlobalExceptionHandler {
                 .map(fieldError -> new FieldErrorItem(fieldError.getField(), messageOrDefault(fieldError.getDefaultMessage(), "Invalid value")))
                 .toList();
         return ResponseEntity.badRequest().body(error(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleUnreadableRequestBody(HttpMessageNotReadableException ignored) {
+        return ResponseEntity.badRequest().body(error(HttpStatus.BAD_REQUEST.value(), "Malformed or unreadable JSON request body", List.of()));
     }
 
     @ExceptionHandler(Exception.class)

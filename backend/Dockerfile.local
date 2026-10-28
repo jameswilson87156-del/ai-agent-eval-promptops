@@ -1,0 +1,9 @@
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+RUN mkdir -p /data && chown -R 10001:10001 /app /data
+COPY --chown=10001:10001 target/eval-console-backend-0.0.1-SNAPSHOT.jar /app/app.jar
+USER 10001:10001
+ENV SPRING_PROFILES_ACTIVE=demo SERVER_PORT=18083
+ENV PROMPTOPS_DB_URL="jdbc:h2:file:/data/promptops-quality;MODE=MySQL;DATABASE_TO_LOWER=TRUE"
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=70", "-jar", "/app/app.jar"]
