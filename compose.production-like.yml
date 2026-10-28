@@ -1,0 +1,103 @@
+name: promptops-quality-local-20261028
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.local
+    volumes:
+      - quality-data:/data
+    networks: [isolated]
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v3.13.3
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=2d
+      - --web.enable-lifecycle
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alert-rules.yml:/etc/prometheus/alert-rules.yml:ro
+      - prometheus-data:/prometheus
+    networks: [isolated]
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager:v0.34.1
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager-data:/alertmanager
+    networks: [isolated]
+    restart: unless-stopped
+
+  local-proxy:
+    image: python:3.12-slim
+    command: ["python", "/app/local_proxy.py"]
+    ports:
+      - "127.0.0.1:18083:18083"
+      - "127.0.0.1:9090:9090"
+      - "127.0.0.1:9093:9093"
+    volumes:
+      - ./monitoring/local_proxy.py:/app/local_proxy.py:ro
+    networks: [isolated, host-access]
+    restart: unless-stopped
+
+  alert-sink:
+    image: python:3.12-slim
+    command: ["python", "/app/alert_sink.py"]
+    environment:
+      ALERT_LOG_PATH: /evidence/alert-events.jsonl
+    volumes:
+      - ./monitoring/alert_sink.py:/app/alert_sink.py:ro
+      - ../../outputs/testdev-production-like-20261028:/evidence
+    networks: [isolated]
+    restart: unless-stopped
+
+  soak:
+    image: python:3.12-slim
+    profiles: [soak]
+    entrypoint: ["python", "/tools/run_business_soak.py"]
+    command:
+      - --base-url
+      - http://backend:18083
+      - --allow-compose-service
+      - --duration-minutes
+      - "30"
+      - --interval-seconds
+      - "30"
+    environment:
+      PROMPTOPS_EVIDENCE_DIR: /evidence
+    volumes:
+      - ./backend/tools/run_business_soak.py:/tools/run_business_soak.py:ro
+      - ../../outputs/testdev-production-like-20261028:/evidence
+    networks: [isolated]
+
+  k6:
+    image: grafana/k6:1.8.1
+    profiles: [load]
+    entrypoint: ["k6"]
+    command: ["run", "/scripts/business-order-workflow.js"]
+    environment:
+      BASE_URL: http://backend:18083
+    volumes:
+      - ./performance/k6:/scripts:ro
+      - ../../outputs/testdev-production-like-20261028:/evidence
+    networks: [isolated]
+
+networks:
+  isolated:
+    internal: true
+  host-access: {}
+
+volumes:
+  quality-data:
+    name: promptops-quality-local-20261028-data
+  prometheus-data:
+    name: promptops-quality-local-20261028-prometheus
+  alertmanager-data:
+    name: promptops-quality-local-20261028-alertmanager

@@ -1,0 +1,2782 @@
+{
+  "report_schema_version": "1.0",
+  "test_type": "local_business_api_soak",
+  "target_scope": "local synthetic order/refund API; no production system or payment gateway",
+  "target_access_mode": "isolated_compose_service",
+  "base_url": "http://backend:18083",
+  "configured_duration_minutes": 30.0,
+  "configured_interval_seconds": 30.0,
+  "started_at": "2026-10-28T10:52:06.353022+00:00",
+  "state": "COMPLETED",
+  "iterations": [
+    {
+      "sequence": 1,
+      "workflow_id": "soak-000001-da2e00445119",
+      "started_at": "2026-10-28T10:52:06.378127+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 40.172,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 3.114,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.988,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.294,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.838,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_a4cb784a-0b86-4994-86bc-d4bed7a3ba9a",
+      "finished_at": "2026-10-28T10:52:06.424861+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 20.437,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 2,
+      "workflow_id": "soak-000002-6e07047a88b3",
+      "started_at": "2026-10-28T10:52:36.362932+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.413,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.707,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.922,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.198,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.806,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_f6be651b-00b2-40da-a003-35d78fd36d0e",
+      "finished_at": "2026-10-28T10:52:36.370252+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.964,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 3,
+      "workflow_id": "soak-000003-63c5a26ea2a1",
+      "started_at": "2026-10-28T10:53:06.362658+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.275,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 4.07,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.751,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.544,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.692,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_40634672-242d-44a5-a0c9-e18387fd1cb7",
+      "finished_at": "2026-10-28T10:53:06.372258+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.852,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 4,
+      "workflow_id": "soak-000004-0d7c577684a7",
+      "started_at": "2026-10-28T10:53:36.104036+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.935,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.27,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.897,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.012,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.747,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_45e43eff-a2f1-43ef-b87f-c1518d10f763",
+      "finished_at": "2026-10-28T10:53:36.110200+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.575,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 5,
+      "workflow_id": "soak-000005-d23e699971e5",
+      "started_at": "2026-10-28T10:54:06.110308+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.253,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 0.989,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.919,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 0.938,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.63,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_bc37232d-5fdd-488e-936d-ac15dc63a59f",
+      "finished_at": "2026-10-28T10:54:06.115297+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.785,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 6,
+      "workflow_id": "soak-000006-59a02cbc2e7c",
+      "started_at": "2026-10-28T10:54:36.121548+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.988,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 0.931,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 3.041,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 0.974,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.834,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_f9ce34b9-5429-478b-91ba-a95a812ee96e",
+      "finished_at": "2026-10-28T10:54:36.131555+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 11.798,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 7,
+      "workflow_id": "soak-000007-546f3eebfdc6",
+      "started_at": "2026-10-28T10:55:06.112511+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.234,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 0.987,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.75,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 0.88,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.808,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_cefdb843-7574-4b30-9b1f-bc785fd8688f",
+      "finished_at": "2026-10-28T10:55:06.117406+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.564,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 8,
+      "workflow_id": "soak-000008-e11cdf568d4d",
+      "started_at": "2026-10-28T10:55:36.111890+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.224,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.023,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.781,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.009,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.708,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_d3ba490d-a426-4571-9e08-bbc29774d16c",
+      "finished_at": "2026-10-28T10:55:36.116894+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.501,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 9,
+      "workflow_id": "soak-000009-5baf03c402b8",
+      "started_at": "2026-10-28T10:56:06.111406+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.231,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.251,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.866,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.481,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.739,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_5ef52c1c-09c4-42b3-84b7-04c3d31a7cac",
+      "finished_at": "2026-10-28T10:56:06.118252+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.48,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 10,
+      "workflow_id": "soak-000010-6674a5e2228b",
+      "started_at": "2026-10-28T10:56:36.110218+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.385,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.972,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.739,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.075,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.732,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_02ea1933-fc97-4a6f-8e91-ec6297c51028",
+      "finished_at": "2026-10-28T10:56:36.116374+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.773,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 11,
+      "workflow_id": "soak-000011-ef3a444e8d71",
+      "started_at": "2026-10-28T10:57:06.004851+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.357,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.592,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.727,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 0.938,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 2.504,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_73b7d013-e6a1-47d1-81d3-2d768f464072",
+      "finished_at": "2026-10-28T10:57:06.012215+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 3.169,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 12,
+      "workflow_id": "soak-000012-2e10085867f1",
+      "started_at": "2026-10-28T10:57:36.002796+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.989,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.839,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.722,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 3.858,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.837,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_0658684d-946e-4b3a-b24a-bd9cdfb75a6d",
+      "finished_at": "2026-10-28T10:57:36.014368+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 3.645,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 13,
+      "workflow_id": "soak-000013-45184d4a6ab7",
+      "started_at": "2026-10-28T10:58:05.903825+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.816,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.845,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.659,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 0.9,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.616,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_fcbecdc1-6812-4eac-82d2-c5323f3ef102",
+      "finished_at": "2026-10-28T10:58:05.909891+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.903,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 14,
+      "workflow_id": "soak-000014-31065399648f",
+      "started_at": "2026-10-28T10:58:35.985745+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.894,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.185,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.7,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.491,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.652,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_ec6fe608-d217-4861-93c2-4c40bb9feaa2",
+      "finished_at": "2026-10-28T10:58:35.992923+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 27.419,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 15,
+      "workflow_id": "soak-000015-1d6fa31a377d",
+      "started_at": "2026-10-28T10:59:05.964194+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.749,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.266,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.665,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.96,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.684,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_760babc5-62b7-4e32-8384-1e88dc41eb77",
+      "finished_at": "2026-10-28T10:59:05.972761+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 4.235,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 16,
+      "workflow_id": "soak-000016-cd60525e5253",
+      "started_at": "2026-10-28T10:59:35.830852+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.216,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.413,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.978,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.403,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.792,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_a8b06136-f0ce-429f-8fd4-48d4a0e60cb9",
+      "finished_at": "2026-10-28T10:59:35.838992+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 3.015,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 17,
+      "workflow_id": "soak-000017-b66df9abb394",
+      "started_at": "2026-10-28T11:00:05.840351+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 5.608,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 3.089,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.789,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.468,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 1.03,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_b53f4886-1c4d-465c-bd6b-dd7229c256f4",
+      "finished_at": "2026-10-28T11:00:05.853639+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 3.444,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 18,
+      "workflow_id": "soak-000018-53d89b2d48f1",
+      "started_at": "2026-10-28T11:00:35.839606+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.611,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.613,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 1.117,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 3.089,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 2.725,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_671bbb25-3873-4e64-ac89-0e046ba626bb",
+      "finished_at": "2026-10-28T11:00:35.850031+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.655,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 19,
+      "workflow_id": "soak-000019-cba1191e2505",
+      "started_at": "2026-10-28T11:01:05.623951+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.395,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.258,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.934,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.888,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.756,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_28dd6a1e-484d-47e2-a35d-f5c332679617",
+      "finished_at": "2026-10-28T11:01:05.632443+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.456,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 20,
+      "workflow_id": "soak-000020-50146c0d3650",
+      "started_at": "2026-10-28T11:01:36.144602+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.473,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 2.195,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 1.492,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.326,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.823,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_d0d2cc0a-472a-40cb-b25c-f7b5696e9e71",
+      "finished_at": "2026-10-28T11:01:36.153205+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.535,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 21,
+      "workflow_id": "soak-000021-eb29d086ab3f",
+      "started_at": "2026-10-28T11:02:06.201843+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 4.159,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.124,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.718,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 3.118,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.822,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_40586251-f2f9-4113-aea1-db31a70e1558",
+      "finished_at": "2026-10-28T11:02:06.212049+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.746,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 22,
+      "workflow_id": "soak-000022-9f82ef194169",
+      "started_at": "2026-10-28T11:02:36.128845+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 4.701,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 3.227,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.914,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.294,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.979,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_c29a31f4-e147-4046-b722-ea84886d355f",
+      "finished_at": "2026-10-28T11:02:36.140320+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 3.376,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 23,
+      "workflow_id": "soak-000023-d09f9d221da2",
+      "started_at": "2026-10-28T11:03:06.168781+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 10.015,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 12.528,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 1.025,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.473,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 1.993,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_557692db-e5d9-4a78-b598-4133180a96af",
+      "finished_at": "2026-10-28T11:03:06.196123+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.245,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 24,
+      "workflow_id": "soak-000024-944cf6b52efd",
+      "started_at": "2026-10-28T11:03:36.180635+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.941,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 4.887,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 1.249,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.56,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.944,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_47be29b4-4f0f-4544-a358-e9942788ac74",
+      "finished_at": "2026-10-28T11:03:36.191481+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 3.479,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 25,
+      "workflow_id": "soak-000025-f5b3b460d351",
+      "started_at": "2026-10-28T11:04:06.191606+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.138,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 2.162,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.804,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.743,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.952,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_e6605525-d74a-44a0-a175-93095abece78",
+      "finished_at": "2026-10-28T11:04:06.198661+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.554,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 26,
+      "workflow_id": "soak-000026-ace8b14e8d85",
+      "started_at": "2026-10-28T11:04:36.118589+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 4.12,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 2.084,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.731,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 0.964,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 3.566,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_6b450ea6-7b72-4802-99d0-a10dafc70c92",
+      "finished_at": "2026-10-28T11:04:36.130334+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.518,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 27,
+      "workflow_id": "soak-000027-927fb8fa5ea8",
+      "started_at": "2026-10-28T11:05:06.143334+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.167,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.855,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.768,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.501,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.652,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_f06e73d6-4687-42a2-b546-7ba2e266c370",
+      "finished_at": "2026-10-28T11:05:06.150508+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.419,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 28,
+      "workflow_id": "soak-000028-9e69476f7c01",
+      "started_at": "2026-10-28T11:05:36.150851+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 21.449,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 10.868,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 2.48,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.745,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 1.725,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_b2f31213-36eb-4a80-815b-fe6e5fb57662",
+      "finished_at": "2026-10-28T11:05:36.190464+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.98,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 29,
+      "workflow_id": "soak-000029-ab597bfd76ee",
+      "started_at": "2026-10-28T11:06:06.157717+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.716,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.447,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.694,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.729,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.71,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_b698c6c8-d832-44bb-8600-cd5bc33361dd",
+      "finished_at": "2026-10-28T11:06:06.165273+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.59,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 30,
+      "workflow_id": "soak-000030-251a88c37d45",
+      "started_at": "2026-10-28T11:06:36.163098+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.963,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.607,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.735,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.961,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.718,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_4ee271d3-5d79-4c02-bcc6-6c6c269e0680",
+      "finished_at": "2026-10-28T11:06:36.170344+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.632,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 31,
+      "workflow_id": "soak-000031-aa3ecd4c39ff",
+      "started_at": "2026-10-28T11:07:06.168129+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.953,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.092,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 2.535,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.084,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.729,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_c445985c-d5a4-4246-a15e-8c9ec480973f",
+      "finished_at": "2026-10-28T11:07:06.177806+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.774,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 32,
+      "workflow_id": "soak-000032-b02132ab7237",
+      "started_at": "2026-10-28T11:07:36.171772+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.542,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.036,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.749,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 0.994,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.729,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_ed088ded-2d7d-42a3-b7fe-d46703c5c785",
+      "finished_at": "2026-10-28T11:07:36.177083+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.634,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 33,
+      "workflow_id": "soak-000033-6e823f6fa2fa",
+      "started_at": "2026-10-28T11:08:06.174774+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 4.1,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 3.766,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.93,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.475,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.778,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_1d60de79-9e3e-41d5-a93d-df275ebc5a1a",
+      "finished_at": "2026-10-28T11:08:06.186112+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.629,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 34,
+      "workflow_id": "soak-000034-51f7585b3cd2",
+      "started_at": "2026-10-28T11:08:36.018742+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 4.041,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.266,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.701,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.433,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.619,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_d3d069f1-e912-4e49-9f94-fa60fb7fb29b",
+      "finished_at": "2026-10-28T11:08:36.027073+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.374,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 35,
+      "workflow_id": "soak-000035-72e3700b0ef2",
+      "started_at": "2026-10-28T11:09:06.025405+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.908,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.475,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.728,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 5.649,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.757,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_6be9cae8-90c4-42c0-950e-851605516e1a",
+      "finished_at": "2026-10-28T11:09:06.036222+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.022,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 36,
+      "workflow_id": "soak-000036-f01ac03fe338",
+      "started_at": "2026-10-28T11:09:36.029450+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.43,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.836,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.801,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 3.589,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.971,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_e54e4470-116f-44af-84ca-6fa8c260f768",
+      "finished_at": "2026-10-28T11:09:36.038361+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.509,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 37,
+      "workflow_id": "soak-000037-fec0fa97d188",
+      "started_at": "2026-10-28T11:10:06.033341+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.478,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.537,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.772,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.237,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.831,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_ff96d9c0-3a29-4e8a-8bb8-b7b49bf6b26a",
+      "finished_at": "2026-10-28T11:10:06.041467+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.769,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 38,
+      "workflow_id": "soak-000038-0aaf3dceba2c",
+      "started_at": "2026-10-28T11:10:35.939351+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 4.354,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.504,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 2.452,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.51,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 2.095,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_b3fe90cf-8b92-4499-8727-0837647f446d",
+      "finished_at": "2026-10-28T11:10:35.951717+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 3.404,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 39,
+      "workflow_id": "soak-000039-c16e29b8b559",
+      "started_at": "2026-10-28T11:11:05.942007+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.375,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 2.762,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.838,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.996,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.778,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_ac385b49-5afb-4599-a8d2-0ea5b30e7c0f",
+      "finished_at": "2026-10-28T11:11:05.951044+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.459,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 40,
+      "workflow_id": "soak-000040-67e429a99881",
+      "started_at": "2026-10-28T11:11:35.946242+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.304,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.031,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.737,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.137,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.981,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_412329cf-a4a3-4e10-8459-e61312f67e21",
+      "finished_at": "2026-10-28T11:11:35.954682+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.789,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 41,
+      "workflow_id": "soak-000041-6950572bfd91",
+      "started_at": "2026-10-28T11:12:05.951325+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.378,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 2.778,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 1.266,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.334,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 1.127,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_86749006-984a-4f17-8b9b-f50e99710acd",
+      "finished_at": "2026-10-28T11:12:05.961508+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.69,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 42,
+      "workflow_id": "soak-000042-369c1c22a396",
+      "started_at": "2026-10-28T11:12:35.855090+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.237,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.079,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 2.115,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.94,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.672,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_e9c37d06-0977-4c8d-aafc-16bfb854dce2",
+      "finished_at": "2026-10-28T11:12:35.863773+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.574,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 43,
+      "workflow_id": "soak-000043-7421291b9c79",
+      "started_at": "2026-10-28T11:13:05.859265+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.504,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.708,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 3.091,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.882,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 1.879,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_0fbb5716-fd77-4807-a70f-e496dd008efb",
+      "finished_at": "2026-10-28T11:13:05.870622+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.526,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 44,
+      "workflow_id": "soak-000044-76b1ffb49098",
+      "started_at": "2026-10-28T11:13:35.863317+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.629,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.55,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 1.066,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.013,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.703,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_332d0baf-c7ac-4b9f-91e3-cfb405edb885",
+      "finished_at": "2026-10-28T11:13:35.869868+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.592,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 45,
+      "workflow_id": "soak-000045-824de8e00d57",
+      "started_at": "2026-10-28T11:14:05.867431+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.483,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.595,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.808,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.566,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 1.002,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_7e2bdb97-6325-422d-8a89-5b01e363346e",
+      "finished_at": "2026-10-28T11:14:05.874134+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.498,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 46,
+      "workflow_id": "soak-000046-45e8e1423e79",
+      "started_at": "2026-10-28T11:14:35.869654+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.801,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.272,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 3.632,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.176,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 1.406,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_1bc70863-03b1-427a-85d2-f20e256f069d",
+      "finished_at": "2026-10-28T11:14:35.880219+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.618,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 47,
+      "workflow_id": "soak-000047-821eb2223822",
+      "started_at": "2026-10-28T11:15:05.873029+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.52,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.479,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.831,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.25,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.698,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_a0510b06-7bff-4f33-a9cb-5a9045d341f3",
+      "finished_at": "2026-10-28T11:15:05.880048+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.816,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 48,
+      "workflow_id": "soak-000048-d64bbadd4740",
+      "started_at": "2026-10-28T11:15:35.797907+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.441,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 0.93,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.781,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.45,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.702,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_c1b3bf12-6ce0-4d0c-8865-6ff34c419e30",
+      "finished_at": "2026-10-28T11:15:35.803450+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.092,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 49,
+      "workflow_id": "soak-000049-2126cea3f01c",
+      "started_at": "2026-10-28T11:16:05.846929+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.425,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.403,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.745,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.392,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.592,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_395a853a-1d12-42f7-b462-9ebdcd64c979",
+      "finished_at": "2026-10-28T11:16:05.855708+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.918,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 50,
+      "workflow_id": "soak-000050-3a7540ddcfdb",
+      "started_at": "2026-10-28T11:16:35.850273+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.975,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.865,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.712,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 0.962,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.695,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_3afb0a8b-803d-4a4f-9065-176f5918af53",
+      "finished_at": "2026-10-28T11:16:35.856736+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.748,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 51,
+      "workflow_id": "soak-000051-c244c5d06b91",
+      "started_at": "2026-10-28T11:17:05.774212+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.197,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.092,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.673,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.898,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.709,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_dc10c63f-4c5f-41ab-b1f5-d26cf89fd7b2",
+      "finished_at": "2026-10-28T11:17:05.783003+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.386,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 52,
+      "workflow_id": "soak-000052-c90d8a0cfd7c",
+      "started_at": "2026-10-28T11:17:35.794738+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.728,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 2.298,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.735,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.897,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.817,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_0ecb1af5-5042-4c18-b0f9-4ef6b1b6d8d7",
+      "finished_at": "2026-10-28T11:17:35.803443+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.644,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 53,
+      "workflow_id": "soak-000053-1f675ec00024",
+      "started_at": "2026-10-28T11:18:05.799532+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.036,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.608,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.742,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.135,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.652,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_7c2d42b4-8f02-4b72-a9f7-05895425ffc8",
+      "finished_at": "2026-10-28T11:18:05.806979+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.812,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 54,
+      "workflow_id": "soak-000054-1199389d4cb5",
+      "started_at": "2026-10-28T11:18:35.800000+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.429,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.423,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.636,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.173,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 1.928,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_f4719fe0-8bc3-4de7-9cda-f62d030f65c8",
+      "finished_at": "2026-10-28T11:18:35.806815+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.483,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 55,
+      "workflow_id": "soak-000055-f7b0d90f18dc",
+      "started_at": "2026-10-28T11:19:05.800611+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.206,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.459,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.65,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.035,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.722,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_4d43c64f-6e5f-4b84-9c88-c32d1ee8d8d9",
+      "finished_at": "2026-10-28T11:19:05.805922+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.585,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 56,
+      "workflow_id": "soak-000056-c12af84aa324",
+      "started_at": "2026-10-28T11:19:35.799187+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.339,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.361,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.711,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 0.938,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.939,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_44a53466-bdb5-4a71-977d-131a255cdfed",
+      "finished_at": "2026-10-28T11:19:35.805732+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.862,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 57,
+      "workflow_id": "soak-000057-f7848034ac32",
+      "started_at": "2026-10-28T11:20:05.797693+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.634,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.606,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.753,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 0.963,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.624,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_83c0796e-9b2e-455a-860f-bd98333c8535",
+      "finished_at": "2026-10-28T11:20:05.804532+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 1.527,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 58,
+      "workflow_id": "soak-000058-700a23032f66",
+      "started_at": "2026-10-28T11:20:35.797426+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 1.97,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.38,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 1.05,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.591,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.649,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_d8bfd2c7-c2a2-4482-adbe-99ec927d8825",
+      "finished_at": "2026-10-28T11:20:35.804379+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 2.002,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 59,
+      "workflow_id": "soak-000059-9e68b3ca03d3",
+      "started_at": "2026-10-28T11:21:05.797644+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 3.361,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.939,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 1.04,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 1.72,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.944,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_e711cd8a-ee16-460a-b4dc-3a8dc313f051",
+      "finished_at": "2026-10-28T11:21:05.807045+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 3.413,
+        "reported_status": "UP",
+        "error": null
+      }
+    },
+    {
+      "sequence": 60,
+      "workflow_id": "soak-000060-65f9514ce750",
+      "started_at": "2026-10-28T11:21:35.577149+00:00",
+      "requests": [
+        {
+          "step": "order_create",
+          "status": 201,
+          "latency_ms": 2.112,
+          "error": null
+        },
+        {
+          "step": "payment_create",
+          "status": 201,
+          "latency_ms": 1.754,
+          "error": null
+        },
+        {
+          "step": "order_read_paid",
+          "status": 200,
+          "latency_ms": 0.923,
+          "error": null
+        },
+        {
+          "step": "refund_create",
+          "status": 201,
+          "latency_ms": 2.818,
+          "error": null
+        },
+        {
+          "step": "order_read_refunded",
+          "status": 200,
+          "latency_ms": 0.829,
+          "error": null
+        }
+      ],
+      "passed": true,
+      "order_id": "ord_9383f283-670d-466b-b55e-7078c19dd487",
+      "finished_at": "2026-10-28T11:21:35.585902+00:00",
+      "health": {
+        "status": 200,
+        "latency_ms": 4.182,
+        "reported_status": "UP",
+        "error": null
+      }
+    }
+  ],
+  "last_update_at": "2026-10-28T11:21:35.585914+00:00",
+  "summary": {
+    "iterations": 60,
+    "passed": 60,
+    "failed": 0,
+    "requests": 360
+  },
+  "completed_at": "2026-10-28T11:22:05.564275+00:00",
+  "elapsed_seconds": 1799.211
+}

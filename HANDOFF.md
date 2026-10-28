@@ -472,3 +472,67 @@ P0-2 修复 `variables_json` 命名与真实 JSON 存储问题。
 ## 历史记录
 
 暂无历史记录。
+
+## 2026-10-28 第二阶段实施记录（早期检查点）
+
+- 本轮开始 HEAD：`d608cc28a2fae8246ad33712d31199185c538639`；分支：`feat/agent-evaluation-platform`。开始时工作区已有前序实现的未暂存和未跟踪文件，本轮沿用并保留。
+- 本节保留实现早期状态记录：当时使用内存 H2、旧版 Mock、14 项 Maven 测试；随后这些限制在下方最终验收中得到更新，不应作为最终状态。
+
+## 2026-10-28 第二阶段验收完成
+
+- 结束 HEAD 仍为 `d608cc28a2fae8246ad33712d31199185c538639`；分支仍是 `feat/agent-evaluation-platform`；未提交、未推送，第一阶段审计报告未改动。
+- Agent Eval 数据集版本 `1.0.1`，26 条不同的原创合成用例，类别分布为 6/4/5/4/3/4。新增数据集矩阵、固定输入和可复现断言。Mock Agent 是确定性工具桩，不调用真实模型。
+- Vue 前端默认打开真实 Agent Eval 工作台；HTTP POST 同步触发执行，写入 UUID 运行、逐条结果和 Trace。运行以 `PENDING → RUNNING → COMPLETED` 落库，GET 历史/详情和报告都读保存的完整 JSON 快照。Demo H2 从内存库改为本地文件库，test profile 仍使用内存 H2。
+- 运行 `82b67bd7-0647-4dc5-9272-80730765037a`：26 条执行成功，Agent 行为 24 通过、2 失败、0 执行错误、0 跳过，质量门禁失败。`agent-014` 误选工具、`agent-015` 重复工具调用均被保留。
+- Trace 在 Mock Agent 执行时记录实际工具参数、返回、错误和用 `System.nanoTime` 测得的本地代码段耗时；不把 Mock code span 标成网络或模型延迟。
+- 重启 demo 服务后，运行仍存在于历史；报告 API 和浏览器下载的 JSON 快照比对一致。证据见 `outputs/agent-eval-persistence-proof-82b67bd7-0647-4dc5-9272-80730765037a.json`。
+- 当前验收：`mvn -pl backend test` 17 通过；前端 `npm run build` 通过；`npm audit --audit-level=high` 0 漏洞；pytest API/数据集 5 通过；Playwright 全流程通过，包括 POST、失败详情、完整报告一致、二次运行、回归、刷新、390px 布局、503 错误提示和无浏览器异常。
+- 新增 GitHub Actions workflow 运行 Maven、npm build/audit、pytest 和 Playwright 浏览器检查，并上传截图及报告。workflow 已本地 YAML 解析；没有 push，所以远程 GitHub Actions 尚未运行。
+- 实际验收说明、每项命令/退出码/计数和证据路径：`docs/phase-2-acceptance.md`；数据矩阵：`docs/agent-evaluation-matrix.md`；求职材料：`docs/job-delivery.md`。
+- 剩余工作：接入可选真实模型/Agent Provider（仅由用户显式配置凭证后调用）、模型/Prompt V1/V2 适配、生产鉴权/多租户、异步任务和部署。当前回归页只比较相同数据集版本的两次运行，不能描述为真实 Prompt 版本对照。
+
+## 2026-10-28 第三阶段发布候选验收完成
+
+- 分支 feat/agent-evaluation-platform；起止 HEAD 均为 d608cc28a2fae8246ad33712d31199185c538639。工作区开始时已有第二阶段未提交文件，本轮全部保留；未提交、未推送。
+- 新增可选 OpenAI-compatible Provider 与 AgentProvider 抽象；超时、有限重试、429/5xx、JSON/空响应/结构错误与脱敏由 Maven 本地 HTTP Stub 测试。真实 Provider 未配置，未调用外部服务。
+- 数据集版本 1.0.2，有 26 个唯一原创合成用例；安全拒绝与 agent-026 无虚构输出语义均明确断言。
+- 完成后端比较语义：对比两个实际保存运行，区分运行时 Provider 配置变化与 Prompt/Agent 元数据标签变化。标签并未绑定到真实不同 Prompt，因此不称为 Prompt V1/V2 实测。
+- 前端保留原 Vue 3 组件结构，改进 Agent Eval 总览、数据集、运行/失败详情、Trace、历史、回归、报告、状态和移动布局。HTTP POST 错误会显示错误，不添加成功历史。
+- 本地最终验证：Maven 29 通过；pytest 7 通过；npm run build 通过 vue-tsc 和 Vite；npm audit 0 vulnerabilities；Playwright 两次运行每次 26 条，失败 agent-014/015 保留，质量门禁 failed；H2 服务重启后详情/报告仍与浏览器下载一致。
+- 截图位于 docs/images/agent-eval-*-rc-final-20261028.png；报告副本位于 docs/reports/agent-eval-report-9fc5bc0d-f675-4959-b16a-43cd4a4630fe.json；原始浏览器截图、运行日志、JSON 和 H2 文件位于 outputs/agent-eval-release-candidate-20261028/。
+- GitHub Actions workflow 本地 YAML 解析通过，但没有推送分支，远端 Actions 未执行。用户未提供公司、岗位、职责、成果细节，求职材料没有代填这些信息。
+- 详细命令、退出码、计数、调试修正与限制见 docs/phase-3-acceptance.md。现有 outputs/phase-2-acceptance.md 等第二阶段材料保留，作为历史验收记录。
+
+## 2026-10-28 testdev-production-like-quality-v1 开始记录
+
+- 用户要求继续补齐真实业务系统测试、生产监控/告警、长时间稳定性验证和大规模压测，并明确选择本地订单/退款仿真 API；没有提供外部授权生产/测试环境。
+- 本轮按仓库 AGENTS.md 新增单一范围 `testdev-production-like-quality-v1`，不覆盖其它待办；开始分支 `feat/agent-evaluation-platform`、HEAD `d608cc28a2fae8246ad33712d31199185c538639`，开始时工作区已有大量前序未提交改动，均需保留。
+- 已确认 Docker Desktop/Compose 可用；k6 与 promtool 本机未安装，计划通过固定版本容器运行，不做全局安装。
+- 实施约束：所有业务数据和负载只落到本轮隔离 H2；监控 UI/服务绑定 localhost；不真实支付、不访问公司生产、不发送外部告警、不调用真实模型。
+- 待验收：订单/支付/退款 HTTP 集成；Prometheus 指标、规则和 Alertmanager 本地 webhook；Soak 与 k6 工作流；Maven/Python/YAML/Compose 校验；Soak 与压测实际运行证据。
+
+## 2026-10-28 testdev-production-like-quality-v1 完成记录
+
+- 状态：本轮范围完成；保留工作区原有改动；未提交、未推送；分支仍为 `feat/agent-evaluation-platform`，HEAD 仍为 `d608cc28a2fae8246ad33712d31199185c538639`。
+- 完成隔离订单/支付/退款 HTTP API 与 Maven 集成覆盖；Maven 36 通过，Soak 脚本单测 4 通过；Compose、Prometheus 3 条规则和 Alertmanager 配置校验通过。
+- 完成本地 Prometheus scrape 与 Alertmanager firing/resolved 演练；后端恢复后健康状态为 UP。
+- 完成独立 30 分钟配置 Soak：报告状态 `COMPLETED`、退出码 0、elapsed 1,799.211 秒，60/60 轮通过、0 失败，300 个业务 HTTP 请求 + 60 次健康检查，共 360 请求。原先因 Docker Desktop 停止而中断的 Soak 仍作为单独中断事实保留。
+- k6 最终干净运行退出码 0：5/10/20/100 工作流/秒四档，每档 60 秒；8,103 工作流、40,515 HTTP 请求、81,030 检查全通过，0 HTTP/工作流失败、0 dropped iteration。全局观测峰值 120 VU；本地 p95 仅为本机观察值，不是生产 SLO。
+- 最终验收报告及原始证据位于 `outputs/testdev-production-like-20261028/production-like-final-acceptance.md` 和同目录；包含测试日志、Soak/k6 JSON、告警演练、H2 卷清单及浏览器截图证据。
+- 边界：仅本地隔离 Docker/H2 合成系统；没有真实公司生产 API、支付、客户数据、企业外部监控/通知、真实模型调用或生产容量验收；本轮没有改前端代码，浏览器截图沿用 Phase 3 验收。
+- 后续可选项：获授权后再对接真实业务测试环境；增加有界错误注入与备份恢复演练；在确认目标系统容量边界后设计非生产压测。不得把本地演练包装成真实生产经验。
+
+## 2026-10-28 testdev-k6-scenario-gates-v1 开始记录
+
+- 用户要求将两个项目对齐通用测试开发实习 JD，并以真实可复核数据作为项目证据。本轮先加固 PromptOps 的负载证据链：将全局 k6 门禁细化为四个场景的工作流数、HTTP/业务成功、检查和掉队门禁，并增加报告汇总器。
+- 开始分支 `feat/agent-evaluation-platform`，HEAD `d608cc28a2fae8246ad33712d31199185c538639`；开始时工作区已有大量未提交变更，本轮只增加对应文件，不覆盖或清理既有内容。
+- 使用现有固定版本 `grafana/k6:1.8.1` Compose 容器与合成订单/退款 API；不安装新 SDK、不接公司系统、不触发真实模型或付费调用。
+- 预期证据会明确区分每档工作流目标、实测迭代数、活跃 VU 与最大可分配 VU，并把合并 p95 标记为本机观察，不冒充 SLO/生产容量。
+
+## 2026-10-28 testdev-k6-scenario-gates-v1 完成记录
+
+- k6 运行命令 `docker compose -f compose.production-like.yml run --rm k6`：退出码 0；四档场景 100% 完成，各自工作流数门禁、检查、HTTP/业务错误及掉队门禁均通过。实测 8,103 workflows、40,515 HTTP requests、81,030 checks；各档 301/601/1,200/6,001 workflows；错误和掉队均为 0。活跃 VU 峰值 1，VU 最大容量 120。
+- 新增 `backend/tools/summarize_k6_report.py`，从带 Run ID 与场景计划的原始 k6 JSON 生成摘要 JSON/Markdown；新增 4 个失败关闭测试。运行详情及 JD 映射见 `docs/test-development-acceptance.md`，机器可读证据见 `docs/reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3*`。
+- 本轮回归：`mvn -pl backend test` 36 通过；`PROMPTOPS_API_URL=http://127.0.0.1:18083 py -3.12 -m pytest backend/tests -q` 26 通过；`npm run build` 通过 Vue 类型检查和 Vite 生产构建；`npm audit --audit-level=high` 0 漏洞；`git diff --check` 退出码 0。
+- 同步 JD 对照：上海 AI 实验室的大模型质量评估/自动化流水线、通用测试/测开岗位的 API/Web/脚本/Linux/HTTP/数据库/性能稳定性、Calix 的 Python/Linux/TCP/IP 要求已映射到两个项目；没有因此安装新依赖。
+- 仍需诚实说明：PromptOps GitHub Actions 远端未运行；本地负载不是企业生产验证，未测生产容量/SLO；真实模型没有调用。开始时 PromptOps 已有大量未提交改动，本轮只追加文件/文档并保留分支 `feat/agent-evaluation-platform`，未提交或推送。

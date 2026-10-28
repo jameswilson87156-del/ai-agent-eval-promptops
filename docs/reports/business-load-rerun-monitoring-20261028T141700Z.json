@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "captured_at_utc": "2026-10-28T14:17:00Z",
+  "test_command": "docker compose -f compose.production-like.yml run --rm k6",
+  "test_exit_code": 0,
+  "test_report": "business-load-rerun-20261028T141643Z-e68a5f0c.json",
+  "target_scope": "isolated local synthetic order/refund API with H2 in Docker Compose; no external or production target",
+  "docker_environment": {
+    "runtime": "Docker Desktop on WSL2",
+    "cpus": 4,
+    "memory_bytes": 4106866688,
+    "kernel": "6.18.33.2-microsoft-standard-WSL2"
+  },
+  "prometheus_window": {
+    "start_utc": "2026-10-28T14:12:00Z",
+    "end_utc": "2026-10-28T14:17:00Z",
+    "backend_up_min_query": "min_over_time(up{job=\"promptops-backend\"}[5m])",
+    "backend_up_min": 1.0,
+    "process_cpu_max_query": "max_over_time(process_cpu_usage{job=\"promptops-backend\"}[5m])",
+    "process_cpu_max": 0.0669350780070458,
+    "note": "Window spans the full k6 run plus small margins. CPU value is the Spring process metric, not host CPU capacity."
+  }
+}
