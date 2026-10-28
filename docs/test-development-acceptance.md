@@ -1,8 +1,8 @@
 # 通用测试开发实习生 JD 补强验收
 
 日期：2026-10-28
-分支：`feat/agent-evaluation-platform`
-更新：2026-10-29。功能分支已推送；实现提交 `8f99b7d0429923d3f11b864171c5c30b75be34f1`，导航竞态修复提交 `ea33d4610a0dc7ddad172c10c8519fc715c578df`。分支尚未合并 main。
+分支：`main`
+更新：2026-10-29。Agent Eval 与测试开发扩展已通过 PR [#1](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/pull/1) 合入 `main`；CI 运行时维护通过 PR [#2](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/pull/2) 合入。最新主分支质量门禁 Actions run [40757858959](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40757858959) 成功。下文标为历史快照的旧 run ID 保留其原有时点语境。
 
 ## 补强目标
 
@@ -39,7 +39,7 @@ Node 的 YAML 检查曾尝试使用仓库未安装的 `js-yaml`，因模块缺�
 - 没有调用真实模型，不含 Token、费用或真实模型延迟数据。
 - 没有连接公司生产业务 API、真实外部工具、企业监控/告警或生产环境；本地合成订单 API、告警演练、Soak 和有界负载结果见下节。
 - 没有设定并验证生产 p95/SLO 预算；本机延迟只是观察值。
-- GitHub Actions run [40723393664](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40723393664) 在 Ubuntu runner 通过全部步骤；详见本文“本轮远端质量门禁”。
+- 历史 feature 分支 Actions run [40723393664](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40723393664) 在 Ubuntu runner 通过当时的质量门禁；当前主分支状态见本文顶部最新 run。
 - 本轮已改进前端运行期间的导航状态，并用 Playwright 验证桌面/移动宽度、真实运行请求、失败详情、JSON 下载、刷新持久化和服务错误态。
 
 岗位对齐和简历草稿见 [job-delivery.md](job-delivery.md)。
@@ -117,7 +117,7 @@ Node 的 YAML 检查曾尝试使用仓库未安装的 `js-yaml`，因模块缺�
 | Web/UI 自动化 | Playwright 验收 Agent 运行、失败详情、刷新、错误态及窄屏 | Playwright Chromium 覆盖登录、建仓、Issue、评论和关闭 | 浏览器运行是本地环境 |
 | 数据库/持久化 | 文件型 H2 保存运行报告和仿真订单 | SQLite 数据持久化，验证容器重启后 API 数据仍存在 | 没有 MySQL/Redis 生产集成测试 |
 | 稳定性/性能 | 30 分钟低频 Soak；k6 四档本地阶梯负载；Prometheus/Alertmanager 本地告警演练 | CI 每次启动隔离 Gitea 服务并执行 API/UI/重启测试 | 本机 Docker 负载不等于生产容量或大规模生产压测 |
-| CI/CD 与报告 | GitHub Actions run [40723393664](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40723393664) 在 Ubuntu runner 通过并上传证据 artifact | GitHub Actions run [40710451708](https://github.com/jameswilson87156-del/gitea-quality-lab/actions/runs/40710451708) 在 Ubuntu runner 通过并上传 JSON/JUnit/HTML/截图 | 两者都是隔离测试实例 / CI 临时环境，不代表生产系统 |
+| CI/CD 与报告 | GitHub Actions 主分支 run [40757858959](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40757858959) 通过完整质量门禁并上传证据 artifact | GitHub Actions 主分支 run [40757044758](https://github.com/jameswilson87156-del/gitea-quality-lab/actions/runs/40757044758) 通过并上传 JSON/JUnit/HTML/截图 | 两者都是隔离测试实例 / CI 临时环境，不代表生产系统 |
 | 缺陷定位与可复现 | 单条断言、失败原因、Trace、固定输入、Run ID | 用例 ID、失败详情、浏览器截图和脱敏 Trace | Trace 是可观察数据，不包含模型思维链 |
 | AI 质量评估 | 固定数据集、工具选择/参数/顺序/安全规则、运行比较 | 不面向 LLM，专注通用系统黑盒测试 | PromptOps 当前是 Mock/规则评测，不代表真实模型效果 |
 
@@ -131,6 +131,8 @@ Node 的 YAML 检查曾尝试使用仓库未安装的 `js-yaml`，因模块缺�
 - 原始及结构化证据：[`原始 k6 JSON`](reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3.json)、[`摘要 JSON`](reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3-summary.json)、[`摘要 Markdown`](reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3-summary.md)。汇总器单测 4 条通过；原始 k6 阈值结果也包含在 JSON 中。
 
 ## 本轮远端质量门禁（2026-10-29）
+
+主分支最新门禁：[Actions run 40757858959](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40757858959)，在 `main` 提交 `f8b958c3646c097dd30d987361a1ccc223d1ec55` 完成，结论 `success`。该工作流执行 Maven、前端生产构建、依赖审计、Python/API 测试、固定数据集校验、Mock 稳定性采样、Playwright 浏览器验收并上传证据。
 
 ### 本地回归
 
@@ -148,7 +150,7 @@ Node 的 YAML 检查曾尝试使用仓库未安装的 `js-yaml`，因模块缺�
 
 首次远端运行 [40721964915](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40721964915) 失败在浏览器导航步骤。根因是执行结果刷新历史期间，异步完成回调覆盖用户刚切换的导航。修复已提交为 `ea33d4610a0dc7ddad172c10c8519fc715c578df`，前端通过导航版本号避免覆盖用户操作；本地 Playwright 全流程回归通过。
 
-### 通过的 GitHub Actions
+### 历史 feature 分支 GitHub Actions
 
 [GitHub Actions run 40723393664](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40723393664) 在 `feat/agent-evaluation-platform`、Ubuntu runner 完成，结论 `success`：
 
