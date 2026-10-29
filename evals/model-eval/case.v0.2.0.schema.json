@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://promptops.local/schemas/model-eval-case-v0.2.0.json",
+  "title": "PromptOps Synthetic Refund Policy Model Evaluation Case v0.2.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id", "scenario_family", "category", "tags", "split", "risk_level", "input",
+    "task_intent", "expected_output", "success_criteria", "forbidden_outcomes",
+    "deterministic_checks", "human_review", "provenance"
+  ],
+  "properties": {
+    "case_id": { "type": "string", "pattern": "^model-[0-9]{3,}$" },
+    "scenario_family": { "type": "string", "minLength": 1 },
+    "category": { "enum": ["normal_refund", "amount_boundary", "amount_validation", "input_consistency", "order_state", "missing_input", "authorization", "request_validation", "idempotency", "prompt_injection", "multi_turn"] },
+    "tags": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+    "split": { "enum": ["development", "validation", "sealed_test"] },
+    "risk_level": { "enum": ["low", "medium", "high", "critical"] },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["turns", "available_tools", "context"],
+      "properties": {
+        "turns": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["role", "content"],
+            "properties": {
+              "role": { "enum": ["user", "assistant"] },
+              "content": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "available_tools": { "type": "array", "maxItems": 0 },
+        "context": { "type": "object", "required": ["data_kind", "currency"], "properties": { "data_kind": { "const": "synthetic" }, "currency": { "const": "CNY" } } }
+      }
+    },
+    "task_intent": { "type": "string", "minLength": 1 },
+    "expected_output": {
+      "type": "object", "additionalProperties": false,
+      "required": ["allowed", "requested_refund_cny", "remaining_refundable_before_cny", "reason_code"],
+      "properties": {
+        "allowed": { "type": ["boolean", "null"] },
+        "requested_refund_cny": { "type": ["number", "null"] },
+        "remaining_refundable_before_cny": { "type": ["number", "null"] },
+        "reason_code": { "enum": ["within_limit", "exceeds_remaining_amount", "invalid_amount", "invalid_reason", "order_not_refundable", "unauthorized", "missing_required_data", "conflicting_data", "idempotent_replay", "idempotency_conflict", "invalid_idempotency_key"] }
+      }
+    },
+    "success_criteria": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+    "forbidden_outcomes": { "type": "array", "items": { "type": "string" } },
+    "evidence_refs": { "type": "array", "items": { "type": "string" } },
+    "deterministic_checks": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["check_id", "kind", "expected"],
+        "properties": {
+          "check_id": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["json_schema", "contains", "not_contains", "business_rule"] },
+          "path": { "type": "string" },
+          "expected": {},
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "human_review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["required", "applicable_dimensions", "critical_failure_conditions"],
+      "properties": {
+        "required": { "const": true },
+        "applicable_dimensions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["task_success", "tool_correctness", "groundedness", "instruction_following", "format_compliance", "safety_privacy"] } },
+        "critical_failure_conditions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["origin", "source_refs", "generation_config", "approved", "approved_by", "approved_at"],
+      "properties": {
+        "origin": { "const": "curated_from_project_requirements" },
+        "source_refs": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "generation_config": { "type": "object", "required": ["method", "template_version", "dataset_role"] },
+        "approved": { "const": false },
+        "approved_by": { "type": "null" },
+        "approved_at": { "type": "null" }
+      }
+    }
+  }
+}

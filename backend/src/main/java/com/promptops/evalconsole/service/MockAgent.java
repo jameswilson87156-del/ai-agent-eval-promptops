@@ -163,6 +163,11 @@ public class MockAgent implements AgentProvider {
                 return "Required string argument is missing or invalid: " + required;
             }
         }
+        var fields = argsNode.fieldNames();
+        while (fields.hasNext()) {
+            String field = fields.next();
+            if (!REQUIRED.get(tool).contains(field)) return "Unexpected argument: " + field;
+        }
         return null;
     }
 

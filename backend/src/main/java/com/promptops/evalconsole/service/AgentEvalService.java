@@ -230,6 +230,8 @@ public class AgentEvalService {
             case "count_eq" -> value!=null && value.isArray() ? value.size()==expected.asInt() : expected.asInt()==0 && (value==null||value.isNull());
             case "exists" -> value!=null && !value.isNull() && !value.isMissingNode();
             case "valid_json" -> { boolean valid; try { JsonNode parsed=mapper.readTree(actual.get("final_output").toString()); valid=parsed!=null; } catch(Exception ex) { valid=false; } yield valid==expected.asBoolean(); }
+            case "json_schema" -> matchesJsonSchema(value, expected);
+            case "max_length" -> value!=null && value.isTextual() && expected.isNumber() && value.asText().length()<=expected.asInt();
             case "ordered_events" -> {
                 if (!value.isArray() || !expected.isArray()) yield false;
                 int matched = 0;
@@ -243,15 +245,70 @@ public class AgentEvalService {
         Map<String,Object> out=new LinkedHashMap<>(); out.put("path",path);out.put("operator",op);out.put("expected",expected);out.put("actual",value);out.put("passed",passed);out.put("description",assertion.path("description").asText(""));return out;
     }
 
+    private boolean matchesJsonSchema(JsonNode value, JsonNode schema) {
+        if (value == null || !value.isTextual() || !schema.path("required").isArray()
+                || !schema.path("properties").isObject()) return false;
+        try {
+            JsonNode parsed = mapper.readTree(value.asText());
+            if (parsed == null || !parsed.isObject()) return false;
+            for (JsonNode required : schema.path("required")) {
+                if (!required.isTextual() || !parsed.has(required.asText()) || parsed.path(required.asText()).isNull()) return false;
+            }
+            var properties = schema.path("properties");
+            var propertyNames = new java.util.HashSet<String>();
+            properties.fieldNames().forEachRemaining(propertyNames::add);
+            var fields = parsed.fieldNames();
+            while (fields.hasNext()) {
+                String field = fields.next();
+                if (schema.path("additionalProperties").asBoolean(true) == false && !propertyNames.contains(field)) return false;
+            }
+            var entries = properties.fields();
+            while (entries.hasNext()) {
+                var entry = entries.next();
+                JsonNode field = parsed.path(entry.getKey());
+                if (parsed.has(entry.getKey()) && !matchesJsonType(field, entry.getValue().path("type").asText())) return false;
+            }
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    private boolean matchesJsonType(JsonNode value, String type) {
+        return switch (type) {
+            case "object" -> value.isObject();
+            case "array" -> value.isArray();
+            case "string" -> value.isTextual();
+            case "boolean" -> value.isBoolean();
+            case "number" -> value.isNumber();
+            case "integer" -> value.isIntegralNumber();
+            case "null" -> value.isNull();
+            default -> false;
+        };
+    }
+
     private JsonNode path(Map<String,Object> actual,String expression) {
         JsonNode current=mapper.valueToTree(actual);
         for(String part:expression.split("\\.")) { if(current==null)return com.fasterxml.jackson.databind.node.NullNode.getInstance(); if(part.matches("\\d+"))current=current.path(Integer.parseInt(part));else current=current.path(part); }
         return current;
     }
     private void validateDataset(JsonNode value) {
-        if(!value.path("cases").isArray()||value.path("cases").size()!=26) throw new IllegalStateException("Agent evaluation dataset must contain 26 cases");
+        if(!value.path("cases").isArray()||value.path("cases").isEmpty()) throw new IllegalStateException("Agent evaluation dataset must contain at least one case");
         java.util.Set<String> ids=new java.util.HashSet<>();
-        for(JsonNode c:value.path("cases")) { if(!ids.add(c.path("case_id").asText())||c.path("assertions").isEmpty()||!c.hasNonNull("expected_behavior")) throw new IllegalStateException("Invalid or duplicate case in dataset: "+c.path("case_id").asText()); }
+        java.util.Set<String> supportedOperators=java.util.Set.of("eq","contains","not_contains","one_of","count_eq","exists","valid_json","json_schema","max_length","ordered_events");
+        for(JsonNode c:value.path("cases")) {
+            String caseId=c.path("case_id").asText();
+            if(caseId.isBlank()||!ids.add(caseId)||c.path("title").asText().isBlank()
+                    ||c.path("category").asText().isBlank()||!c.path("input").isObject()
+                    ||c.path("expected_behavior").asText().isBlank()||!c.path("assertions").isArray()
+                    ||c.path("assertions").isEmpty()||!c.path("tags").isArray())
+                throw new IllegalStateException("Invalid or duplicate case in dataset: "+caseId);
+            for(JsonNode assertion:c.path("assertions")) {
+                String op=assertion.path("op").asText("eq");
+                if(assertion.path("path").asText().isBlank()||!supportedOperators.contains(op))
+                    throw new IllegalStateException("Invalid assertion in dataset case: "+caseId);
+            }
+        }
     }
     private Map<String,Object> errorCase(JsonNode definition, String runId, String message, String errorCode,
                                          List<Map<String,Object>> trace, AgentProvider provider,

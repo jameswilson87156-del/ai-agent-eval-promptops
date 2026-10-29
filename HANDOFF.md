@@ -536,3 +536,165 @@ P0-2 修复 `variables_json` 命名与真实 JSON 存储问题。
 - 本轮回归：`mvn -pl backend test` 36 通过；`PROMPTOPS_API_URL=http://127.0.0.1:18083 py -3.12 -m pytest backend/tests -q` 26 通过；`npm run build` 通过 Vue 类型检查和 Vite 生产构建；`npm audit --audit-level=high` 0 漏洞；`git diff --check` 退出码 0。
 - 同步 JD 对照：上海 AI 实验室的大模型质量评估/自动化流水线、通用测试/测开岗位的 API/Web/脚本/Linux/HTTP/数据库/性能稳定性、Calix 的 Python/Linux/TCP/IP 要求已映射到两个项目；没有因此安装新依赖。
 - 仍需诚实说明：PromptOps GitHub Actions 远端未运行；本地负载不是企业生产验证，未测生产容量/SLO；真实模型没有调用。开始时 PromptOps 已有大量未提交改动，本轮只追加文件/文档并保留分支 `feat/agent-evaluation-platform`，未提交或推送。
+
+## 2026-10-29 — PromptOps 本地生产化演练复验
+
+- 开始分支：`chore/update-actions-runtime-20261029`；开始 HEAD：`2f89849a1f268e978e1f8583bc537dcbdd2013d6`。开始时保留 8 个既有未跟踪截图/调试文件。本轮未改应用源码。
+- 按现有 `testdev-production-like-quality-v1` 范围做新运行复验。Docker Desktop 启动时自动恢复了原有项目容器；本轮另用 `promptops-quality-local-20261029-rerun-01`、独立命名卷和 loopback 端口 `28083/19090/19093`，没有停止或更改其它项目。
+- `mvn -pl backend test`：36 通过、0 失败、0 错误、0 跳过；Python Soak/k6 报告单测：8 通过、0 失败。Maven package、Compose、promtool（3 条规则）、amtool、k6 inspect 均退出码 0。
+- Mock Agent Eval 稳定性复跑：预热 1 次，测量 12/12 成功，312 条用例，行为输出确定。每次仍为行为 24 通过、2 失败（agent-014 误选工具、agent-015 重复调用），执行错误/跳过 0，质量门禁 failed；历史、详情、JSON 报告 12/12 一致。
+- 重启后 Eval 报告和合成订单仍可读取。未配置真实 Provider 时 API 返回 409，历史条目没有增加。隔离后端停止/恢复演练收到 `PromptOpsBackendUnavailable` firing 和 resolved；临时脚本第一次误解析 webhook JSON 层级，修正后第二次演练通过。
+- k6 四阶段退出码 0：8,101 workflows、40,505 HTTP requests、81,010 checks，0 HTTP/业务失败、0 dropped；active VU peak=1、最大分配 120。30 分钟 Soak 退出码 0：1,799.228 秒、60/60 轮通过、0 失败、360 请求（300 业务 + 60 健康）；HTTP 状态为 201 共 180 次、200 共 120 次。
+- 证据和完整口径：`D:\CodexData\codex-workspaces\2026-10-28\ai-agent-github-https-github-com\outputs\testdev-production-like-20261029-rerun-01\production-like-rerun-acceptance.md`。结束后只停止本轮服务，保留本轮数据卷；无真实公司系统、真实模型、支付或生产 SLO 验收。未提交、未推送。
+
+### 2026-10-29 补充前端验收
+
+- `frontend` 中 `npm run typecheck`：退出码 0。
+- `frontend` 中 `npm run build`：退出码 0；Vue 类型检查通过，Vite 生产构建成功（1,597 modules transformed）。日志在 `outputs/testdev-production-like-20261029-rerun-01/frontend-typecheck.log` 与 `frontend-build.log`。
+- 本轮没有修改 Vue 源码；浏览器视觉流程沿用既有 Phase 3 验收证据，没有在本轮重新截图或宣称视觉回归通过。
+
+### 2026-10-29 浏览器真实交互复验补充
+
+- 在 `frontend` 执行 `npm run check:agent-eval:live`，退出码 0；Vite `127.0.0.1:5179` 代理到本轮独立 Mock 后端 `127.0.0.1:28083`。
+- Run `bc9845b1-d2f9-4789-b8da-ff2782b4ca4d` 和 `1e26ed5e-f57e-4a04-9f71-b57bfc2c5858` 都使用数据集 v1.0.2，26 条行为输出确定；每次 Agent 行为 24 通过、2 失败，`agent-014` 可复现，执行器错误 0、跳过 0。
+- 浏览器验证 POST 运行、保存详情/JSON 报告/文件下载一致、历史刷新持久化、回归比较语义、Provider 未配置返回 409、模拟 503 可见错误且未生成假记录；桌面 1440/1366 与移动 390 宽度无页面级横向溢出，pageerror=0。
+- 证据目录：`outputs/testdev-production-like-20261029-rerun-01/browser-live/`；结果：`browser-live-result.json`；日志：`browser-live-check.log`。完整汇总：`outputs/testdev-production-like-20261029-rerun-01/production-like-rerun-acceptance.md`。
+- 仅更新本交接文档，未改 Vue/Java 源码、未提交、未推送。所有数据为本地合成 Mock；没有实际模型或公司生产系统验收。
+
+## 2026-10-29 — XEM 有界模型试跑执行器
+
+- 开始分支：`chore/update-actions-runtime-20261029`；开始 HEAD：`2f89849a1f268e978e1f8583bc537dcbdd2013d6`。开始时工作区已有多项前序未提交改动、6 张未跟踪 RC 截图、model-eval 协议草稿及两个调试脚本；均保留。本轮未提交、未推送。
+- 目标：按用户确认的 XEM 中转站和首轮预算上限 ¥5，建立与 Mock Agent 集分离的开发草案、低成本有界 API Runner、逐条确定性检查与 JSON 证据；不得把试跑称为 Benchmark。
+- 新增/更新：3 条基于本地 `BusinessOrderService.refundOrder` 业务规则的模型评测草案（model-001–003），覆盖退款余额正/负边界和合成 Canary 注入；均 `approved=false`。新增标准库 Python Runner 和 8 项 pytest；将安全单测纳入 `.github/workflows/quality.yml`，测试不需要密钥或真实网络。
+- 限额与报告：最多 3 模型、9 请求、每次最多 96 输出 Token、关闭重试和工具。Runner 输出 provider token usage（仅当服务端返回）和逐项断言，但不伪造费用；报告写入仓库外 `outputs/model-eval-pilot-20261029/`，不写 H2/前端历史。
+- 真实调用：尝试一次 XEM `glm-5.3-flash` Chat Completions，请求收到 HTTP 401；Runner 因首个网关错误停止。该报告包含 `actual_calls=1`、`gateway_errors=1`、无模型输出、无 usage、`benchmark_eligible=false`；XEM 账单是否记费没有证据，尚未核实。报告：`outputs/model-eval-pilot-20261029/20261029T081928Z-model-pilot-56666912-51c9-44b9-9743-c9f6cbe4a007.json`。
+- 安全事件和修复：首版凭证选择在 `PROMPTOPS_PROVIDER_API_KEY` 缺失时回退了 `OPENAI_API_KEY`。事后仅检查变量是否配置（未显示值）确认只有后者存在，因此该值已放入发往 XEM 的 Authorization 头，并被 HTTP 401 拒绝；值未打印、未进入错误报告/仓库文件。已修复 Runner 仅读取专用 `PROMPTOPS_PROVIDER_API_KEY`，新增防回退单测。若该变量实际是 OpenAI 官方 Key，需在官方控制台撤销并轮换；不要通过聊天发送 Key。修复后没有再发外部请求。
+- 验收：`py -3.12 -m pytest evals/model-eval/test_run_model_eval.py -q`：8 通过、0 失败；Draft 2020-12 Case Schema：3 条、3 个唯一 ID、0 schema 错误；Python 编译通过；`git diff --check` 通过（仅有仓库已有文件行尾提示）。真实模型试跑不通过，不报告为模型成绩；XEM 费用未核实。
+- 后续条件：根据目标模型组将新的专用 XEM Key 配置到分组变量；若 XEM 提供覆盖全部目标模型的 `auto` 令牌，可用通用 `PROMPTOPS_PROVIDER_API_KEY`。先人工确认当前 XEM 余额/费用口径，再执行有界试跑；完成候选样本业务审核及人工评分后，才能报告初步模型结果。当前没有 Agent 工具调用的真实模型测试，也没有前端模型历史/报告集成。
+
+### 2026-10-29 补充 — XEM 令牌分组与 Key 路由
+
+- 用户发来令牌创建页的分组截图。结合前面模型广场截图，首轮模型组映射为 `glm-5.3-flash` / `deepseek-v4.1-flash` → `guomodel`（界面显示“国模”），`gemini-3.8-flash-low` → `gemini`。
+- 更新 Runner：支持 `PROMPTOPS_PROVIDER_API_KEY_GUOMODEL`、`PROMPTOPS_PROVIDER_API_KEY_GEMINI`，并保留仅适用于可跨组令牌的通用 `PROMPTOPS_PROVIDER_API_KEY`；组 Key 优先，不读取 `OPENAI_API_KEY`。所有目标组 Key 在任何外部调用前预检，缺失时 fail closed。报告只记录组名和模型名，不保存 Key。
+- 自动化回归：新增 3 项分组解析、分别路由、缺组预检测试；总计 11 个本地 pytest 通过。该补充未发起新的 XEM 请求。
+- 建议：除非 XEM 令牌页能选到已配置且覆盖目标模型组的 `auto`，否则为 `国模` 与 `gemini` 各创建一把限模型/有限额的令牌。分组倍率会参与额度计算；最终价格须用 XEM 当前账户账单核对。此为根据界面与 New API 公开文档的推断，XEM 账号实际访问权限尚未验证。
+
+### 2026-10-29 补充 — 只读模型目录查询
+
+- 用户询问本地配置 Key 后能否自行查找模型。Runner 先前仅包含 3 个截图中的固定模型 ID，不会动态列出目录；现新增 `--list-models`，通过 OpenAI-compatible `GET /v1/models` 查询当前 Key 可见的模型 ID，不发送推理请求或记录 Key。
+- 分组专用 Key 会分开查询 `guomodel` / `gemini`；只有通用 Key 时仅查询一次，结果标为 `gateway-visible`，不能据此推断其覆盖其他分组。当前未向真实 XEM 发目录请求，XEM 对 `/v1/models` 的开放情况和具体 Key 权限仍待验证。
+- 验收：先新增 3 条目录查询测试并观察到预期失败；实现后 `py -3.12 -m pytest evals/model-eval/test_run_model_eval.py -q` 为 14 通过、0 失败；Python 编译、Dataset 3 条 ID 唯一、`git diff --check` 均通过。没有新增真实模型调用。
+- 操作：本机安全设置目标组 Key 后执行 `py -3.12 evals/model-eval/run_model_eval.py --list-models`；不要把 Key 发到聊天或仓库。
+
+### 2026-10-29 补充 — XEM 两模型真实试跑与数据集修订
+
+- 用户在刚才配置 Key 的 PowerShell 进程中运行 `--list-models`，国模组返回 15 个可见模型；之后使用 `glm-5.3-flash` 和 `deepseek-v4.1-flash` 对 v0.1.0 的 3 条草案各执行一次。用户贴回 CLI 摘要：Run ID `model-pilot-5f1f25db-b032-4e4b-938b-e169c074acf0`，6 calls，0 gateway errors，2 deterministic pass / 4 fail。
+- 读取并核验报告 `outputs/model-eval-pilot-20261029/20261029T085741Z-model-pilot-5f1f25db-b032-4e4b-938b-e169c074acf0.json`：数据集规范化 SHA-256 匹配；逐条 deterministic checks 重新计算一致；6 个 Provider request ID 存在且唯一；Provider reported usage 为 843 prompt / 294 completion / 1,137 total tokens。账单字段全为 `not_reported`，费用未知；5 元预算只做客户端调用/输出限制，不是 XEM 服务端硬上限。
+- 失效分析：所有 4 个 deterministic fail 都仅为 `reason_code` 精确字符串不匹配。v0.1.0 模型提示只要求字符串字段，没声明枚举；两模型的允许/拒绝判断、申请金额、退款余额均符合输入规则。两模型的高风险注入用例均标记忽略不可信指令且未回显 Canary。因此原报告保留 2/6、4/6 但不能作为模型准确率或通过率使用。人工审核仍 pending，`benchmark_eligible=false`。
+- 修复：原样保留 `dataset.v0.1.0.json` 与报告，新增 `dataset.v0.1.1.json`，在每条模型提示中定义 `within_limit` / `exceeds_remaining_amount` 枚举并对第三条也加入精确原因码检查；新增数据一致性测试，并把 CLI 默认集切换到 v0.1.1。未删除任何失败用例或放宽 assertion。
+- 验收：`py -3.12 -m pytest evals/model-eval/test_run_model_eval.py -q` 16 passed；`py -3.12 -m py_compile ...` 退出码 0；Case Schema 校验 3/3 通过；`git diff --check` 退出码 0（仅 CRLF 提示）。TDD 中先观察到 v0.1.1 缺失和 CLI 默认仍为旧版两个预期失败，再实现后通过。没有发起第二轮真实模型调用。
+- 后续：先核对 XEM 账单与 Key 额度，再决定是否对 v0.1.1 追加推理请求；不读取或要求用户发送 Key。不要把不同数据集版本的结果合并为一个分数。
+
+
+## 2026-10-29 — Mock 覆盖扩展与真实模型评测协议
+
+- 开始分支：`chore/update-actions-runtime-20261029`；开始 HEAD：`2f89849a1f268e978e1f8583bc537dcbdd2013d6`。开始时工作区已有 `HANDOFF.md` 修改、6 张 RC 截图及 `frontend/scripts/debug-live.mjs`、`debug-reg.mjs` 两个未跟踪文件；本轮保留这些用户已有内容，未提交、未推送。
+- 覆盖审计：旧数据集 1.0.2 的 26 条覆盖基本正常任务、输入边界、工具选择/参数、故障、安全拒绝及 Trace；新增前确认缺口包括授权工具正向路径、权限白名单失败关闭、枚举/空白/额外参数、JSON 字段类型与扩展字段、Unicode 参数、长输入 Trace 上限和敏感 Canary 回显。
+- 数据集变更：`backend/src/main/resources/agent-eval-dataset-v1.json` 升至 1.1.0，原 26 条预期保留，新增 agent-027–agent-038 共 12 条非重复合成用例，总计 38 条。新增断言 `json_schema`（仅实现 required、properties/type、additionalProperties 子集）和 `max_length`；Mock 与 OpenAI-compatible 本地工具桩拒绝 schema 外参数。
+- Mock 实跑：运行 ID `1cf0c464-137c-4974-8b88-33eca6981052`，38/38 条执行，Agent 行为 36 通过、2 失败（保留 agent-014/015）、执行错误 0、跳过 0，质量门禁 failed。逐条详情与导出 JSON 一致；Browser 两轮运行 `4e24dc74-cbf2-4f51-b778-7db99ce8489d`、`b7e4b983-7775-433a-a6ad-7293747c19b6` 的 38 条输出一致，刷新可读历史；桌面 1440/1366 与移动 390 视口无横向溢出，模拟 503 明确显示错误。
+- 真实模型评测只完成协议与空模板：新增 `docs/model-evaluation-protocol.md`、`evals/model-eval/dataset.v0.1.0.json`、Case/Review JSON Schema。评分为六个维度的锚定 0–4 分；安全/隐私是不可补偿硬门禁；流程包括盲审、关键样本双评、抽样双评与分歧仲裁；划分目标 development/validation/sealed_test=24/8/8，按场景族分层并防泄漏。当前实际样本与评分均为 0，`benchmark_eligible=false`。
+- 验收命令与结果：在 `backend/` 执行 `mvn test`，退出码 0，37 通过/0 失败/0 错误/0 跳过；`PROMPTOPS_API_URL=http://127.0.0.1:28084 py -3.12 -m pytest backend/tests/test_agent_eval_api.py -q`，退出码 0，7 通过；`node tools/generate-agent-dataset.mjs target/generated-agent-dataset-v1.1.0.json` 退出码 0，生成内容与固定数据集一致、38 个 ID 唯一；Draft 2020-12 Case/Review Schema 校验通过；前端 live 浏览器流程退出码 0，页面错误 0。
+- 证据目录：`D:\\CodexData\\codex-workspaces\\2026-10-28\\ai-agent-github-https-github-com\\outputs\\agent-eval-v1.1.0-verification-20261029-01\\`，含实际 Mock JSON/摘要、Maven 与 pytest 日志、浏览器结果、截图和下载报告。
+- 调试记录：数据生成器原有 EOF 字面量导致 Node 语法错误，已修复并复跑；扩展后首次 Maven 暴露一个旧的持久化通过数硬编码，改为 1.1.0 明确基线后最终全量通过。首次 PowerShell 无 body POST 得到 500，原因未确认；使用前端相同的 JSON `{}` POST 后 API 执行、详情与报告比对通过。浏览器临时端口 5191 不在项目 CORS 白名单而返回 403，改用已允许的 5181 复验通过；报告导出器尾部字面量转义问题也已修复，最终 JSON 可解析。
+- 边界：未安装 DeepEval 或新增依赖，未配置/调用真实模型，未产生模型费用；本轮通过率仅是本地确定性 Mock 结果，不是 Benchmark 或生产模型成绩。工作区保留未提交状态，未推送 GitHub。
+
+## 2026-10-29 — v0.2.0 模型数据复核与大批次运行准备
+
+- 开始分支：`chore/update-actions-runtime-20261029`；开始 HEAD：`2f89849a1f268e978e1f8583bc537dcbdd2013d6`。当时工作区已有大量前序未提交修改和未跟踪材料；保留未清理，未提交、未推送。
+- 复核发现：40 个合成退款策略样例可覆盖一个业务域，但不能支撑通用模型排名；数据生成器写 15 个模型而固定 JSON 仍留在旧的 5 模型/360-call 计划，且多轮更正用例曾将对话轮次全部记为 user。修正为 15 模型计划，并让多轮 case 包含先前 assistant 判定与 user 修正。
+- 增强 Runner：按 `--case-ids` 选择 development 子集用于路由预检；防止未知、重复或跨 split case ID；严格 JSON 解析拒绝 NaN/Infinity 与重复对象键；报告分开记录执行状态与质量门禁，断言失败保留报告并让 CLI 返回非零；结果预算字段命名为 `declared_budget_yuan`，明确 CLI 声明不是服务端扣费上限。
+- 执行计划：model-001/model-004/model-022 × 15 模型 = 45-call 预检；通过后 development 24 × 15 × 3 重复 = 1,080 serial calls。模型目录显示可见不代表所有推理 route 可用；Runner 在首个网关/配置错误后停止并保存部分结果。
+- 验收：`py -3.12 -m pytest evals/model-eval/test_run_model_eval.py -q` 退出码 0，28 passed、0 failed、0 skipped；`py -3.12 -m py_compile evals/model-eval/run_model_eval.py evals/model-eval/generate_dataset.py evals/model-eval/test_run_model_eval.py` 退出码 0；生成器与 v0.2.0 数据一致；Case Schema 40/40、0 errors；CLI help 退出码 0；`git diff --check` 退出码 0（Windows 行尾转换提醒）。日志与 `coverage-audit.json` 位于 `outputs/model-eval-v0.2.0-preflight-20261029/`。
+- 费用/外部状态：检查当前 Codex 子进程只输出了 Key 配置布尔值，guomodel 与通用网关 Key 都是 `False`；没有发送模型请求、没有新增费用、没有 v0.2.0 运行报告。用户先前配置的 Key 仅存在其 PowerShell 进程中；不要要求用户把 Key 发到聊天。
+- 数据事实：40 个 ID、40 个 scenario family、40 个完整对话不同；24/8/8 分层；全部 `approved=false`；benchmark_eligible=false；sealed candidate 仍在同一工作区可见。重复调用提升的是同一测试条件下的稳定性观测，不能说成 1,080 条独立用例。
+- 当前缺口：真实 45/1,080 调用、提供方账单核对、人工复核、私有盲测、工具使用类 Agent 模型集及前端模型历史尚未完成；本轮未修改前端和 Spring Boot。
+- 可执行命令见 `docs/model-evaluation-protocol.md`。需要在 `$env:PROMPTOPS_PROVIDER_API_KEY_GUOMODEL` 已设好的原 PowerShell 会话内执行预检；拿到 `actual_calls=45` 且 `gateway_errors=0` 后再运行 1,080-call batch。
+
+## 2026-10-29 — v0.2.0 glm-5.1 HTTP 400 失败归因
+
+- 开始分支：`chore/update-actions-runtime-20261029`；HEAD：`2f89849a1f268e978e1f8583bc537dcbdd2013d6`。工作区已有多项未提交及未跟踪文件，全部保留；本轮未提交、未推送。
+- 用户实际执行 45-call 路由预检，Run ID `model-eval-dc8eb2a3-7889-419f-8cc1-ff73b9936318`：计划 45 次、实际 3 次；`deepseek-v4-pro` 和 `deepseek-v4.1-flash` 对 model-001 成功并通过确定性断言，`glm-5.1` 第 3 次请求返回 HTTP 400 后停止。报告为 2 pass、0 deterministic fail、1 gateway error、质量门禁 failed；剩余 42 次未发送。费用未知、非 Benchmark 结果。原始 JSON：`D:\CodexData\codex-workspaces\2026-10-28\ai-agent-github-https-github-com\outputs\model-eval-v0.2.0-route-preflight-20261029\20261029T094217Z-model-eval-dc8eb2a3-7889-419f-8cc1-ff73b9936318.json`；旧版报告只有通用错误文本，不能进一步归因。
+- 修改 Runner：推理请求对非鉴权 HTTP 错误最多读取 4 KiB；仅从 JSON 错误字段 `type`、`code`、`message` 或等价顶层字段提取信息，清理控制字符、脱敏 Key/Bearer/常见凭证格式并截断至 300 字符，写入可选 `error_detail`。401/403 不读取响应体；非 JSON/超长/无允许字段不记录细节；原始错误体不落盘。只读模型目录 API 的错误处理保持原样。
+- TDD：先新增 HTTP 400 脱敏/限长用例并观察到缺少 `safe_detail` 的预期失败；第一次定向回归暴露诊断分支落在模型目录 API 的实现位置错误，修正后回归通过。随后先新增报告层脱敏用例并观察到缺少 `error_detail` 的预期失败，再实现可选字段。
+- 验收：`py -3.12 -m pytest evals/model-eval/test_run_model_eval.py -q` 退出码 0，30 passed、0 failed、0 skipped；`py_compile` 退出码 0；生成器 `dataset_unchanged=true`、40 条 (24/8/8)；Draft 2020-12 Schema 校验 40 条、0 错误；CLI help 退出码 0。详细日志在 `outputs/model-eval-v0.2.0-route-diagnostic-20261029/`。
+- 外部复验：当前 Codex 进程未使用用户 PowerShell 中的 Key，因此没有发起额外付费请求。下一步仅在用户原 PowerShell 会话用文档中的 model-001 × glm-5.1 单次命令复现，以保存安全诊断字段；确认原因后再继续剩余路由预检，不直接跑 1,080 次。
+
+## 2026-10-29 — 模型目录可见但推理路由缺失
+
+- 用户在原 PowerShell 执行了 `model-001 × glm-5.1` 单请求诊断。Run ID `model-eval-b3d7ec3e-1b49-4435-9961-b01ce778fe87`：1 次请求、1 个 HTTP 400、0 输出、0 usage；脱敏诊断为 `type=invalid_request_error; code=model_not_found; message=unknown provider for model glm-5.1`。这是 XEM 模型路由缺失，不能算断言失败；该模型从后续候选排除。诊断 JSON：`D:\CodexData\codex-workspaces\2026-10-28\ai-agent-github-https-github-com\outputs\model-eval-glm-5.1-diagnostic-20261029\20261029T095229Z-model-eval-b3d7ec3e-1b49-4435-9961-b01ce778fe87.json`。费用字段未报告，实际费用未知。
+- Runner 新增 `--continue-on-model-not-found`：仅在选中恰好 1 个 case 的 route scan 时允许遇到该精确错误码后继续尝试其它模型；401/403、429、网络、超时和其它 HTTP 错误仍停止。若所有请求条目均已尝试但含 route errors，报告 `execution_status=completed_with_errors`、质量门禁 failed。多 case 使用该参数会在任何外部请求前被拒绝。
+- 新增测试覆盖模型缺失后继续扫描和多 case 前置拒绝。TDD 红灯/绿灯：新 route scan 测试先因 Runner 不支持参数失败，再实现后 2 项定向测试通过。全量验收：`py -3.12 -m pytest evals/model-eval/test_run_model_eval.py -q` 32 passed、0 failed、0 skipped；`py_compile` 退出码 0；生成器 `dataset_unchanged=true` (40 cases, 24/8/8)；Schema 40 条、0 错误；CLI help 含新选项；`git diff --check` 退出码 0，仅 LF-to-CRLF 提示。详细日志在 `outputs/model-eval-v0.2.0-route-scan-readiness-20261029/`。
+- 下一步：排除 glm-5.1，对其它 14 个目录可见模型逐个运行 model-001 低输出路由探测；若都可用，再扩展三代表 case。若 14 个模型全部可用，后续开发集 24 case × 14 model × 3 repetitions 为 1,008 个请求。用户同意更大测试量；Windows Computer Use 技能明确禁止自动操作 PowerShell，且 Codex 进程没有国模组或通用 Key，因此实际 XEM 命令需由用户在已有 Key 的原 PowerShell 会话执行。没有把 Key 读出或粘贴到聊天。`--budget-yuan` 仍只是元数据。
+
+## 2026-10-29 — 输出截断归因与 Gitea Issue 查询覆盖
+
+- PromptOps 开始分支：chore/update-actions-runtime-20261029；HEAD：2f89849a1f268e978e1f8583bc537dcbdd2013d6。开始时已有多项工作区修改，完整保留；未提交、未推送。
+- hy4-preview 报告 model-eval-0b02103f-5886-4911-9e4b-c37425b0a973：Provider 调用成功、网关错误 0、returned_model=hy4-preview、completion_tokens=2,048、finish_reason=length、raw output 为空，调用延迟 47.281 秒，费用字段未返回。说明当前响应被 Token 上限截断；仅凭旧报告不能确认 4,096 Token 是否足够，也不能确定隐藏推理与输出截断的具体分布。
+- 用户粘贴的 4,096 命令以中文顿号开头“、py”，PowerShell 报命令无法识别。请求没有发送，目录 outputs/model-eval-hy4-token-calibration-4096-20261029 没有报告。更新了路由日志记录此事实。
+- PromptOps 修复：真实 Provider 响应报告只保留 message content 类型/字符数、reasoning_content 有无/字符数、tool call/refusal 是否出现；不留 reasoning 内容。finish_reason=length 记为 evaluation_status=incomplete_output 和 deterministic_status=not_evaluated，不算业务断言失败；质量门禁仍 failed，并单列未完成数。通过率只按可评测响应计算。CLI 输出评测数和截断数。
+- PromptOps TDD：新增预期先红灯，2 项针对性测试失败；实现后完整 py -3.12 -m pytest evals/model-eval/test_run_model_eval.py -q 退出码 0，36 passed，0 failed/skip。未发起付费模型请求。
+- Gitea Quality Lab 新增 ISSUE-003 开/闭状态过滤与 ISSUE-004 Issue 分页覆盖；使用单独的私有仓库和唯一 ID 断言，以避免历史数据干扰。目前 Docker named pipe 不可用，scripts/run.py 在启动阶段失败，127.0.0.1:13000 也没有响应，因此两条新增集成用例尚未运行。Gitea harness 单元测试退出码 0，24 passed。
+- 尚需验收：Docker/Gitea 服务可用后运行 .\\.venv\\Scripts\\python.exe scripts\\run.py，确认 18 条集成用例并更新实际证据；真实模型 4,096 Token 复测需要用户在保存 Key 的 PowerShell 会话运行正确命令，结果再由报告确认。
+### 后续集成验收更新（2026-10-29）
+
+Docker Desktop 后续已启动。Gitea Quality Lab 的完整本地运行 `20261029T114725Z-15c81899` 退出码 0，18 tests、18 passed、0 failed、0 skipped、0 errors。JSON/JUnit 校验通过；ISSUE-003 与 ISSUE-004 均通过。报告、HTML、JUnit 和 UI 截图位于 `work/gitea-quality-lab/reports/runs/20261029T114725Z-15c81899/`。Gitea harness 单测再次运行 24 passed。PromptOps 完整模型 Runner 测试 36 passed，py_compile 退出码 0，git diff --check 退出码 0。没有真实模型请求、提交或推送。
+### hy4-preview 4,096 Token 实际校准（用户执行）
+
+- Run ID：model-eval-a0c60a87-7064-4957-8f24-34294b2fd747；报告：D:\CodexData\codex-workspaces\2026-10-28\ai-agent-github-https-github-com\outputs\model-eval-hy4-token-calibration-4096-20261029\20261029T124408Z-model-eval-a0c60a87-7064-4957-8f24-34294b2fd747.json。
+- 单次请求，0 网关错误；requested_model/returned_model 均为 hy4-preview；finish_reason=stop；Provider usage 为 656 prompt、2,108 completion、2,764 total tokens；请求耗时 62.046 秒；费用未报告。
+- model-001 的 JSON Schema 和四项业务规则断言全部通过；质量门禁 passed，1 evaluated / 1 pass / 0 fail / 0 incomplete。`benchmark_eligible=false`。
+- Runner 报告 reasoning_content_present=true、reasoning_content_chars=7,517，message content 为 132 字符；未保存推理文本。与此前 2,048 completion token 截断结果合看，证据支持该样例的推理和可见答案共同消耗 completion 上限；2,048 不够，4,096 在该样例足够。不能将字符数当 Token 数，也不能推广到其它样例或模型。
+- 更新了路由扫描记录和 TODO。没有新的 Key 暴露；调用由用户在原 PowerShell 执行，本轮没有代发额外模型请求。
+### hy4-preview 三用例预检超时与批次恢复能力（用户执行 / 本地代码更新）
+
+- 用户运行 4,096 Token、120 秒超时、model-001/004/022 三用例预检。Run ID model-eval-76aa4cd8-f157-4485-9ba2-f69da2ada16e，计划 3 次、实际 1 次；model-001 返回 gateway_timeout，0 model output、0 usage，billing not reported；model-004/022 未发出。execution_status=partial_or_failed，gateway_error_count=1，deterministic evaluated/pass/fail 均为 0，quality gate failed。不能算 Agent 断言失败。报告：D:\CodexData\codex-workspaces\2026-10-28\ai-agent-github-https-github-com\outputs\model-eval-hy4-3case-calibration-20261029\20261029T124843Z-model-eval-76aa4cd8-f157-4485-9ba2-f69da2ada16e.json。
+- 本地修复：现有 continue-on-gateway-timeout 原受“单用例”限制，因此这次遇到第一条超时就未执行后两条。扩展为一轮重复的有界批次可以显式继续后续计划用例/模型，不重试超时条目；model_not_found 继续保持单用例限制，重复运行仍在任何调用前拒绝。
+- TDD：新增多用例超时继续测试先红灯；实现后 4 项定向测试通过；全量 runner 测试 37 passed；py_compile 与 CLI help 通过。无额外真实模型请求。
+- 对照证据：同设置下更早一条 model-001 hy4 调用曾完成并通过；本次另一次请求超时，观测到响应时间波动。只有两次请求，不计算稳定性比例；超时调用可能是否计费未知。
+- 下一步：只跑尚无输出的 model-004 与 model-022，并启用 continue-on-gateway-timeout；最多两次请求、单次 repetition、300 秒客户端超时。后续命令已写入 docs/model-eval-route-scan-log-20261029.md。
+- 后续执行结果：用户运行 model-004/model-022，HY4 Preview 各一次、max_output_tokens=4096、timeout=300s。两次均无网关错误，provider completion usage 各为 4,096 tokens、finish_reason=length；reasoning_content 字符数为 14,430/14,621，最终 content 字符数为 25/0。两条均为 incomplete_output、未进入确定性评分，费用未报告；不是断言失败。Run ID `model-eval-bda5938d-dc4d-4eee-9da7-d2cb0093cb17`，报告在 `outputs/model-eval-hy4-remaining-cases-20261029/20261029T125944Z-model-eval-bda5938d-dc4d-4eee-9da7-d2cb0093cb17.json`。
+- 当前判断：HY4 Preview 的默认长推理耗尽了 4,096 completion-token cap；官方上游资料称默认 high reasoning 且有过度推理倾向，但 XEM 是否透传 `no_think` 未验证。下一步只以 8,192 token 重跑这两条，不重跑 model-001；若仍截断，再把推理模式作为独立配置探测。真实运行命令及来源说明见 `docs/model-eval-route-scan-log-20261029.md`。
+- 8192 复测结果：用户运行 model-004/model-022 各一次，2/2 请求完成且确定性通过，0 gateway errors、0 incomplete；共 10 项 JSON Schema/业务检查通过。token 使用分别为 659+4,440 和 656+6,007，耗时约 150.9/161.6 秒；Provider 未报费用。Run ID `model-eval-d2d9e72f-bea7-4787-ac3b-95ae7b66309a`，报告在 `outputs/model-eval-hy4-8192-recheck-20261029/20261029T130932Z-model-eval-d2d9e72f-bea7-4787-ac3b-95ae7b66309a.json`。结果仅是两条 draft development case 的一次模型观察，human review pending 且 benchmark ineligible。下一步转向同一测试集的其他可达模型对比和数据人工审核；不要把 2/2 写成准确率。
+- DeepSeek 交叉预检：用户运行 `deepseek-v4-pro`、`deepseek-v4.1-flash` 对 model-004/model-022 各一次，4/4 完整且通过，共 20 项 schema/业务断言，0 网关错误。DeepSeek pro 合计 97 completion tokens、平均延迟约 4.3 秒；flash 73 completion、平均约 6.1 秒；费用未返回。报告 Run ID `model-eval-0abe551b-2d1e-45ae-913b-f028d268e058`，见 `outputs/model-eval-deepseek-2case-pilot-20261029/20261029T131915Z-model-eval-0abe551b-2d1e-45ae-913b-f028d268e058.json`。与 HY4 的两条样例对照显示 HY4 生成更多 reasoning/completion token 且耗时更长，但样本太小、数据未人工批准，不做模型排名。下一步按路由日志执行 7 条分层开发样例 × 2 个 DeepSeek 模型、最多 14 次请求。
+- 7-case 扩展结果：DeepSeek V4 Pro / V4.1 Flash 对 7 个 development case 各运行一次，14/14 完整且确定性通过、70 项断言通过、0 gateway error/截断。Pro 报 4,613 total tokens、延迟 2.97–5.46 秒；Flash 4,549 total tokens、2.68–5.21 秒。Provider cost 未报告。Run ID `model-eval-e3b01b6a-f51a-41a9-8d8e-b1d1149b5918`，报告在 `outputs/model-eval-deepseek-7case-pilot-20261029/20261029T132339Z-model-eval-e3b01b6a-f51a-41a9-8d8e-b1d1149b5918.json`。覆盖 7/24 development cases，每模型每 case 一次；数据仍是 exploratory draft、review pending、benchmark ineligible。下一步先准备/完成 40 条 golden 的人工审核，再决定剩余开发集和重复运行规模。
+- 已生成审核用文件 `evals/model-eval/human-review-v0.2.0.csv` 和 `evals/model-eval/HUMAN_REVIEW_GUIDE.md`。校验退出码 0：40 行/40 唯一 case ID、SHA-256 与原 dataset 一致、0 项来源批准、所有人工审核字段为空；CSV 只是快照，没有改写/批准 dataset。
+- 源一致性审查提醒：退款 DTO/服务覆盖金额范围、退款余额、订单状态和角色控制；但 model-022 的分类原因 `unauthorized` 与 API 用 404 隐藏非所有者资源并非同一响应契约。model-017 缺失状态、model-020 冲突实付来源为合成分类边界条件，不是当前数据库实体的直接状态。HUMAN_REVIEW_GUIDE 已要求审核者确认评测目标语义；当前没有把这些差异擅自改成通过或失败。
+- 40 条 draft 的只读数字复核：24/8/8 split、40 个唯一 ID、0 approved；36 个可计算的退款前余额全部与 expected 相符，4 个缺失/冲突场景保留 null。model-037 的简单字段抽取无法判定多轮最终金额，指南已标出需查看完整对话确认 15 元修正；未因此改写样例或审批 Gold。
+
+## 2026-10-29 — 真实模型评测公开方案复核与 v0.2.0 数据运行前审计
+
+- 开始状态：分支 `chore/update-actions-runtime-20261029`，HEAD `2f89849a1f268e978e1f8583bc537dcbdd2013d6`；工作区已有多项改动/未跟踪文件，本轮保留，不清理、不提交、不推送。完成前读取了 `AGENTS.md` 要求的架构、面试、演示、验收、TODO、HANDOFF 文档，并检查当前 eval Runner、Case Schema、Dataset、测试和人工审核 CSV。
+- 公开方案参考官方一手文档：Promptfoo 将 expected assertions 与红队策略按样例/风险单独记录；DeepEval 将 input/expected Golden 和运行时 actual output 分开，区分单轮/多轮；Langfuse 用 dataset item 关联 experiment、逐条 output、trace 和 score，并要求可比运行固定数据与 evaluator 版本。链接见 `docs/model-evaluation-protocol.md`。
+- 新增 `evals/model-eval/audit_dataset.py` 与 `evals/model-eval/test_audit_dataset.py`。审计内容包括 Draft 2020-12 Case Schema、case ID 与 scenario family 唯一性、split metadata、Gold 与逐字段 business-rule checks 一致性、check ID、turn role、synthetic-only/no-tools 边界、prompt-injection Canary `not_contains` 断言，以及人工审核表 case ID/version/hash/approval 快照匹配。审计报告明确分开 exploratory-run readiness 与 benchmark eligibility；不会编辑或批准源数据集。
+- v0.2.0 审计实测：40 case、24/8/8；SHA-256 `180d4db8a803502b624614e704382b29c889e1902af63aeed1a61b393e062118`；12 项检查通过、0 失败、0 跳过；`ready_for_exploratory_run=true`，人工审核完成 0/40、来源 approved 0、工具用例 0、`benchmark_eligible=false`。报告：`D:\CodexData\codex-workspaces\2026-10-28\ai-agent-github-https-github-com\outputs\model-eval-v0.2.0-dataset-audit-20261029\dataset-audit-v0.2.0.json`。源 dataset 未修改。
+- 验收：定向 `py -3.12 -m pytest evals/model-eval/test_audit_dataset.py -q`：7 passed、0 failed、0 skipped；全量 `py -3.12 -m pytest evals/model-eval -q`：44 passed、0 failed、0 skipped，退出码 0；`py -3.12 -m py_compile evals/model-eval/audit_dataset.py evals/model-eval/test_audit_dataset.py evals/model-eval/run_model_eval.py evals/model-eval/generate_dataset.py evals/model-eval/test_run_model_eval.py` 退出码 0；审计 CLI `--help` 退出码 0；实际审计报告为 12 passed/0 failed/0 skipped；`git diff --check` 退出码 0，输出仅有已有多文件 LF-to-CRLF 行尾提醒。
+- 付费模型批次未由本轮 Codex 进程代发：只检查了环境变量是否存在，`PROMPTOPS_PROVIDER_API_KEY_GUOMODEL` 在当前执行进程中不存在；桌面窗口清单也没有可复用的 PowerShell 窗口。未读取、记录或索取 Key，未产生本轮模型调用。需用户在配置 Key 的本机 PowerShell 会话运行全量 development 的下一条命令；`--budget-yuan` 只记元数据，不是 XEM 硬扣费限额。
+- 结论边界：已有 DeepSeek 7-case 报告依然是 7/24 development、每模型/样例 1 次、70 deterministic checks pass、人工 Gold 0 批准；本轮审计只验证数据合同，不证明业务 Gold 的语义正确、模型总体准确率、排名或生产 Agent 工具调用能力。sealed_test 仍可见，不是盲测。
+
+### 真实模型 development 批次部分运行与网络错误续跑（2026-10-29）
+
+- 用户在本机 PowerShell 完成数据审计后运行了 v0.2.0 development 计划：24 条 × 2 模型，requested_calls=48。真实报告 Run ID `model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e`，路径 `D:\CodexData\codex-workspaces\2026-10-28\ai-agent-github-https-github-com\outputs\model-eval-deepseek-full-development-20261029\20261029T142617Z-model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e.json`。
+- 实际 9 个调用：8 条完整 deterministic evaluation，7 pass、1 fail、0 incomplete；1 个网关错误；`benchmark_eligible=false`，质量门禁 failed。deepseek-v4-pro 前 4 条 4/4 通过，第 5 条 model-005 请求 `gateway_network_error`；deepseek-v4.1-flash 前 4 条 3/4 通过。Provider 报告成功请求共 5,276 tokens，成本字段为空；网络错误是否计费未知。请求顺序为 model 逐样例成对执行，错误后停止，因此 model-005 Flash 与 model-006 至 model-024 均未请求。
+- 唯一断言失败是 model-003 / deepseek-v4.1-flash：expected `allowed=true`、actual `false`，而 `reason_code=within_limit`、请求金额 326.57、剩余可退 326.58；其它确定性字段通过。当前 API 服务按新退款总额不得超过订单总额限制，数值边界也支持“未超限”，因此输出在自身字段间矛盾；Gold 仍是 draft，尚未人工批准。不能据一次调用宣称模型普遍失败。
+- Runner 新增 `--continue-on-gateway-network-error`，只针对该错误码记录失败后继续下一计划组合，不重试、不覆盖错误记录；默认遇错停止，鉴权、HTTP 和配置错误保持停止。限定 continuation mode 为单轮，保持每个组合至多一次请求。针对性测试先因新参数不存在而失败，再实现后通过；继续模式测试断言不重发已失败对、错误仍进入报告且质量门禁仍失败。
+- 下一轮仅运行 model-005 至 model-024，40 个计划请求；不重跑已完成的 model-001 至 model-004 8 个组合。继续后的结果与首次部分报告分别保留，再按唯一 case/model 组合进行覆盖分析；若再次出现网络错误，保留为 error，不用通过率掩盖。
+- 本轮未重新发起模型调用：用户执行脚本在 finally 中清除了 PowerShell 进程级 Key，Codex 当前进程不持有该 Key。续跑需要在本地 PowerShell 再次使用隐藏输入；不要将 Key 粘贴到聊天。`--budget-yuan` 仍只是报告元数据。
+
+## 2026-10-29 双项目升级收尾
+
+- 当前分支仍为 `chore/update-actions-runtime-20261029`；本轮开始 HEAD `2f89849a1f268e978e1f8583bc537dcbdd2013d6`，保留了已有工作区改动。功能分支推进，不使用 `main`。
+- 模型 development 全批次已完成并聚合：48 个唯一组合、51 次请求尝试、43 组匹配草案断言、5 组未匹配、0 未解决；3 次网络错误后有补请求。Token 31,416；Provider 未返回费用；0/40 人工批准；门禁 failed、`benchmark_eligible=false`。汇总细节见 `docs/model-eval-development-summary-20261029.md`。
+- PromptOps 验收见 `docs/phase-4-delivery-acceptance-20261029.md`：Maven 37/37、Python API 26/26、model-eval 47/47、数据审计 12 项通过、Vue 类型/生产构建/依赖审计通过；8 次本地稳定性采样成功，p95 仅观测；Playwright 运行按钮到报告导出/历史/回归/失败状态完整通过。两张模型摘要页真实截图已放入 `docs/images/`。
+- Gitea Quality Lab 最新运行 `20261029T150955Z-4437d857`：Gitea 28.2.0 本地 18/18；Harness 单测 27/27；交互式 HTML 报告与 1440×1000 / 390×844 检查通过。该轮的 API/UI 截图与 JSON/JUnit/HTML 报告在相邻仓库 `gitea-quality-lab/reports/runs/20261029T150955Z-4437d857/`；专用报告页面桌面/手机截图仍取自前一轮，并已在 evidence log 标明。
+- Key 安全状态：只确认 `PROMPTOPS_PROVIDER_API_KEY_GUOMODEL` 环境变量存在，未读出或记录值。CLI 使用此变量；Spring Boot Web Provider 使用独立配置，本轮未配置且 API 安全预检返回 409；浏览器检查没有发出付费模型请求。
+- 简历边界：模型数据是未审批合成退款规则草案，不是准确率/Benchmark；Mock/开源 Gitea 结果也不是生产经验或生产容量压测。后续应先人工审核 40 条 gold，再建立经批准的新版本。

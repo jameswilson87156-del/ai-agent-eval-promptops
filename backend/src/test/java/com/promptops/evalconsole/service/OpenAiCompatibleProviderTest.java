@@ -61,6 +61,24 @@ class OpenAiCompatibleProviderTest {
     }
 
     @Test
+    void rejectsUndeclaredToolArgumentsBeforeLocalExecution() throws Exception {
+        startServer((body, requestIndex) -> requestIndex == 1
+                ? jsonResponse(toolCall("weather_lookup", "{\"city\":\"东京\",\"admin_override\":true}"), "tool_calls")
+                : jsonResponse(decision("completed", "收到参数错误。", false, false), "stop"));
+        var provider = provider(5, 0, 1);
+        JsonNode input = mapper.readTree("""
+                {"prompt":"查询东京天气。","allowed_tools":["weather_lookup"],"permissions":[]}
+                """);
+
+        Map<String, Object> result = provider.execute(input, new ArrayList<>());
+        Map<String, Object> call = ((List<Map<String, Object>>) result.get("tool_calls")).get(0);
+
+        assertThat(call).containsEntry("status", "invalid_arguments").containsEntry("error", "Unexpected argument: admin_override")
+                .doesNotContainKey("result");
+        assertThat(requestBodies).hasSize(2);
+    }
+
+    @Test
     void retries429OnceThenAcceptsSuccessfulResponse() throws Exception {
         startServer((body, requestIndex) -> requestIndex == 1
                 ? new StubResponse(429, "{\"error\":\"rate limited; secret=do-not-store\"}")

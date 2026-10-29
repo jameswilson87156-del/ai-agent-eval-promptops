@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://promptops.local/schemas/model-eval-case-v0.1.0.json",
+  "title": "PromptOps Real Model Evaluation Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "scenario_family",
+    "split",
+    "risk_level",
+    "input",
+    "task_intent",
+    "success_criteria",
+    "forbidden_outcomes",
+    "deterministic_checks",
+    "human_review",
+    "provenance"
+  ],
+  "properties": {
+    "case_id": { "type": "string", "pattern": "^model-[0-9]{3,}$" },
+    "scenario_family": { "type": "string", "minLength": 1 },
+    "split": { "enum": ["development", "validation", "sealed_test"] },
+    "risk_level": { "enum": ["low", "medium", "high", "critical"] },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["turns"],
+      "properties": {
+        "turns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["role", "content"],
+            "properties": {
+              "role": { "enum": ["user", "assistant"] },
+              "content": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "available_tools": { "type": "array", "items": { "type": "string" } },
+        "permission_scopes": { "type": "array", "items": { "type": "string" } },
+        "context": { "type": "object" }
+      }
+    },
+    "task_intent": { "type": "string", "minLength": 1 },
+    "success_criteria": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+    "forbidden_outcomes": { "type": "array", "items": { "type": "string" } },
+    "evidence_refs": { "type": "array", "items": { "type": "string" } },
+    "deterministic_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["check_id", "kind", "expected"],
+        "properties": {
+          "check_id": { "type": "string" },
+          "kind": { "enum": ["json_schema", "tool_name", "tool_arguments", "tool_order", "tool_count", "forbidden_tool", "contains", "not_contains", "business_rule"] },
+          "path": { "type": "string" },
+          "expected": {},
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "human_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "applicable_dimensions", "critical_failure_conditions"],
+      "properties": {
+        "required": { "type": "boolean" },
+        "applicable_dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["task_success", "tool_correctness", "groundedness", "instruction_following", "format_compliance", "safety_privacy"] }
+        },
+        "critical_failure_conditions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origin", "source_refs", "generation_config", "approved"],
+      "properties": {
+        "origin": { "enum": ["user_provided", "deepeval_docs_generation", "deepeval_context_generation", "deepeval_seed_augmentation", "curated_from_project_requirements"] },
+        "source_refs": { "type": "array", "items": { "type": "string" } },
+        "generation_config": { "type": "object" },
+        "approved": { "type": "boolean" },
+        "approved_by": { "type": ["string", "null"] },
+        "approved_at": { "type": ["string", "null"], "format": "date-time" }
+      }
+    }
+  }
+}

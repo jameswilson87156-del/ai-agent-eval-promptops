@@ -2,7 +2,7 @@
 
 ## 一句话定位
 
-用固定合成数据驱动的本地 Agent 评测控制台：可重复执行 Mock Harness，也提供可选 OpenAI-compatible Provider；保存逐条断言、失败原因、Trace 和 JSON 快照。本轮实际通过的是 Mock 与本地 Stub 验收，没有真实模型评测结果。
+用固定合成数据驱动的本地 Agent 评测控制台：可重复执行 Mock Harness，也提供独立 OpenAI-compatible 模型评测 Runner；保存逐条断言、失败原因、Trace 和 JSON 快照。v0.2.0 的 40 条合成退款规则草案已完成 24 条 development × 2 个 DeepSeek 路由的单轮探索运行；48 个唯一组合中 43 组匹配草案断言、5 组未匹配。Gold 尚未人工审批，不能称准确率或 Benchmark。
 
 ## 重点问题与回答
 
@@ -12,11 +12,15 @@
 
 ### 它有没有真实模型运行数据？
 
-没有。本轮浏览器验收在 Provider 状态未配置时运行；Provider API 测试使用 loopback HTTP Stub，没有请求外部服务。报告中的通过率只描述本地确定性 Mock。
+曾有一轮 v0.1.0 小样本，GLM-5.3-Flash 和 DeepSeek V4.1 Flash 各跑 3 条未审批草案，共 6 次请求、Provider 报告 1,137 Token、费用未知。4 个原因码失败来自提示未定义枚举，因此不能把旧计数当准确率。v0.2.0 的 40 条退款策略草案已对 development 24 条分别测试两个 DeepSeek 路由一次：48 个唯一组合完成，51 次请求尝试（含 3 次网络错误和 3 次补请求），43 组匹配当前断言、5 组未匹配，Provider 报告 31,416 Token，费用未知。该数据仍待人工审批，且质量门禁失败。它是单一合成业务域的 JSON 分类任务，不是工具使用测试；不能称为模型准确率、排名或 Benchmark。详见[运行摘要](model-eval-development-summary-20261029.md)。
+
+### 为什么 2/6 通过不能直接当模型通过率？
+
+因为 4 个失败断言要求精确的 `within_limit` 或 `exceeds_remaining_amount`，但当时模型提示只说 `reason_code` 是字符串，没有告诉模型这些允许值。评测器把未说明的契约当成 goldens，造成了设计偏差。旧报告与 v0.1.0 保留；v0.2.0 固定输出契约、业务 gold 和断言的一致性，但检查生成器一致只能证明数据内部一致，不能证明所有业务 gold 都正确；还必须经领域人工复核、真实模型执行和账单核对，才能谈模型表现。
 
 ### 如何定义测试预期？
 
-测试集 1.0.2 有 26 条原创合成场景，每条含输入、预期行为和可执行断言。类别包括正常任务、输入边界、工具路由/参数、工具错误、安全和完成/Trace。安全用例要求拒绝越权；当模型正确拒绝，断言应通过。
+Agent Mock 测试集 1.1.0 有 38 条原创合成场景；独立模型评测 v0.2.0 有 40 条退款规则场景。模型集每条都有 scenario family、split、expected_output、字段级确定性断言和来源 provenance；两套数据不能相互复制或混算。
 
 ### 如何区分执行器故障和 Agent 行为失败？
 
@@ -32,7 +36,7 @@ Trace 记录可观察步骤、顺序、工具名、参数、结果、耗时和�
 
 ### Provider 怎么工作？
 
-AgentProvider 提供 Mock 和 OpenAI-compatible 实现。OpenAI-compatible Provider 使用服务端环境变量，具有超时、有限重试、对 429/5xx/非法 JSON/空响应/结构错误分类和脱敏；真实 Provider 错误与断言失败分离。测试使用本地 Stub，不需要 Key，也不产生外部调用。
+AgentProvider 提供 Mock 和 OpenAI-compatible 实现。Agent Eval Provider 使用服务端配置的超时和有限重试，对 429/5xx/非法 JSON/空响应/结构错误分类并脱敏；独立模型 Runner 按 XEM 分组 Key 串行发送请求，不重试、禁用工具、最多 20 个模型和 5,000 次客户端请求、单次最多 256 输出 Token。常用执行默认 200 请求上限；`--budget-yuan` 只是声明元数据，不是网关硬账单上限。真实 Provider 错误与断言失败分开记录；本地自动化测试使用 Stub，不需要 Key。
 
 ### 为什么当前比较不叫 Prompt V1/V2？
 
@@ -40,7 +44,7 @@ AgentProvider 提供 Mock 和 OpenAI-compatible 实现。OpenAI-compatible Provi
 
 ### 通过率有什么限制？
 
-本轮两次完整浏览器 Mock 运行都保留 agent-014 和 agent-015 两个失败：各 24/26 行为通过、2 失败、0 执行错误、0 跳过，门禁为 failed。该比例只是一轮固定 Mock 执行的描述统计，不能代表真实模型或外部任务成功率。
+数据集 1.0.2 的两次完整浏览器 Mock 运行都保留 agent-014 和 agent-015 两个失败：各 24/26 行为通过、2 失败、0 执行错误、0 跳过，门禁为 failed。这是历史描述统计，不能代表真实模型或 1.1.0。
 
 ### 为什么使用 H2 快照？
 

@@ -35,6 +35,14 @@ jobs:
         run: npm audit --audit-level=high
       - name: Install pytest
         run: python -m pip install pytest
+      - name: Model evaluation runner and dataset-audit tests
+        run: python -m pytest evals/model-eval -q
+      - name: Audit the model evaluation dataset
+        run: >-
+          python evals/model-eval/audit_dataset.py
+          --dataset evals/model-eval/dataset.v0.2.0.json
+          --schema evals/model-eval/case.v0.2.0.schema.json
+          --review-csv evals/model-eval/human-review-v0.2.0.csv
       - name: Validate evaluation dataset
         run: python -m pytest backend/tests/test_agent_eval_api.py -q -k dataset
       - name: Start local evaluation API

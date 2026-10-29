@@ -1,0 +1,156 @@
+{
+  "audit_schema_version": "1.0.0",
+  "created_at_utc": "2026-10-29T15:03:54+00:00",
+  "dataset": {
+    "dataset_id": "promptops-synthetic-refund-policy-model-eval",
+    "dataset_version": "0.2.0",
+    "status": "exploratory_draft",
+    "case_count": 40,
+    "sha256": "180d4db8a803502b624614e704382b29c889e1902af63aeed1a61b393e062118",
+    "split_counts": {
+      "development": 24,
+      "sealed_test": 8,
+      "validation": 8
+    },
+    "category_counts": {
+      "amount_boundary": 5,
+      "amount_validation": 5,
+      "authorization": 4,
+      "idempotency": 3,
+      "input_consistency": 3,
+      "missing_input": 5,
+      "multi_turn": 1,
+      "normal_refund": 2,
+      "order_state": 4,
+      "prompt_injection": 4,
+      "request_validation": 4
+    },
+    "scenario_family_count": 40
+  },
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "warning": 0
+  },
+  "checks": [
+    {
+      "name": "case_json_schema",
+      "status": "passed",
+      "details": [],
+      "metrics": {
+        "case_count": 40,
+        "schema_path": "case.v0.2.0.schema.json"
+      }
+    },
+    {
+      "name": "unique_case_ids",
+      "status": "passed",
+      "details": [],
+      "metrics": {
+        "unique_count": 40,
+        "case_count": 40
+      }
+    },
+    {
+      "name": "unique_scenario_families",
+      "status": "passed",
+      "details": [],
+      "metrics": {
+        "unique_count": 40,
+        "case_count": 40
+      }
+    },
+    {
+      "name": "split_counts_match_metadata",
+      "status": "passed",
+      "details": [],
+      "metrics": {
+        "actual": {
+          "development": 24,
+          "sealed_test": 8,
+          "validation": 8
+        },
+        "declared": {
+          "development": 24,
+          "validation": 8,
+          "sealed_test": 8
+        },
+        "unexpected": []
+      }
+    },
+    {
+      "name": "golden_matches_deterministic_checks",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "unique_deterministic_check_ids",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "input_turn_contract",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "synthetic_data_boundary",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "prompt_injection_canary_guard",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "approval_provenance_contract",
+      "status": "passed",
+      "details": []
+    },
+    {
+      "name": "review_worksheet_matches_dataset",
+      "status": "passed",
+      "details": [],
+      "metrics": {
+        "worksheet_path": "human-review-v0.2.0.csv",
+        "row_count": 40
+      }
+    },
+    {
+      "name": "benchmark_eligibility_guard",
+      "status": "passed",
+      "details": []
+    }
+  ],
+  "ready_for_exploratory_run": true,
+  "readiness_blockers": [],
+  "benchmark_eligible": false,
+  "human_review": {
+    "row_count": 40,
+    "reviewed_case_count": 0,
+    "pending_case_count": 40,
+    "approved_case_count": 0,
+    "dataset_approved_case_count": 0,
+    "rubric_version": "human-rubric-0.1.0"
+  },
+  "scope": {
+    "domain_scope": "Synthetic order/refund policy classification only; not a general-purpose LLM benchmark and not an Agent tool-use evaluation.",
+    "tool_use_evaluation": false,
+    "tool_use_case_count": 0,
+    "sealed_test_is_blind": false,
+    "disclaimers": [
+      "No tool calls are enabled or asserted; this dataset does not evaluate Agent tool use.",
+      "This dataset is explicitly marked benchmark_eligible=false.",
+      "The sealed_test candidate is visible in the repository and is not blind."
+    ]
+  },
+  "benchmark_blockers": [
+    "All cases are unapproved drafts and need domain-owner review.",
+    "The sealed_test candidate is stored visibly in this repository; it is not a confidential blind holdout.",
+    "Human score calibration, double-review coverage, and reviewer agreement have not been measured.",
+    "The set covers one synthetic refund-policy domain and cannot support broad model claims.",
+    "Model provider billing and underlying route/version are not fully verifiable from this gateway."
+  ]
+}

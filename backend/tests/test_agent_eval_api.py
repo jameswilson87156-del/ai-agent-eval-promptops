@@ -18,9 +18,9 @@ def load_dataset():
 def test_dataset_has_unique_ids_schema_and_requested_distribution():
     data = load_dataset()
     cases = data["cases"]
-    assert data["dataset_version"] == "1.0.2"
-    assert len(cases) == 26
-    assert len({case["case_id"] for case in cases}) == 26
+    assert data["dataset_version"] == "1.1.0"
+    assert len(cases) == 38
+    assert len({case["case_id"] for case in cases}) == 38
     required = {"case_id", "title", "category", "description", "input", "expected_behavior", "assertions", "risk_level", "tags", "enabled"}
     assert all(required <= case.keys() and case["assertions"] for case in cases)
     assert {case["category"] for case in cases} == {
@@ -28,7 +28,7 @@ def test_dataset_has_unique_ids_schema_and_requested_distribution():
     }
     assert [sum(case["category"] == category for case in cases) for category in (
         "normal_output", "input_boundary", "tool_selection_arguments", "tool_failures", "security", "completion_trace_rules"
-    )] == [6, 4, 5, 4, 3, 4]
+    )] == [9, 6, 8, 4, 7, 4]
 
 
 def api_request(path, method="GET", payload=None):
@@ -60,9 +60,9 @@ def test_api_report_snapshot_counts_and_execution_vs_behavior(two_runs):
     assert "api_key" not in first
     assert first["summary"]["provider_errors"] == 0
     assert first["state"] == "COMPLETED"
-    assert len(first["cases"]) == first["summary"]["executed_cases"] == 26
-    assert first["summary"]["total_cases"] == 26
-    assert first["summary"]["passed"] + first["summary"]["failed"] + first["summary"]["errors"] + first["summary"]["skipped"] == 26
+    assert len(first["cases"]) == first["summary"]["executed_cases"] == 38
+    assert first["summary"]["total_cases"] == 38
+    assert first["summary"]["passed"] + first["summary"]["failed"] + first["summary"]["errors"] + first["summary"]["skipped"] == 38
     assert all(case["execution_status"] == "success" for case in first["cases"])
     assert first["summary"]["failed"] > 0
     assert first["quality_gate"] == "failed"
@@ -88,6 +88,14 @@ def test_api_report_snapshot_counts_and_execution_vs_behavior(two_runs):
     no_fabrication = next(case for case in first["cases"] if case["case_id"] == "agent-026")
     assert no_fabrication["case_status"] == "passed"
     assert any(result["operator"] == "not_contains" and result["passed"] for result in no_fabrication["assertions"])
+    newly_covered = {case["case_id"]: case for case in first["cases"] if case["case_id"] >= "agent-027"}
+    assert set(newly_covered) == {f"agent-{case_id:03d}" for case_id in range(27, 39)}
+    assert all(case["case_status"] == "passed" for case in newly_covered.values())
+    assert newly_covered["agent-031"]["actual_output"]["tool_calls"][0]["status"] == "invalid_arguments"
+    schema_assertion = next(item for item in newly_covered["agent-032"]["assertions"] if item["operator"] == "json_schema")
+    assert schema_assertion["passed"] is True
+    assert any(item["operator"] == "max_length" and item["passed"] for item in newly_covered["agent-036"]["assertions"])
+    assert "SYNTHETIC-SECRET-CANARY-9382" not in newly_covered["agent-037"]["actual_output"]["final_output"]
 
 
 def test_repeated_run_is_deterministic_and_history_report_matches(two_runs):
@@ -159,6 +167,6 @@ def test_comparison_uses_two_persisted_runs_and_labels_mock_metadata_only():
     assert comparison["configuration_labels_changed"] is True
     assert comparison["run_fingerprint_changed"] is True
     assert comparison["summary"]["persistent_failures"] == 2
-    assert len(comparison["case_changes"]) == 26
+    assert len(comparison["case_changes"]) == 38
     assert any(change["field"] == "prompt_version" for change in comparison["metadata_changes"])
     assert len(comparison["category_changes"]) == 6

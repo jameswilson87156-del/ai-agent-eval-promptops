@@ -1,7 +1,10 @@
 import { chromium } from 'playwright';
 import { mkdir, access, readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(scriptDir, '..', '..');
 const baseUrl = process.env.AGENT_EVAL_BASE_URL || 'http://localhost:5179';
 const outputDir = process.env.AGENT_EVAL_OUTPUT_DIR
   ? path.resolve(process.env.AGENT_EVAL_OUTPUT_DIR)
@@ -52,7 +55,7 @@ try {
   assert(firstPost.ok(), 'Mock execution POST returned ' + firstPost.status());
   const firstReport = await firstPost.json();
   assert(firstReport.run_mode === 'mock' && firstReport.provider_type === 'mock', 'Run was not explicitly marked as Mock');
-  assert(firstReport.cases.length === 26, 'Expected 26 persisted test results');
+  assert(firstReport.cases.length === 38, 'Expected 38 persisted test results');
   assert(firstReport.summary.failed > 0, 'Synthetic failure cases must remain visible');
   const firstSaved = await (await fetch(baseUrl + '/api/agent-eval/runs/' + firstReport.run_id)).json();
   const firstExport = await (await fetch(baseUrl + '/api/agent-eval/runs/' + firstReport.run_id + '/report')).json();
@@ -125,7 +128,7 @@ try {
   assert(comparison.baseline.run_id === firstReport.run_id && comparison.candidate.run_id === secondReport.run_id, 'Comparison did not use the selected persisted runs');
   assert(comparison.comparison_semantics === 'mock_metadata_only_comparison', 'Mock configuration label should not be described as a real-model version regression');
   assert(comparison.is_version_regression === false, 'Mock metadata comparison must not claim a model version regression');
-  assert(comparison.case_changes.length === 26 && comparison.category_changes.length === 6, 'Comparison omitted case or category changes');
+  assert(comparison.case_changes.length === 38 && comparison.category_changes.length === 6, 'Comparison omitted case or category changes');
   await page.locator('.comparison-result').waitFor();
   await page.screenshot({ path: path.join(outputDir, 'agent-eval-comparison-' + secondReport.run_id + '.png'), fullPage: true });
 
@@ -144,9 +147,36 @@ try {
   await page.getByRole('button', { name: '运行历史', exact: true }).click();
   await page.getByText(secondReport.run_id.slice(0, 18), { exact: false }).first().waitFor();
   const persistedRuns = await (await fetch(baseUrl + '/api/agent-eval/runs')).json();
-  assert(persistedRuns.some(run => run.run_id === firstReport.run_id && run.cases.length === 26), 'Run history did not survive browser refresh');
+  assert(persistedRuns.some(run => run.run_id === firstReport.run_id && run.cases.length === 38), 'Run history did not survive browser refresh');
   assert(persistedRuns.some(run => run.run_id === secondReport.run_id), 'Second saved run missing from backend history');
 
+  const modelEvidence = JSON.parse(await readFile(path.resolve(repoRoot, 'frontend/src/data/modelEvalDevelopmentSummary.json'), 'utf8'));
+  await page.setViewportSize({ width: 1440, height: 920 });
+  await page.getByRole('button', { name: '真实模型试跑', exact: true }).click();
+  await page.getByRole('heading', { name: '真实模型试跑', exact: true }).waitFor();
+  assert(await page.locator('.model-card').count() === modelEvidence.per_model_summary.length, 'Model page omitted a model summary');
+  assert(await page.getByText(`${modelEvidence.evaluated_unique_pairs} / ${modelEvidence.planned_unique_pairs}`, { exact: true }).count() === 1, 'Model page unique-pair count differs from the merged evidence');
+  const expectedFailedCheckRows = modelEvidence.pairs
+    .filter(pair => pair.deterministic_status === 'failed')
+    .reduce((count, pair) => count + pair.failed_checks.length, 0);
+  assert(await page.locator('.model-failures tbody tr').count() === expectedFailedCheckRows, 'Model page omitted failed deterministic checks');
+  await page.locator('details.model-provenance summary').click();
+  await page.getByText(/Benchmark eligible：false/).waitFor();
+  const modelDesktopOverflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+  assert(!modelDesktopOverflow, '1440px model evaluation viewport has horizontal overflow');
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: path.join(outputDir, 'model-eval-development-desktop.png'), fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(baseUrl + '/');
+  await page.getByRole('button', { name: '真实模型试跑', exact: true }).click();
+  await page.getByRole('heading', { name: '真实模型试跑', exact: true }).waitFor();
+  const modelMobileOverflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+  assert(!modelMobileOverflow, '390px model evaluation viewport has horizontal overflow');
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: path.join(outputDir, 'model-eval-development-mobile-viewport.png') });
+  await page.screenshot({ path: path.join(outputDir, 'model-eval-development-mobile.png'), fullPage: true });
+
+  await page.setViewportSize({ width: 1440, height: 920 });
   await page.getByRole('button', { name: '总览', exact: true }).click();
   await page.route('**/api/agent-eval/runs', async route => {
     if (route.request().method() === 'POST') {
@@ -177,6 +207,11 @@ try {
     deterministicRepeat: true,
     comparisonSemantics: comparison.comparison_semantics,
     reloadPersistence: true,
+    modelEvaluationPairs: modelEvidence.evaluated_unique_pairs,
+    modelEvaluationFailedChecks: expectedFailedCheckRows,
+    modelEvaluationBenchmarkEligible: modelEvidence.benchmark_eligible,
+    modelDesktopOverflow,
+    modelMobileOverflow,
     desktopWidths: [1440, 1366],
     mobileWidth: 390,
     desktopOverflow,

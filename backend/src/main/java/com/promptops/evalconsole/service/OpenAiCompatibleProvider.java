@@ -442,6 +442,11 @@ public class OpenAiCompatibleProvider implements AgentProvider {
             JsonNode value = args.path(required);
             if (!value.isTextual() || value.asText().isBlank()) return "Required string argument is missing or invalid: " + required;
         }
+        var fields = args.fieldNames();
+        while (fields.hasNext()) {
+            String field = fields.next();
+            if (!REQUIRED.get(tool).contains(field)) return "Unexpected argument: " + field;
+        }
         return null;
     }
 
