@@ -1,12 +1,12 @@
 {
   "audit_schema_version": "1.0.0",
-  "created_at_utc": "2026-10-29T15:03:54+00:00",
+  "created_at_utc": "2026-10-29T15:18:41+00:00",
   "dataset": {
     "dataset_id": "promptops-synthetic-refund-policy-model-eval",
     "dataset_version": "0.2.0",
     "status": "exploratory_draft",
     "case_count": 40,
-    "sha256": "180d4db8a803502b624614e704382b29c889e1902af63aeed1a61b393e062118",
+    "sha256": "798d9212cc278112c92a8937db28c95bb4982464267dd5500bebf11ca1862987",
     "split_counts": {
       "development": 24,
       "sealed_test": 8,

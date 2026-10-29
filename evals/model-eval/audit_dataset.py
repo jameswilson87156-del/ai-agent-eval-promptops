@@ -177,7 +177,9 @@ def audit_dataset(dataset_path: Path, schema_path: Path | None = None,
     cases = dataset.get("cases")
     if not isinstance(cases, list) or not cases:
         raise ValueError("Dataset must contain at least one case.")
-    digest = hashlib.sha256(raw).hexdigest()
+    # Git may check out JSON text with CRLF on Windows and LF on Linux. Hash
+    # line-ending-normalized file bytes so the worksheet is portable across OSes.
+    digest = hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest()
 
     case_ids = [case.get("case_id") for case in cases if isinstance(case, dict)]
     family_values = [case.get("scenario_family") for case in cases if isinstance(case, dict)]

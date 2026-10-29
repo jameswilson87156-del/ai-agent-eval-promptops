@@ -44,7 +44,7 @@ Runner 规范化 JSON SHA-256：`f87f51dd6178780e12b620c6df293801160d45612e24d63
 
 每份运行报告保留实际 attempt。聚合器以 dataset hash、split、case ID、model ID 和 repetition 构造唯一组合；网络错误后的补请求不会重复计入该组合的确定性结果，但会保留在请求尝试数和错误历史中。合并后的 JSON 不保存原始模型回答，逐项未匹配只保留被断言字段的 expected/actual，便于复核而不把整段用户输入或回答复制到前端静态数据。
 
-合并运行记录在本机仓库旁的 `../../outputs/model-eval-deepseek-development-20261029/model-eval-summary.json`。Runner 使用排序后的 UTF-8 JSON 计算规范化 SHA；数据审计报告对原始文件字节计算 SHA-256 `180d4db8a803502b624614e704382b29c889e1902af63aeed1a61b393e062118`，两种摘要算法不同，不能直接混比。源运行 ID：
+合并运行记录在本机仓库旁的 `../../outputs/model-eval-deepseek-development-20261029/model-eval-summary.json`。Runner 使用排序后的 UTF-8 JSON 计算规范化 SHA；数据审计报告使用 CRLF→LF 后的文件字节计算 SHA-256 `798d9212cc278112c92a8937db28c95bb4982464267dd5500bebf11ca1862987`，两种摘要算法不同，不能直接混比。此换行归一化保证 Windows/Linux checkout 对同一文本数据集计算出相同哈希。源运行 ID：
 
 - `model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e`
 - `model-eval-93477432-541e-48b3-8f50-1d29599e9483`

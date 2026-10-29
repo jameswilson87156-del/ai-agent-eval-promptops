@@ -2,7 +2,7 @@
 
 - Source dataset: `dataset.v0.2.0.json`
 - Dataset version: `0.2.0`
-- Dataset SHA-256 captured in every CSV row: `180d4db8a803502b624614e704382b29c889e1902af63aeed1a61b393e062118`
+- Dataset SHA-256 captured in every CSV row (file bytes with CRLF normalized to LF): `798d9212cc278112c92a8937db28c95bb4982464267dd5500bebf11ca1862987`
 - Rows: 40
 - Scope: local synthetic refund-policy classification only. No production/customer data; this is not a general Agent/tool-use benchmark.
 

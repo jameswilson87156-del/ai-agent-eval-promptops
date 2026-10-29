@@ -42,6 +42,21 @@ def test_current_dataset_audit_is_exploratory_ready_but_never_benchmark_eligible
     assert report["dataset"]["sha256"]
 
 
+def test_dataset_file_hash_is_stable_across_crlf_and_lf_checkouts(tmp_path):
+    raw = DATASET_PATH.read_bytes()
+    lf_bytes = raw.replace(b"\r\n", b"\n")
+    crlf_bytes = lf_bytes.replace(b"\n", b"\r\n")
+    lf_path = tmp_path / "dataset-lf.json"
+    crlf_path = tmp_path / "dataset-crlf.json"
+    lf_path.write_bytes(lf_bytes)
+    crlf_path.write_bytes(crlf_bytes)
+
+    lf_report = audit_module.audit_dataset(lf_path)
+    crlf_report = audit_module.audit_dataset(crlf_path)
+
+    assert lf_report["dataset"]["sha256"] == crlf_report["dataset"]["sha256"]
+
+
 def test_missing_schema_validation_cannot_claim_exploratory_readiness():
     report = audit_module.audit_dataset(DATASET_PATH)
     schema_check = next(check for check in report["checks"] if check["name"] == "case_json_schema")
