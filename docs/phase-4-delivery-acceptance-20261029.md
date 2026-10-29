@@ -22,7 +22,7 @@
 | 前端生产构建 | `npm run build`（`frontend/`） | 0 | `vue-tsc --noEmit && vite build` 成功，Vite 生成生产构建 |
 | 前端依赖审计 | `npm audit --audit-level=high`（`frontend/`） | 0 | 0 vulnerabilities |
 | Python 编译 | `py -3.12 -m py_compile`（model-eval 的 audit / runner / summary 与测试模块） | 0 | 全部编译成功 |
-| 模型 Runner 与审计测试 | `py -3.12 -m pytest .\evals\model-eval -q` | 0 | 47 passed、0 failed、0 skipped |
+| 模型 Runner 与审计测试 | `py -3.12 -m pytest .\evals\model-eval -q` | 0 | 48 passed、0 failed、0 skipped |
 | Agent Eval API pytest | `PROMPTOPS_API_URL=http://127.0.0.1:18084 py -3.12 -m pytest .\backend\tests -q --junitxml=...` | 0 | 最新 26 passed、0 failed、0 skipped；JUnit 在仓库旁 `outputs/agent-eval-live-20261029/python-api-junit-final-20261029.xml` |
 | Mock 稳定性采样 | `py -3.12 .\backend\tools\check_agent_eval_stability.py --base-url http://127.0.0.1:18084 --iterations 8 --concurrency 3 --warmup-runs 1 --output ...` | 0 | 最新 8/8 成功、预热 1、失败请求 0、输出确定；p95 36.122 ms，工具标为 `observed_only`，不作为性能门槛或容量声明。报告在仓库旁 `outputs/agent-eval-live-20261029/agent-eval-stability-final-20261029.json` |
 | 固定数据审计 | `py -3.12 .\evals\model-eval\audit_dataset.py ...` | 0 | 40 cases；12 checks passed、0 failed、0 skipped；人工审批 0/40；`benchmark_eligible=false`。报告：[dataset-audit-v0.2.0.json](../evals/model-eval/evidence/dataset-audit-v0.2.0.json) |

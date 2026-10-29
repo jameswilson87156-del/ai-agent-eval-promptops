@@ -694,7 +694,7 @@ Docker Desktop 后续已启动。Gitea Quality Lab 的完整本地运行 `202610
 
 - 当前分支仍为 `chore/update-actions-runtime-20261029`；本轮开始 HEAD `2f89849a1f268e978e1f8583bc537dcbdd2013d6`，保留了已有工作区改动。功能分支推进，不使用 `main`。
 - 模型 development 全批次已完成并聚合：48 个唯一组合、51 次请求尝试、43 组匹配草案断言、5 组未匹配、0 未解决；3 次网络错误后有补请求。Token 31,416；Provider 未返回费用；0/40 人工批准；门禁 failed、`benchmark_eligible=false`。汇总细节见 `docs/model-eval-development-summary-20261029.md`。
-- PromptOps 验收见 `docs/phase-4-delivery-acceptance-20261029.md`：Maven 37/37、Python API 26/26、model-eval 47/47、数据审计 12 项通过、Vue 类型/生产构建/依赖审计通过；8 次本地稳定性采样成功，p95 仅观测；Playwright 运行按钮到报告导出/历史/回归/失败状态完整通过。两张模型摘要页真实截图已放入 `docs/images/`。
+- PromptOps 验收见 `docs/phase-4-delivery-acceptance-20261029.md`：Maven 37/37、Python API 26/26、model-eval 48/48、数据审计 12 项通过、Vue 类型/生产构建/依赖审计通过；8 次本地稳定性采样成功，p95 仅观测；Playwright 运行按钮到报告导出/历史/回归/失败状态完整通过。两张模型摘要页真实截图已放入 `docs/images/`。
 - Gitea Quality Lab 最新运行 `20261029T150955Z-4437d857`：Gitea 28.2.0 本地 18/18；Harness 单测 27/27；交互式 HTML 报告与 1440×1000 / 390×844 检查通过。该轮的 API/UI 截图与 JSON/JUnit/HTML 报告在相邻仓库 `gitea-quality-lab/reports/runs/20261029T150955Z-4437d857/`；专用报告页面桌面/手机截图仍取自前一轮，并已在 evidence log 标明。
 - Key 安全状态：只确认 `PROMPTOPS_PROVIDER_API_KEY_GUOMODEL` 环境变量存在，未读出或记录值。CLI 使用此变量；Spring Boot Web Provider 使用独立配置，本轮未配置且 API 安全预检返回 409；浏览器检查没有发出付费模型请求。
 - 简历边界：模型数据是未审批合成退款规则草案，不是准确率/Benchmark；Mock/开源 Gitea 结果也不是生产经验或生产容量压测。后续应先人工审核 40 条 gold，再建立经批准的新版本。

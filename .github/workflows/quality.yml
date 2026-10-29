@@ -33,8 +33,8 @@ jobs:
       - name: Dependency audit
         working-directory: frontend
         run: npm audit --audit-level=high
-      - name: Install pytest
-        run: python -m pip install pytest
+      - name: Install model evaluation dependencies
+        run: python -m pip install -r evals/model-eval/requirements.txt
       - name: Model evaluation runner and dataset-audit tests
         run: python -m pytest evals/model-eval -q
       - name: Audit the model evaluation dataset

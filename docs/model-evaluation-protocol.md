@@ -6,6 +6,8 @@
 
 真实模型评测集与确定性 Mock 数据集分开维护，目录为 `evals/model-eval/`。`dataset.v0.2.0.json` 有 40 条手工策划的本地合成退款策略样例，按 24/8/8 划分为 development / validation / sealed_test candidate；每条都有输入、预期 JSON、确定性断言、风险级别和来源信息。2026-10-29 已完成 development 的 24 case × 2 DeepSeek 路由单轮探索：48 个唯一组合完成，43 组匹配当前草案断言、5 组未匹配、0 未解决；51 次请求尝试含 3 次网络错误和 3 次补请求。人工审批为 0/40，质量门禁 failed，`benchmark_eligible=false`；Provider 未报告账单费用。v0.1.0/v0.1.1 和初期路由扫描保留为历史，不覆盖旧报告。详细结果见[development 批次摘要](model-eval-development-summary-20261029.md)。
 
+运行离线审计与评测测试前安装锁定依赖：`py -3.12 -m pip install -r .\evals\model-eval\requirements.txt`。数据审计使用 JSON Schema 校验；如果缺少 `jsonschema`，审计会将 Schema 检查标为 skipped，并拒绝 `ready_for_exploratory_run`。
+
 2026-10-29 最初一次 XEM 鉴权尝试在第 1 个请求收到 HTTP 401 后停止：该次无模型输出或 Token 用量，费用是否发生未核实。之后本机分组 Key 鉴权成功，执行 6 次真实推理；详细结果与原因码设计缺陷记录于“首轮真实模型试跑结果”。两次运行都没有可核验账单金额；401 错误本身不构成模型结果。
 
 这套数据不能从 `backend/src/main/resources/agent-eval-dataset-v1.json` 复制或直接改名。Mock 集中的 `tool_behavior`、固定 `tool_arguments` 和预设输出用于检查 Harness，不是模型 goldens。v0.2.0 的场景从本项目退款 DTO 校验、业务状态/金额规则、权限与幂等规则独立整理；没有公司生产数据或客户数据。

@@ -350,7 +350,7 @@
 ## 2026-10-29 更新：development 全批次与双项目浏览器验收
 
 - 当前状态：development 24 条 × 2 DeepSeek 路由已完成 48 个唯一组合；51 次请求尝试，43 组匹配草案断言、5 组未匹配，质量门禁 failed。完整证据见 `docs/model-eval-development-summary-20261029.md`。
-- PromptOps：Maven 37/37；model-eval pytest 47/47；本地 API pytest 26/26；数据审计 12/12；Vue 类型检查、生产构建、npm audit 0 vulnerabilities；8 次并发稳定性采样全部成功（延迟只标为 observed-only）；Playwright 全流程与桌面/手机截图通过。Web Provider 仍单独未配置。
+- PromptOps：Maven 37/37；model-eval pytest 48/48；本地 API pytest 26/26；数据审计 12/12；Vue 类型检查、生产构建、npm audit 0 vulnerabilities；8 次并发稳定性采样全部成功（延迟只标为 observed-only）；Playwright 全流程与桌面/手机截图通过。Web Provider 仍单独未配置。
 - Gitea Quality Lab：最新本地 Gitea 28.2.0 验收 Run `20261029T150955Z-4437d857`：18/18；Harness pytest 27/27；项目 HTML 报告、JSON/JUnit 交叉校验和 1440/390px 报告页检查通过。证据见 `work/gitea-quality-lab/reports/runs/20261029T150955Z-4437d857/` 和该仓库 `reports/evidence.md`。报告页面的单独桌面/手机截图来自前一轮同 18-case 输出，已在 evidence log 标明。
 - 汇总验收：`docs/phase-4-delivery-acceptance-20261029.md`。生产系统、生产监控值班、大规模生产压测均未被这些本地/合成结果证明。
 - 下一步：先完成人工审核 CSV 中 40 条 v0.2.0 规则预期，批准或修订后创建新数据集版本；再决定重复性与盲测策略。CI 推送状态以 GitHub Actions 实际运行结果为准。
