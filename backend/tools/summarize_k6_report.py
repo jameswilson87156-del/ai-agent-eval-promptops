@@ -34,17 +34,18 @@ def _threshold_failures(metrics: dict[str, Any]) -> list[str]:
     return sorted(failures)
 
 
-def build_report(data: dict[str, Any], source_file: str) -> dict[str, Any]:
-    metrics = data.get("metrics")
-    metadata = data.get("project_metadata")
-    if not isinstance(metrics, dict) or not isinstance(metadata, dict):
-        raise ValueError("Input is not a k6 report with PromptOps project metadata.")
-    plans = metadata.get("scenario_plans")
-    if not isinstance(plans, dict) or not plans:
-        raise ValueError("The report does not contain the declared scenario plan.")
+def _ramping_vus_scenario(metrics: dict[str, Any], metadata: dict[str, Any]) -> tuple[list[dict[str, Any]], list[str]]:
+    stage_plan = metadata.get("stage_plan")
+    if not isinstance(stage_plan, list) or not stage_plan:
+        raise ValueError("The ramping-vus report does not contain a declared stage plan.")
+    if any(
+        not isinstance(stage, dict)
+        or not isinstance(stage.get("duration"), str)
+        or not isinstance(stage.get("target"), (int, float))
+        for stage in stage_plan
+    ):
+        raise ValueError("The ramping-vus stage plan is malformed.")
 
-    scenarios: list[dict[str, Any]] = []
-    missing_metrics: list[str] = []
     required_metric_names = (
         "checks",
         "http_req_failed",
@@ -53,47 +54,37 @@ def build_report(data: dict[str, Any], source_file: str) -> dict[str, Any]:
         "dropped_iterations",
         "iterations",
     )
-    for name, plan in plans.items():
-        tagged = {key: f"{key}{{scenario:{name}}}" for key in required_metric_names}
-        absent = [metric_name for metric_name in tagged.values() if metric_name not in metrics]
-        missing_metrics.extend(absent)
-        values = {key: _metric_values(metrics, metric_name) for key, metric_name in tagged.items()}
-        scenario_threshold_failures = [
-            f"{metric_name}: {expression}"
-            for metric_name in tagged.values()
-            for expression, result in (
-                (metrics.get(metric_name, {}).get("thresholds", {}) or {}).items()
-                if isinstance(metrics.get(metric_name), dict)
-                else []
-            )
-            if not isinstance(result, dict) or result.get("ok") is not True
-        ]
-        for metric_name in tagged.values():
-            metric = metrics.get(metric_name)
-            thresholds = metric.get("thresholds", {}) if isinstance(metric, dict) else {}
-            if not thresholds:
-                scenario_threshold_failures.append(f"{metric_name}: missing threshold result")
+    missing_metrics = [name for name in required_metric_names if name not in metrics]
+    values = {name: _metric_values(metrics, name) for name in required_metric_names}
+    missing_thresholds = [
+        name
+        for name in required_metric_names
+        if isinstance(metrics.get(name), dict) and not metrics[name].get("thresholds")
+    ]
+    threshold_failures = _threshold_failures(
+        {name: metrics[name] for name in required_metric_names if isinstance(metrics.get(name), dict)}
+    )
+    threshold_failures.extend(f"{name}: missing threshold result" for name in missing_thresholds)
 
-        measured_iterations = int(_number(values["iterations"].get("count")))
-        minimum_iterations = int(_number(plan.get("minimum_iterations")))
-        checks_passed = int(_number(values["checks"].get("passes")))
-        checks_failed = int(_number(values["checks"].get("fails")))
-        scenario_ok = (
-            not absent
-            and not scenario_threshold_failures
-            and measured_iterations >= minimum_iterations
-            and checks_failed == 0
-            and _number(values["http_req_failed"].get("rate")) == 0
-            and _number(values["business_workflow_success"].get("rate")) == 1
-            and _number(values["business_workflow_failures"].get("count")) == 0
-            and _number(values["dropped_iterations"].get("count")) == 0
-        )
-        scenarios.append(
+    measured_iterations = int(_number(values["iterations"].get("count")))
+    checks_passed = int(_number(values["checks"].get("passes")))
+    checks_failed = int(_number(values["checks"].get("fails")))
+    scenario_ok = (
+        not missing_metrics
+        and not threshold_failures
+        and checks_failed == 0
+        and _number(values["http_req_failed"].get("rate")) == 0
+        and _number(values["business_workflow_success"].get("rate")) == 1
+        and _number(values["business_workflow_failures"].get("count")) == 0
+        and _number(values["dropped_iterations"].get("count")) == 0
+    )
+    return (
+        [
             {
-                "name": name,
-                "target_workflows_per_second": _number(plan.get("target_workflows_per_second")),
-                "duration_seconds": int(_number(plan.get("duration_seconds"))),
-                "minimum_iterations": minimum_iterations,
+                "name": "closed_loop_vu_ramp",
+                "executor": "ramping-vus",
+                "target_active_vus": int(_number(metadata.get("target_active_vus"))),
+                "stage_plan": stage_plan,
                 "measured_iterations": measured_iterations,
                 "checks_passed": checks_passed,
                 "checks_failed": checks_failed,
@@ -102,9 +93,87 @@ def build_report(data: dict[str, Any], source_file: str) -> dict[str, Any]:
                 "business_failures": int(_number(values["business_workflow_failures"].get("count"))),
                 "dropped_iterations": int(_number(values["dropped_iterations"].get("count"))),
                 "threshold_status": "passed" if scenario_ok else "failed",
-                "threshold_failures": sorted(scenario_threshold_failures),
+                "threshold_failures": sorted(threshold_failures),
             }
+        ],
+        missing_metrics,
+    )
+
+
+def build_report(data: dict[str, Any], source_file: str) -> dict[str, Any]:
+    metrics = data.get("metrics")
+    metadata = data.get("project_metadata")
+    if not isinstance(metrics, dict) or not isinstance(metadata, dict):
+        raise ValueError("Input is not a k6 report with PromptOps project metadata.")
+    executor = metadata.get("executor")
+    plans = metadata.get("scenario_plans")
+    if executor == "ramping-vus":
+        scenarios, missing_metrics = _ramping_vus_scenario(metrics, metadata)
+    elif isinstance(plans, dict) and plans:
+        scenarios = []
+        missing_metrics = []
+        required_metric_names = (
+            "checks",
+            "http_req_failed",
+            "business_workflow_success",
+            "business_workflow_failures",
+            "dropped_iterations",
+            "iterations",
         )
+        for name, plan in plans.items():
+            tagged = {key: f"{key}{{scenario:{name}}}" for key in required_metric_names}
+            absent = [metric_name for metric_name in tagged.values() if metric_name not in metrics]
+            missing_metrics.extend(absent)
+            values = {key: _metric_values(metrics, metric_name) for key, metric_name in tagged.items()}
+            scenario_threshold_failures = [
+                f"{metric_name}: {expression}"
+                for metric_name in tagged.values()
+                for expression, result in (
+                    (metrics.get(metric_name, {}).get("thresholds", {}) or {}).items()
+                    if isinstance(metrics.get(metric_name), dict)
+                    else []
+                )
+                if not isinstance(result, dict) or result.get("ok") is not True
+            ]
+            for metric_name in tagged.values():
+                metric = metrics.get(metric_name)
+                thresholds = metric.get("thresholds", {}) if isinstance(metric, dict) else {}
+                if not thresholds:
+                    scenario_threshold_failures.append(f"{metric_name}: missing threshold result")
+
+            measured_iterations = int(_number(values["iterations"].get("count")))
+            minimum_iterations = int(_number(plan.get("minimum_iterations")))
+            checks_passed = int(_number(values["checks"].get("passes")))
+            checks_failed = int(_number(values["checks"].get("fails")))
+            scenario_ok = (
+                not absent
+                and not scenario_threshold_failures
+                and measured_iterations >= minimum_iterations
+                and checks_failed == 0
+                and _number(values["http_req_failed"].get("rate")) == 0
+                and _number(values["business_workflow_success"].get("rate")) == 1
+                and _number(values["business_workflow_failures"].get("count")) == 0
+                and _number(values["dropped_iterations"].get("count")) == 0
+            )
+            scenarios.append(
+                {
+                    "name": name,
+                    "target_workflows_per_second": _number(plan.get("target_workflows_per_second")),
+                    "duration_seconds": int(_number(plan.get("duration_seconds"))),
+                    "minimum_iterations": minimum_iterations,
+                    "measured_iterations": measured_iterations,
+                    "checks_passed": checks_passed,
+                    "checks_failed": checks_failed,
+                    "http_failure_rate": _number(values["http_req_failed"].get("rate")),
+                    "workflow_success_rate": _number(values["business_workflow_success"].get("rate")),
+                    "business_failures": int(_number(values["business_workflow_failures"].get("count"))),
+                    "dropped_iterations": int(_number(values["dropped_iterations"].get("count"))),
+                    "threshold_status": "passed" if scenario_ok else "failed",
+                    "threshold_failures": sorted(scenario_threshold_failures),
+                }
+            )
+    else:
+        raise ValueError("The report does not contain a supported scenario plan.")
 
     all_threshold_failures = _threshold_failures(metrics)
     http_duration = _metric_values(metrics, "http_req_duration")
@@ -124,11 +193,21 @@ def build_report(data: dict[str, Any], source_file: str) -> dict[str, Any]:
         "run_id": metadata.get("run_id"),
         "execution_mode": metadata.get("run_mode"),
         "target": metadata.get("target"),
-        "measurement_boundary": "Local synthetic service only; not production traffic or capacity evidence.",
+        "measurement_boundary": metadata.get(
+            "boundary", "Local synthetic service only; not production traffic or capacity evidence."
+        ),
+        "executor": executor,
+        "stage_plan": metadata.get("stage_plan"),
+        "target_active_vus": metadata.get("target_active_vus"),
+        "client_think_time_seconds_between_workflows": metadata.get(
+            "client_think_time_seconds_between_workflows"
+        ),
         "summary": {
             "quality_gate": "failed" if summary_failed else "passed",
             "workflow_count": int(_number(iterations.get("count"))),
+            "workflow_rate_per_second": _number(iterations.get("rate")),
             "http_request_count": int(_number(requests.get("count"))),
+            "http_request_rate_per_second": _number(requests.get("rate")),
             "checks_passed": int(_number(checks.get("passes"))),
             "checks_failed": int(_number(checks.get("fails"))),
             "http_failure_rate": _number(_metric_values(metrics, "http_req_failed").get("rate")),
@@ -163,7 +242,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         f"- Mode: `{report.get('execution_mode')}`",
         f"- Target: {report.get('target')}",
         f"- Source JSON: `{report['source_file']}`",
-        "- Boundary: local synthetic service; this is not production traffic, SLO, or production capacity evidence.",
+        f"- Boundary: {report.get('measurement_boundary')}",
         "",
         "## Measured totals",
         "",
@@ -176,21 +255,64 @@ def render_markdown(report: dict[str, Any]) -> str:
             f"{summary['dropped_iterations']} | {summary['active_vus_peak']} | {summary['maximum_vu_capacity']} |"
         ),
         "",
-        "## Scenario gates",
-        "",
-        "| Scenario | Target workflows/s | Minimum workflows | Measured | Checks passed / failed | HTTP failure | Workflow success | Dropped | Gate |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|---|",
     ]
-    for scenario in report["scenarios"]:
-        lines.append(
-            f"| {scenario['name']} | {scenario['target_workflows_per_second']:g} | "
-            f"{scenario['minimum_iterations']} | {scenario['measured_iterations']} | "
-            f"{scenario['checks_passed']} / {scenario['checks_failed']} | "
-            f"{scenario['http_failure_rate']:.4%} | {scenario['workflow_success_rate']:.4%} | "
-            f"{scenario['dropped_iterations']} | {scenario['threshold_status'].upper()} |"
+    if report.get("executor") == "ramping-vus":
+        lines.extend(
+            [
+                "",
+                "## Closed-loop VU ramp",
+                "",
+                f"- Executor: `ramping-vus`; target peak: {report.get('target_active_vus')} active VUs.",
+                f"- Client think time between complete workflows: {report.get('client_think_time_seconds_between_workflows')} s.",
+                "",
+                "| Stage | Duration | Target active VUs |",
+                "|---|---:|---:|",
+            ]
         )
+        for stage in report.get("stage_plan") or []:
+            lines.append(f"| {stage.get('label', 'stage')} | {stage['duration']} | {stage['target']} |")
+        scenario = report["scenarios"][0]
+        lines.extend(
+            [
+                "",
+                "## Workflow quality gate",
+                "",
+                "| Checks passed / failed | HTTP failure | Workflow success | Business failures | Dropped | Gate |",
+                "|---:|---:|---:|---:|---:|---|",
+                (
+                    f"| {scenario['checks_passed']} / {scenario['checks_failed']} | "
+                    f"{scenario['http_failure_rate']:.4%} | {scenario['workflow_success_rate']:.4%} | "
+                    f"{scenario['business_failures']} | {scenario['dropped_iterations']} | "
+                    f"{scenario['threshold_status'].upper()} |"
+                ),
+                "",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                "",
+                "## Scenario gates",
+                "",
+                "| Scenario | Target workflows/s | Minimum workflows | Measured | Checks passed / failed | HTTP failure | Workflow success | Dropped | Gate |",
+                "|---|---:|---:|---:|---:|---:|---:|---:|---|",
+            ]
+        )
+        for scenario in report["scenarios"]:
+            lines.append(
+                f"| {scenario['name']} | {scenario['target_workflows_per_second']:g} | "
+                f"{scenario['minimum_iterations']} | {scenario['measured_iterations']} | "
+                f"{scenario['checks_passed']} / {scenario['checks_failed']} | "
+                f"{scenario['http_failure_rate']:.4%} | {scenario['workflow_success_rate']:.4%} | "
+                f"{scenario['dropped_iterations']} | {scenario['threshold_status'].upper()} |"
+            )
     http_duration = summary["combined_http_duration_ms"]
     workflow_duration = summary["combined_workflow_duration_ms"]
+    latency_scope = (
+        "These percentiles are observations from this local closed-loop ramp; no service SLO was defined."
+        if report.get("executor") == "ramping-vus"
+        else "These percentiles combine all four stages and are observations from this local run; no service SLO was defined."
+    )
     lines.extend(
         [
             "",
@@ -198,7 +320,7 @@ def render_markdown(report: dict[str, Any]) -> str:
             "",
             f"- HTTP request duration: p50 {http_duration['p50']:.3f} ms, p95 {http_duration['p95']:.3f} ms, p99 {http_duration['p99']:.3f} ms.",
             f"- Full workflow duration: p95 {workflow_duration['p95']:.3f} ms, p99 {workflow_duration['p99']:.3f} ms.",
-            "- These percentiles combine all four stages and are observations from this local run; no service SLO was defined.",
+            f"- {latency_scope}",
             "",
         ]
     )

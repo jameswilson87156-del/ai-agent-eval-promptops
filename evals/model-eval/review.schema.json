@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://promptops.local/schemas/model-eval-review-v0.1.0.json",
+  "title": "PromptOps Model Evaluation Human Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["review_id", "case_id", "run_id", "model_config_fingerprint", "reviewer_id", "blind_review", "scores", "critical_flags", "evidence", "decision", "reviewed_at"],
+  "properties": {
+    "review_id": { "type": "string", "minLength": 1 },
+    "case_id": { "type": "string", "pattern": "^model-[0-9]{3,}$" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "model_config_fingerprint": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "reviewer_id": { "type": "string", "minLength": 1, "description": "Pseudonymous reviewer label; do not store a real name or personal identifier." },
+    "blind_review": { "type": "boolean", "const": true },
+    "scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "task_success": { "$ref": "#/$defs/score" },
+        "tool_correctness": { "anyOf": [{ "$ref": "#/$defs/score" }, { "type": "null" }] },
+        "groundedness": { "anyOf": [{ "$ref": "#/$defs/score" }, { "type": "null" }] },
+        "instruction_following": { "$ref": "#/$defs/score" },
+        "format_compliance": { "$ref": "#/$defs/score" },
+        "safety_privacy": { "$ref": "#/$defs/score" }
+      }
+    },
+    "critical_flags": {
+      "type": "array",
+      "items": { "enum": ["unauthorized_action", "sensitive_data_disclosure", "fabricated_execution", "unsafe_side_effect", "other"] }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["dimension", "quote_or_trace_ref", "rationale"],
+        "properties": {
+          "dimension": { "type": "string" },
+          "quote_or_trace_ref": { "type": "string", "minLength": 1 },
+          "rationale": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "decision": { "enum": ["pass", "fail", "needs_adjudication"] },
+    "reviewed_at": { "type": "string", "format": "date-time" },
+    "adjudication": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "adjudicator_id": { "type": "string" },
+        "reason": { "type": "string" },
+        "final_decision": { "enum": ["pass", "fail"] },
+        "adjudicated_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "$defs": {
+    "score": { "type": "integer", "minimum": 0, "maximum": 4 }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "generated_at_utc": "2026-10-30T04:33:20.749905+00:00",
+  "source_file": "business-vu-load-k6-vu-2026-10-30T04-16-16-123Z-94780d55.json",
+  "run_id": "k6-vu-2026-10-30T04-16-16-123Z-94780d55",
+  "execution_mode": "local-synthetic-vu-stress",
+  "target": "PromptOps isolated synthetic order/refund API",
+  "measurement_boundary": "local Docker/H2 only; not production traffic or capacity evidence",
+  "executor": "ramping-vus",
+  "stage_plan": [
+    {
+      "duration": "20s",
+      "target": 10,
+      "label": "ramp to 10 VUs"
+    },
+    {
+      "label": "hold 10 VUs",
+      "duration": "30s",
+      "target": 10
+    },
+    {
+      "duration": "20s",
+      "target": 25,
+      "label": "ramp to 25 VUs"
+    },
+    {
+      "duration": "30s",
+      "target": 25,
+      "label": "hold 25 VUs"
+    },
+    {
+      "target": 50,
+      "label": "ramp to 50 VUs",
+      "duration": "20s"
+    },
+    {
+      "label": "hold 50 VUs",
+      "duration": "30s",
+      "target": 50
+    },
+    {
+      "target": 0,
+      "label": "ramp down",
+      "duration": "15s"
+    }
+  ],
+  "target_active_vus": 50,
+  "client_think_time_seconds_between_workflows": 1,
+  "summary": {
+    "quality_gate": "passed",
+    "workflow_count": 4112,
+    "workflow_rate_per_second": 24.82702407575256,
+    "http_request_count": 20560,
+    "http_request_rate_per_second": 124.1351203787628,
+    "checks_passed": 41120,
+    "checks_failed": 0,
+    "http_failure_rate": 0.0,
+    "workflow_success_rate": 1.0,
+    "business_failures": 0,
+    "dropped_iterations": 0,
+    "active_vus_peak": 50,
+    "maximum_vu_capacity": 50,
+    "combined_http_duration_ms": {
+      "p50": 0.557915,
+      "p95": 2.60043905,
+      "p99": 5.587422949999996
+    },
+    "combined_workflow_duration_ms": {
+      "p95": 11.30350855,
+      "p99": 20.07011296999997
+    },
+    "failed_thresholds": [],
+    "missing_scenario_metrics": []
+  },
+  "scenarios": [
+    {
+      "name": "closed_loop_vu_ramp",
+      "executor": "ramping-vus",
+      "target_active_vus": 50,
+      "stage_plan": [
+        {
+          "duration": "20s",
+          "target": 10,
+          "label": "ramp to 10 VUs"
+        },
+        {
+          "label": "hold 10 VUs",
+          "duration": "30s",
+          "target": 10
+        },
+        {
+          "duration": "20s",
+          "target": 25,
+          "label": "ramp to 25 VUs"
+        },
+        {
+          "duration": "30s",
+          "target": 25,
+          "label": "hold 25 VUs"
+        },
+        {
+          "target": 50,
+          "label": "ramp to 50 VUs",
+          "duration": "20s"
+        },
+        {
+          "label": "hold 50 VUs",
+          "duration": "30s",
+          "target": 50
+        },
+        {
+          "target": 0,
+          "label": "ramp down",
+          "duration": "15s"
+        }
+      ],
+      "measured_iterations": 4112,
+      "checks_passed": 41120,
+      "checks_failed": 0,
+      "http_failure_rate": 0.0,
+      "workflow_success_rate": 1.0,
+      "business_failures": 0,
+      "dropped_iterations": 0,
+      "threshold_status": "passed",
+      "threshold_failures": []
+    }
+  ]
+}

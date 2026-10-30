@@ -66,18 +66,17 @@ class EvalConsoleApplicationTests {
     }
 
     @Test
-    void agentDatasetHasTwentySixUniqueAssertableCasesInRequestedCategories() {
+    void agentDatasetHasThirtyEightUniqueAssertableCasesAcrossCoverageCategories() {
         var dataset=agentEvalService.getDataset();
         var cases=(List<?>)dataset.get("cases");
-        assertThat(cases).hasSize(26);
+        assertThat(cases).hasSize(38);
         var ids=cases.stream().map(value->((java.util.Map<?,?>)value).get("case_id")).toList();
         assertThat(ids).doesNotHaveDuplicates();
-        var categories=cases.stream().map(value->String.valueOf(((java.util.Map<?,?>)value).get("category"))).toList();
-        assertThat(categories).containsExactlyElementsOf(java.util.stream.Stream.of(
-                java.util.Collections.nCopies(6,"normal_output"),java.util.Collections.nCopies(4,"input_boundary"),
-                java.util.Collections.nCopies(5,"tool_selection_arguments"),java.util.Collections.nCopies(4,"tool_failures"),
-                java.util.Collections.nCopies(3,"security"),java.util.Collections.nCopies(4,"completion_trace_rules"))
-                .flatMap(List::stream).toList());
+        var categoryCounts=cases.stream().map(value->String.valueOf(((java.util.Map<?,?>)value).get("category")))
+                .collect(java.util.stream.Collectors.groupingBy(value->value,java.util.stream.Collectors.counting()));
+        assertThat(categoryCounts).containsExactlyInAnyOrderEntriesOf(java.util.Map.of(
+                "normal_output",9L,"input_boundary",6L,"tool_selection_arguments",8L,
+                "tool_failures",4L,"security",7L,"completion_trace_rules",4L));
     }
 
     @Test
@@ -95,7 +94,7 @@ class EvalConsoleApplicationTests {
         assertThat(first.get("runtime_config_fingerprint").toString()).hasSize(64);
         assertThat(first.get("version_labels_semantics")).isEqualTo("metadata_only");
         assertThat(first).containsKey("traces");
-        assertThat(((java.util.Map<?,?>)first.get("summary")).get("total_cases")).isEqualTo(26);
+        assertThat(((java.util.Map<?,?>)first.get("summary")).get("total_cases")).isEqualTo(38);
         assertThat(objectMapper.readTree(objectMapper.writeValueAsString(agentEvalService.getRun(firstId))))
                 .isEqualTo(objectMapper.readTree(objectMapper.writeValueAsString(first)));
         assertThat(agentEvalService.listRuns()).extracting(run->run.get("run_id")).contains(firstId,secondId);
@@ -106,13 +105,19 @@ class EvalConsoleApplicationTests {
         assertThat(weather.get("case_status")).isEqualTo("passed");
         assertThat(weather.get("run_id")).isEqualTo(firstId);
         assertThat(weather).containsKey("assertion_results");
+        var caseById=caseResults.stream().collect(java.util.stream.Collectors.toMap(result->result.get("case_id"),result->result));
+        assertThat(caseById.get("agent-027").get("case_status")).isEqualTo("passed");
+        assertThat(caseById.get("agent-031").get("case_status")).isEqualTo("passed");
+        assertThat(caseById.get("agent-032").get("case_status")).isEqualTo("passed");
+        assertThat(caseById.get("agent-036").get("case_status")).isEqualTo("passed");
+        assertThat(caseById.get("agent-038").get("case_status")).isEqualTo("passed");
         assertThat(objectMapper.readTree(objectMapper.writeValueAsString(agentEvalService.getRun(firstId))))
                 .isEqualTo(objectMapper.readTree(objectMapper.writeValueAsString(first)));
     }
 
     @Test
     void exposesAgentDatasetRunHistoryAndReportApis() throws Exception {
-        mockMvc.perform(get("/api/agent-eval/dataset")).andExpect(status().isOk()).andExpect(jsonPath("$.cases.length()").value(26));
+        mockMvc.perform(get("/api/agent-eval/dataset")).andExpect(status().isOk()).andExpect(jsonPath("$.cases.length()").value(38));
         String body=mockMvc.perform(post("/api/agent-eval/runs"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.evaluator_mode").value("mock"))
                 .andReturn().getResponse().getContentAsString();
@@ -138,9 +143,9 @@ class EvalConsoleApplicationTests {
         assertThat(comparison.get("configuration_labels_changed")).isEqualTo(true);
         assertThat(comparison.get("run_fingerprint_changed")).isEqualTo(true);
         var summary = (java.util.Map<?, ?>) comparison.get("summary");
-        assertThat(summary.get("persistent_passes")).isEqualTo(24);
+        assertThat(summary.get("persistent_passes")).isEqualTo(36);
         assertThat(summary.get("persistent_failures")).isEqualTo(2);
-        assertThat((List<?>) comparison.get("case_changes")).hasSize(26);
+        assertThat((List<?>) comparison.get("case_changes")).hasSize(38);
     }
 
     @Test

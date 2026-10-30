@@ -10,12 +10,13 @@ Agent Eval 指标来自实际 HTTP 执行，不来自静态页面；默认运行
 
 - Vue 3 + TypeScript：展示总览、数据集、批量运行、用例详情、历史、比较和 JSON 报告。工作台读取 /api/agent-eval API；等待状态来自实际 HTTP 请求生命周期。
 - AgentEvalController：提供数据集、Provider 状态、运行创建、运行历史、详情、报告和运行比较端点。
-- AgentEvalService：校验固定用例定义和运行参数，执行被测 Provider、断言与 Trace，生成 summary 和质量门禁，并持久化完整报告快照。
+- AgentEvalService：校验固定用例定义和运行参数，执行被测 Provider、断言与 Trace，生成 summary 和质量门禁，并持久化完整报告快照。Mock 数据集 v1.1.0 有 38 条用例；当前断言包括 `eq`、`contains`、`not_contains`、`count_eq`、`exists`、`one_of`、`valid_json`、`json_schema`、`max_length` 与 `ordered_events`。
 - AgentProvider：抽象被测 Agent 执行接口。
 - MockAgent：确定性关键词路由和本地工具 Stub。测试天气/网页搜索/工单、错误注入、权限拒绝、重复调用和任务完成行为，不调用网络或外部工具。
 - OpenAiCompatibleProvider：可选调用配置的 OpenAI-compatible Chat Completions 接口。Provider 返回的工具请求由本地工具注册表执行，再由同一套断言器判定。它不是通用 Agent Runtime，也不会调用真实业务工具。
 - AgentRunComparator：比较两个已保存的报告快照，输出逐用例变化、类别汇总、运行元数据和语义标识。
 - Python / pytest：独立校验数据集和 HTTP API 契约；不复制 Java 评测实现。
+- `evals/model-eval/`：与 Mock 集隔离的退款规则模型评测集、Schema、数据审计/人工审核清单和独立 Python OpenAI-compatible Runner。v0.2.0 有 40 条合成场景，按 24/8/8 分层；2026-10-29 已对 development 的 24 条分别运行 `deepseek-v4-pro` 和 `deepseek-v4.1-flash` 一次，共 48 个唯一组合、51 次请求尝试。43 组匹配当前草案断言、5 组未匹配，质量门禁失败；3 次网关错误后的补请求保留为额外 attempt。40 条均未审批、成本未由 Provider 返回、`benchmark_eligible=false`；不得称模型准确率或排名。Runner 输出独立报告，不进入 Agent Eval H2/历史页面；前端“真实模型试跑”页只展示已聚合快照，不发起模型请求。sealed-test candidate 随数据集可见，不是盲测集。完整数据和边界见[本轮模型评测摘要](model-eval-development-summary-20261029.md)与[真实模型评测规程](model-evaluation-protocol.md)。
 - 既有 PromptOps 服务：PromptOpsService、MyBatis-Plus 和原有实体继续服务旧展示工作流。
 
 ## 执行与保存链路
@@ -86,7 +87,7 @@ Provider 对超时、传输异常、HTTP 429、服务端错误、非法 JSON、�
 - `compose.production-like.yml` 的 backend、Prometheus、Alertmanager、k6、soak runner 和 sink 在内部 Docker 网络中；固定上游本地代理仅绑定宿主机 loopback 的 `18083`、`9090`、`9093`，供 API / 监控界面访问。告警不会发送到 Slack、邮件或其它外部地址。
 - H2 数据使用专属命名卷 `promptops-quality-local-20261028-data`，和已有的 demo 文件 H2、运行中的服务分离。运行负载/稳定性命令不会连接线上系统。
 - Python soak runner 默认 30 分钟、每 30 秒执行完整订单流程；支持 SIGINT/SIGTERM 收尾并写出 JSON。k6 使用 constant-arrival-rate，目标为 5、10、20、100 个完整工作流/秒，各 60 秒；一个工作流包含 5 个 HTTP 步骤。上一轮独立复跑为 8,102 个工作流、40,510 个请求和 81,020 项检查；原始数据仍保留用于历史对照。
-- k6 每档分别门禁工作流数、全量检查、HTTP/业务错误和 dropped iterations；`backend/tools/summarize_k6_report.py` 从原始 k6 JSON 生成带 Run ID 和本地边界说明的 JSON/Markdown 摘要。最近一轮完成 8,103 个工作流、40,515 个请求和 81,030 项检查；活跃 VU 峰值为 1，`vus_max=120` 表示最大可分配 VU 资源。报告未单独测量 100/s 阶段的 HTTP RPS；合并延迟分位数只代表该轮本机观察值。
+- k6 有两种独立场景：constant-arrival-rate 用于测固定工作流到达率（历史轮次 8,103 个工作流、40,515 个请求，active VU 峰值 1）；`performance/k6/business-order-workflow-ramping-vus.js` 用 `ramping-vus` 对完整工作流做闭环并发阶梯（2026-10-30 峰值 50 active VUs，4,112 workflows、20,560 requests、0 failures/dropped iterations，HTTP p95 2.60 ms）。`vus` 是运行时活动并发，`vus_max` 是分配容量；二者不能互换。两者都只测本地 Docker/H2 合成 API，分位数是该机观察值，不是生产容量或 SLA。
 - 本机 Docker Desktop/WSL2 资源报告为 4 vCPU、约 3.82 GiB 内存。Prometheus 在覆盖这轮负载的 5 分钟窗口中记录后端 `up` 最小值为 1，`process_cpu_usage` 最大原始值为 0.0669。它是 Spring 进程指标，不是主机 CPU 饱和度。上述 H2/Docker 观测没有生产代表性；没有配置生产 p95/SLO，也不能据此推导生产容量。原始 k6 JSON 和 Prometheus 采样分别位于 `docs/reports/business-load-rerun-20261028T141643Z-e68a5f0c.json` 与 `docs/reports/business-load-rerun-monitoring-20261028T141700Z.json`。
 
 设计参考（采用公开架构思路，不复制实现）：[Spring Boot Actuator/Micrometer 指标](https://docs.spring.io/spring-boot/3.3/reference/actuator/metrics.html)、[Prometheus 告警规则](https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/)、[Alertmanager webhook 配置](https://prometheus.io/docs/alerting/latest/configuration/) 与 [k6 constant-arrival-rate executor](https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-arrival-rate/)。
@@ -98,11 +99,12 @@ Provider 对超时、传输异常、HTTP 429、服务端错误、非法 JSON、�
 ## 已知限制
 
 - Mock Agent 是确定性测试替身，覆盖的是可观察行为，不代表模型推理能力。
-- Provider 尚无本轮真实模型运行样本和线上统计。外部请求会发送所选整套测试输入，需由运行者自行确认服务商、计费和数据策略。
+- 浏览器所用 Spring Boot Model Provider 尚未配置，缺少 Provider 配置时 API 返回 409，不发送模型请求。独立 CLI 已完成上述 XEM 探索运行；它是合成规则分类评测，不提供线上统计，也未接入 Agent Eval API。外部请求会发送所选测试输入，运行者需确认服务商、计费和数据策略。
 - Provider 的工具由本地 Stub 实现，不会对真实业务系统执行操作。
 - 订单/退款 API 是本地合成业务系统；演示头不是真实鉴权，业务状态不代表生产订单或资金。
 - Prometheus/Alertmanager 配置只适配本地 Compose 服务；本轮没有接入真实公司的生产监控、值班通知或告警平台。
-- 同步执行当前面向 26 条本地用例；没有队列、并发调度、多租户、用户权限、持久化审批、生产审计或生产部署。
+- 同步执行当前面向 38 条本地 Mock 用例；没有队列、并发调度、多租户、用户权限、持久化审批、生产审计或生产部署。
+- 模型评测 Runner 与 Case/Review Schema 尚未接入 Agent Eval API。当前有 40 条未审批草案的 48 个 development case/model 组合、Provider 报告 Token 与确定性断言差异；没有人工评分、获批 Gold、可靠成本或 benchmark 分数。
 - Prompt / Agent 版本标签尚未连接动态 Prompt 配置或版本化 Agent 实现。
 - Trace 仅保存可观察轨迹，不生成模型思维链。
 - 旧 PromptOps 展示页仍含本地演示数据。

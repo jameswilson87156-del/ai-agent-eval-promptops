@@ -130,6 +130,15 @@ Node 的 YAML 检查曾尝试使用仓库未安装的 `js-yaml`，因模块缺�
 - 全阶段合并 HTTP p95 为 1.361 ms、工作流 p95 为 5.913 ms；两者是该 Docker Desktop/WSL2 本机运行的观察值，不是 SLA/SLO，不用于声称生产容量。没有独立测量压力档 HTTP RPS。
 - 原始及结构化证据：[`原始 k6 JSON`](reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3.json)、[`摘要 JSON`](reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3-summary.json)、[`摘要 Markdown`](reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3-summary.md)。汇总器单测 4 条通过；原始 k6 阈值结果也包含在 JSON 中。
 
+### 闭环 VU 阶梯实测（2026-10-30）
+
+- 场景：新增 `performance/k6/business-order-workflow-ramping-vus.js`，以 10 → 25 → 50 active VUs 分段爬升并保持，执行创建订单 → 支付 → 查询 → 退款 → 回读完整链路；每个完整流程之间增加 1 秒客户端 think time，不在服务端注入延时。
+- 命令：`docker compose -f compose.production-like.yml run --rm k6 inspect /scripts/business-order-workflow-ramping-vus.js`（退出码 0）；`docker compose -f compose.production-like.yml run --rm k6 run /scripts/business-order-workflow-ramping-vus.js`（最终退出码 0）。第一次 run 在发请求前因 k6 不支持对 gauge `vus` 使用 `max` threshold 而退出；移除该阈值后重跑成功，失败尝试没有发送 HTTP 请求。
+- Run ID：`k6-vu-2026-10-30T04-16-16-123Z-94780d55`。公开证据：[原始 k6 JSON](reports/business-vu-load-k6-vu-2026-10-30T04-16-16-123Z-94780d55.json)、[结构化摘要 JSON](reports/business-vu-load-k6-vu-2026-10-30T04-16-16-123Z-94780d55-summary.json)、[可读摘要](reports/business-vu-load-k6-vu-2026-10-30T04-16-16-123Z-94780d55-summary.md)。原始文件首次生成于仓库外 `outputs/testdev-production-like-20261028/`，汇总器从这份原始文件生成仓库内摘要与公开副本。
+- 结果：`vus.max=50`、`vus_max.max=50`；4,112 个完整工作流、20,560 个 HTTP 请求、41,120 项检查全部通过；HTTP 失败率 0、业务工作流失败 0、dropped iterations 0。全轮平均 24.827 workflows/s、124.135 requests/s；HTTP duration p95 2.600 ms、p99 5.587 ms，完整 workflow group p95 11.304 ms。所有这些都是本机 Docker Desktop/WSL2 与 H2 条件下的观测值。
+- 边界：这是本地合成目标的 50 VU 闭环负载，不是线上真实用户、生产流量或生产容量验证；请求延迟也没有设成生产 SLO 门槛。旧 constant-arrival-rate 轮次的 active VU 峰值 1 仍然是正确历史数据，不能与本次 50 VU 场景合并为同一轮。
+- 报告汇总器扩展：`py -3.12 -m pytest backend/tests/test_k6_report_summary.py -q` 先按预期观察到 2 项 ramping-vus 新测试失败；实现后 6 passed / 0 failed / 0 skipped。`py -3.12 -m py_compile backend/tools/summarize_k6_report.py` 退出码 0。使用 `py -3.12 backend/tools/summarize_k6_report.py <raw-json> --json-out <summary-json> --markdown-out <summary-md>` 从原始 k6 JSON 生成了上述摘要，质量门禁 `passed`，计数与原始报告一致。
+
 ## 本轮远端质量门禁（2026-10-29）
 
 应用代码主分支门禁：[Actions run 40757858959](https://github.com/jameswilson87156-del/ai-agent-eval-promptops/actions/runs/40757858959)，在 `main` 提交 `f8b958c3646c097dd30d987361a1ccc223d1ec55` 完成，结论 `success`。该工作流执行 Maven、前端生产构建、依赖审计、Python/API 测试、固定数据集校验、Mock 稳定性采样、Playwright 浏览器验收并上传证据。PR #3 是验收文档更新；该 PR 的 push、PR 与合并后 main 工作流也全部通过，运行编号见本文顶部。

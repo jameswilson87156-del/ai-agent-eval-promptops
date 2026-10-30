@@ -3,18 +3,19 @@
 本地可运行的 Agent 评测与回归控制台。项目把固定测试集、可重复执行、逐条断言、Trace、失败归因和可下载报告连成一条真实 HTTP 执行链路。
 
 > [!IMPORTANT]
-> 默认执行模式是确定性 Mock Agent。页面中的运行次数、通过率和失败数来自 Spring Boot 保存的运行快照，但只描述 Mock Agent 在原创合成用例上的行为，不代表真实模型效果、时延、成本或生产数据。可选 OpenAI-compatible Provider 已接入；本轮验收没有发出真实模型请求。
+> 默认执行模式是确定性 Mock Agent。页面中的运行次数、通过率和失败数来自 Spring Boot 保存的运行快照，只描述 Mock Agent 在原创合成用例上的行为，不代表真实模型效果、成本或生产数据。另有独立的 XEM 探索试跑，不写入 Agent Eval 页面统计。
 
 ## 当前 Agent Eval 工作台
 
 本项目沿用现有 Vue 3 和 Spring Boot 工程，并保留原有 PromptOps 展示页。新的 Agent Eval 工作台提供总览、测试集、运行工作台、历史、回归比较和报告中心。
 
-- 固定数据集 1.0.2，共 26 条原创合成用例，覆盖正常任务、输入边界、工具选择与参数、工具异常、安全、任务完成与 Trace。
+- 固定 Mock 数据集 1.1.0，共 38 条原创合成用例；相对 1.0.2 新增 12 条覆盖授权正向路径、白名单失败关闭、参数边界、JSON Schema 子集、Unicode/长输入 Trace 与 Canary 不回显。
 - 前端发起同步 HTTP 请求，后端逐条执行断言并保存运行记录、Agent 行为结果、失败原因、可观测 Trace 和 JSON 报告快照。
 - Mock Agent 不访问网络；运行状态可跨本地文件型 H2 数据库重启保留。
 - 执行器成功与 Agent 行为通过分别记录。当前可重复的 Mock 失败为 agent-014 工具误选和 agent-015 重复工具调用；质量门禁会如实显示失败。
 - 回归页面比较两个已保存的运行，并说明比较语义。Prompt/Agent 版本字段目前是元数据标签，不会动态替换实际 Prompt；Mock 标签变化不等同于真实版本回归。
 - 可选 Provider 通过显式选择运行，默认无需密钥。没有正确配置模型时，服务在发送请求前拒绝任务。
+- 真实模型探索和 Mock Harness 分开：历史 v0.1.0 的 6 次请求仅保留作设计复盘，不作为准确率。v0.2.0 有 40 条合成退款策略草案（development/validation/sealed-test candidate 为 24/8/8），2026-10-29 已对 development 的 24 条用例分别调用 `deepseek-v4-pro` 与 `deepseek-v4.1-flash` 一次。合并 5 份运行报告后得到 48 个唯一组合、51 次请求尝试、43 组匹配当前草案断言、5 组未匹配，3 次网关网络错误后由后续请求补齐。Provider 报告 31,416 个 Token，未返回费用。样本尚未人工审批，质量门禁失败，`benchmark_eligible=false`；这些是草案断言观测，不是模型准确率或排名。逐项数据见[本轮模型评测摘要](docs/model-eval-development-summary-20261029.md)和[真实模型评测规程](docs/model-evaluation-protocol.md)。
 
 ## 最新真实浏览器截图
 
@@ -30,7 +31,13 @@
 
 更多页面：[测试集](docs/images/agent-eval-dataset-rc-final-20261028.png) · [报告中心](docs/images/agent-eval-reports-rc-final-20261028.png)
 
-本轮导出的实际 Mock 报告：[agent-eval-report-9fc5bc0d-f675-4959-b16a-43cd4a4630fe.json](docs/reports/agent-eval-report-9fc5bc0d-f675-4959-b16a-43cd4a4630fe.json)。它记录 26/26 条执行器成功、24 条 Agent 行为通过、2 条失败、0 个执行错误、0 条跳过；通过率 92.31%，质量门禁失败。这是该次 Mock 运行的结果，不能作为模型基准。
+2026-10-29 的真实模型探索摘要页（固定运行记录，不会从页面再次发起付费请求）：
+
+| development 观测 / 桌面 | 窄屏 |
+| --- | --- |
+| ![真实模型探索性观测页面](docs/images/model-eval-development-desktop-20261029.png) | ![真实模型探索性观测页面窄屏布局](docs/images/model-eval-development-mobile-20261029.png) |
+
+仓库中的历史 Mock 报告：[agent-eval-report-9fc5bc0d-f675-4959-b16a-43cd4a4630fe.json](docs/reports/agent-eval-report-9fc5bc0d-f675-4959-b16a-43cd4a4630fe.json) 使用数据集 1.0.2，记录 26/26 条执行器成功、24 条 Agent 行为通过、2 条失败、0 个执行错误、0 条跳过；通过率 92.31%，质量门禁失败。这是该次旧版 Mock 运行，不能代表 1.1.0，也不能作为模型基准。
 
 ## 架构与数据流
 
@@ -41,6 +48,8 @@
 5. 报告与比较页面展示运行模式、数据集版本、模型/Provider 元数据、配置指纹、每条结果、失败原因与质量门禁。
 
 架构、接口、模式边界与数据结构见 [docs/architecture.md](docs/architecture.md)。完整用例预期与失败解释见 [docs/agent-evaluation-matrix.md](docs/agent-evaluation-matrix.md)。
+
+最新全项目验收、真实模型批次边界和浏览器证据见[本轮交付验收](docs/phase-4-delivery-acceptance-20261029.md)。
 
 主要 API：
 
@@ -169,7 +178,7 @@ docker compose -f compose.production-like.yml run --rm k6
 docker compose -f compose.production-like.yml run --rm soak
 ~~~
 
-k6 按每秒 5、10、20、100 个完整业务工作流的目标到达率，各运行 60 秒；一个工作流包含创建、支付、读取、退款、再次读取 5 个 HTTP 步骤。最新分场景验收完成 8,103 个工作流、40,515 个 HTTP 请求、81,030 项检查，HTTP/工作流失败和 dropped iterations 均为 0。四档实测分别为 301、601、1,200、6,001 个工作流，均通过各自工作流数、零失败、零掉队门禁。本次活跃 VU 峰值为 1，`vus_max=120` 是最大可分配 VU 资源；不可写成 120 实际并发用户。全阶段合并 HTTP p95 为 1.361 ms、完整工作流 p95 为 5.913 ms，仅为本地观察值；没有独立压力阶段 HTTP RPS、生产 SLO 或生产容量结论。原始数据与自动摘要见 [k6 原始 JSON](docs/reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3.json)、[结构化摘要 JSON](docs/reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3-summary.json)、[可读摘要](docs/reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3-summary.md)。30 分钟低频 Soak 见 [Soak JSON](docs/reports/business-soak-20261028T105206352718Z.json)，Mock 重复性采样见 [稳定性 JSON](docs/reports/agent-eval-stability-r3.json)；完整口径见 [通用测试开发验收](docs/test-development-acceptance.md)。
+两个 k6 场景分开记录。历史 constant-arrival-rate 场景按每秒 5、10、20、100 个完整工作流各运行 60 秒，完成 8,103 workflows / 40,515 requests / 81,030 checks；active VU peak 1，`vus_max=120` 是资源容量，不是实际并发。2026-10-30 新增的 `ramping-vus` 闭环场景按 10 → 25 → 50 active VUs 阶梯运行，完成 4,112 workflows / 20,560 requests / 41,120 checks，0 HTTP/业务失败、0 dropped iterations，HTTP p95 2.600 ms。后一结果仅代表本机 Docker/H2 合成 API；未设生产延迟 SLO，也不能推算生产容量。新场景的 [原始 k6 JSON](docs/reports/business-vu-load-k6-vu-2026-10-30T04-16-16-123Z-94780d55.json)、[结构化摘要 JSON](docs/reports/business-vu-load-k6-vu-2026-10-30T04-16-16-123Z-94780d55-summary.json) 和 [可读摘要](docs/reports/business-vu-load-k6-vu-2026-10-30T04-16-16-123Z-94780d55-summary.md) 可复核。旧场景的 [k6 原始 JSON](docs/reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3.json)、[结构化摘要 JSON](docs/reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3-summary.json)、[可读摘要](docs/reports/business-load-k6-2026-10-28T14-41-32-869Z-b09f9fc3-summary.md) 继续保留。30 分钟低频 Soak 见 [Soak JSON](docs/reports/business-soak-20261028T105206352718Z.json)，Mock 重复性采样见 [稳定性 JSON](docs/reports/agent-eval-stability-r3.json)；完整口径见 [通用测试开发验收](docs/test-development-acceptance.md)。
 
 停止本地质量栈：
 
@@ -194,7 +203,7 @@ docker compose -f compose.production-like.yml down
 ## 已知限制
 
 - Mock Agent 是关键词路由的确定性测试替身，不是通用 Agent Runtime；其通过率不是模型能力指标。
-- OpenAI-compatible Provider 已实现，但本轮没有真实 Provider 运行样本、Token/成本/真实模型延迟统计或模型效果结论。
+- v0.1.0 的 6 次调用是历史探索样本，评分契约曾有缺陷。v0.2.0 的 40 条草案中，development 的 24 条已在两个 DeepSeek 路由上各运行一次：48 个唯一组合、43 组匹配草案断言、5 组未匹配；51 次请求尝试含 3 次网络错误和 3 次补请求。0 条 Gold 已审批，门禁失败；账单未知，不能报告准确率或排名。Runner 只做合成退款规则文本 JSON 评估，不是 Agent 工具使用 Benchmark，也未接入 Agent Eval 的在线执行 API。详见[完整批次摘要](docs/model-eval-development-summary-20261029.md)。
 - Provider 工具调用由本地 Stub 工具处理，不会操作外部业务系统。
 - 同步运行面向当前小型固定测试集；没有队列、并发调度、权限、多租户、生产审计或生产部署。
 - Trace 只记录可观察事件，不生成或展示模型思维链。

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import modelEvalEvidence from '../data/modelEvalDevelopmentSummary.json'
 
 type Assertion = { path: string; operator: string; expected: unknown; actual: unknown; passed: boolean; description: string }
 type TraceEvent = { event_id: string; sequence: number; event_type: string; timestamp: string; duration_ms: number; input_summary: string | null; output_summary: unknown; status: string; error: string | null }
@@ -11,9 +12,14 @@ type Dataset = { dataset_version: string; source: string; evaluator_mode: string
 type Provider = { provider_type: string; configured: boolean; credentials_configured?: boolean; model_name: string; config_version?: string; base_url?: string; tool_runtime?: string }
 type ProviderStatus = { default_provider_type: string; providers: Provider[]; real_provider_requires_explicit_selection: boolean; model_credentials_returned: boolean }
 type Comparison = { comparison_id: string; comparison_semantics: string; is_version_regression: boolean; dataset_changed: boolean; configuration_metadata_complete: boolean; configuration_changed: boolean; configuration_labels_changed: boolean; run_fingerprint_changed: boolean; baseline: Record<string, unknown>; candidate: Record<string, unknown>; baseline_summary: Summary; candidate_summary: Summary; summary: { new_failures: number; fixed_successes: number; persistent_failures: number; persistent_passes: number; added_cases: number; missing_cases: number; pass_rate_delta: number }; case_changes: Array<{ case_id: string; title: string; category: string | null; baseline_status: string; candidate_status: string; change: string; baseline_failure_reason: string[] | null; candidate_failure_reason: string[] | null }>; category_changes: Array<{ category: string; baseline: { total: number; passed: number; failed: number }; candidate: { total: number; passed: number; failed: number }; failed_delta: number; case_count_delta: number }>; metadata_changes: Array<{ field: string; baseline: string; candidate: string }> }
+type ModelPair = { case_id: string; requested_model: string; pair_status: string; deterministic_status: string | null; selected_run_id: string; attempt_count: number; gateway_error_attempts: number; failed_checks: Array<{ check_id: string; expected: unknown; actual: unknown }> }
+type ModelSummary = { model: string; planned_pairs: number; evaluated_pairs: number; passed_pairs: number; failed_pairs: number; unresolved_pairs: number; gateway_error_attempts: number; provider_reported_usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number }; billing_status: string; latency_ms: { n: number; p50_nearest_rank: number | null; p95_nearest_rank: number | null } }
+type ModelEvaluationEvidence = { summary_schema_version: string; completion_status: string; quality_gate_status: string; dataset_id: string; dataset_version: string; dataset_sha256: string; selected_split: string; benchmark_eligible: boolean; human_review_status: string; billing_status: string; source_run_ids: string[]; requested_models: string[]; planned_unique_pairs: number; evaluated_unique_pairs: number; deterministic_pass_pairs: number; deterministic_fail_pairs: number; unresolved_unique_pairs: number; actual_request_attempts: number; gateway_error_attempts: number; duplicate_pair_attempts: number; per_model_summary: ModelSummary[]; pairs: ModelPair[] }
+const modelEvaluation = modelEvalEvidence as ModelEvaluationEvidence
 
 const navigation = [
   { id: 'overview', label: '总览', icon: '◫' },
+  { id: 'model-eval', label: '真实模型试跑', icon: '◎' },
   { id: 'dataset', label: '测试集', icon: '▤' },
   { id: 'run', label: '运行工作台', icon: '⌁' },
   { id: 'history', label: '运行历史', icon: '◷' },
@@ -297,6 +303,47 @@ onMounted(refresh)
           </div>
         </section>
 
+        <section v-else-if="page === 'model-eval'" class="page model-eval-page">
+          <div class="page-heading">
+            <div><p class="eyebrow">MODEL EVALUATION / EXPLORATORY</p><h1>真实模型试跑</h1><p class="lede">XEM 国模组 · DeepSeek V4 · development split · 合成退款规则任务</p></div>
+            <span class="model-draft-tag"><i></i>草案数据 · 非 Benchmark</span>
+          </div>
+          <div class="model-warning" role="note">
+            <strong>结果只反映本批次的草案断言匹配</strong>
+            <span>40 条数据尚未人工审批；本页显示 24 条 development 用例 × 2 个模型、每组 1 次的确定性检查。不能据此宣称模型准确率、排名或正式 Benchmark。网关未返回账单金额。</span>
+          </div>
+          <div class="metric-grid model-metrics">
+            <div class="metric"><span>唯一模型 / 用例组合</span><strong>{{ modelEvaluation.evaluated_unique_pairs }} / {{ modelEvaluation.planned_unique_pairs }}</strong><small>24 个 development 用例 × 2 个模型</small></div>
+            <div class="metric"><span>匹配当前断言</span><strong class="model-good">{{ modelEvaluation.deterministic_pass_pairs }}</strong><small>不是经人工确认的准确率</small></div>
+            <div class="metric"><span>断言未匹配</span><strong class="model-bad">{{ modelEvaluation.deterministic_fail_pairs }}</strong><small>逐项 expected / actual 可复核</small></div>
+            <div class="metric"><span>请求尝试</span><strong>{{ modelEvaluation.actual_request_attempts }}</strong><small>{{ modelEvaluation.gateway_error_attempts }} 次网络错误后补齐 · {{ modelEvaluation.duplicate_pair_attempts }} 次额外尝试</small></div>
+          </div>
+          <div class="section-heading model-section-heading"><div><p class="eyebrow">MODEL COMPARISON / ONE RUN PER CASE</p><h2>本批次观测</h2></div><span class="model-meta-chip">账单：未返回</span></div>
+          <div class="model-cards">
+            <article v-for="item in modelEvaluation.per_model_summary" :key="item.model" class="model-card">
+              <div class="model-card-heading"><div><p class="eyebrow">{{ item.model === 'deepseek-v4-pro' ? 'DEEPSEEK V4' : 'DEEPSEEK V4.1' }}</p><h3>{{ item.model }}</h3></div><span class="model-pair-count">{{ item.evaluated_pairs }} / {{ item.planned_pairs }} 条</span></div>
+              <div class="model-score-line"><strong>{{ item.passed_pairs }}</strong><span>条匹配断言</span><b>{{ item.failed_pairs }} 条未匹配</b></div>
+              <div class="model-score-track" role="img" :aria-label="`${item.passed_pairs} passed assertion sets, ${item.failed_pairs} failed`"><i :style="{ width: (item.passed_pairs / Math.max(item.evaluated_pairs, 1) * 100) + '%' }"></i></div>
+              <dl class="model-observations"><div><dt>Provider 报告 Token</dt><dd>{{ item.provider_reported_usage.total_tokens.toLocaleString() }}</dd></div><div><dt>响应延迟 p50 / p95</dt><dd>{{ item.latency_ms.p50_nearest_rank?.toLocaleString() ?? '—' }} / {{ item.latency_ms.p95_nearest_rank?.toLocaleString() ?? '—' }} ms</dd></div><div><dt>网络错误尝试</dt><dd>{{ item.gateway_error_attempts }} · 后续补齐</dd></div></dl>
+            </article>
+          </div>
+          <section class="model-failures panel">
+            <div class="subsection-heading"><div><p class="eyebrow">ASSERTION REVIEW</p><h2>未匹配的确定性断言</h2><p>保留失败项，便于核对规则、样本预期和模型输出字段。</p></div><span class="subtle-badge">{{ modelEvaluation.deterministic_fail_pairs }} 组</span></div>
+            <div class="table-scroll"><table><thead><tr><th>用例</th><th>模型</th><th>断言字段</th><th>预期值</th><th>实际值</th></tr></thead><tbody>
+              <template v-for="pair in modelEvaluation.pairs.filter(item => item.deterministic_status === 'failed')" :key="pair.case_id + pair.requested_model">
+                <tr v-for="check in pair.failed_checks" :key="pair.case_id + pair.requested_model + check.check_id"><td><code class="mono">{{ pair.case_id }}</code></td><td>{{ pair.requested_model }}</td><td><code>{{ check.check_id }}</code></td><td><code>{{ JSON.stringify(check.expected) }}</code></td><td><code>{{ JSON.stringify(check.actual) }}</code></td></tr>
+              </template>
+            </tbody></table></div>
+          </section>
+          <details class="model-provenance">
+            <summary>数据口径与原始运行记录</summary>
+            <p>数据集 {{ modelEvaluation.dataset_id }} v{{ modelEvaluation.dataset_version }} · SHA-256 <code>{{ modelEvaluation.dataset_sha256 }}</code></p>
+            <p>合并 {{ modelEvaluation.source_run_ids.length }} 份运行报告；共 {{ modelEvaluation.actual_request_attempts }} 次请求尝试、{{ modelEvaluation.evaluated_unique_pairs }} 个唯一组合。重试尝试单独保留，但结果按唯一用例 / 模型 / repetition 计数。</p>
+            <p>人工复核：{{ modelEvaluation.human_review_status }} · 质量门禁：{{ modelEvaluation.quality_gate_status }} · Benchmark eligible：{{ modelEvaluation.benchmark_eligible }}</p>
+            <div class="provenance-runs"><code v-for="runId in modelEvaluation.source_run_ids" :key="runId">{{ runId }}</code></div>
+          </details>
+        </section>
+
         <section v-else-if="page === 'dataset'" class="page">
           <div class="page-heading"><div><p class="eyebrow">DATASET / {{ dataset?.dataset_version }}</p><h1>合成测试集</h1><p class="lede">{{ dataset?.source }}</p></div><span class="subtle-badge">{{ dataset?.cases.length }} 条 · 固定版本</span></div>
           <div class="filters">
@@ -550,4 +597,23 @@ tbody tr:last-child td{border-bottom:0}td{color:#40534a;font-size:11px}td small{
   .compare-controls{grid-template-columns:1fr;padding:11px}.comparison-banner{display:block}.comparison-banner>.mode-chip{margin-top:10px}.comparison-metrics .metric{min-height:82px;padding:10px}.comparison-metrics .metric strong{font-size:19px}
   .footer{display:block;line-height:1.6}.footer span:last-child{display:block;text-align:left;margin-top:4px}
 }
+.model-draft-tag{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #ead9b5;border-radius:5px;background:#fff8e9;color:#86611b;font-size:10px;font-weight:700;white-space:nowrap}
+.model-draft-tag i{width:7px;height:7px;border-radius:50%;background:#d49b35}
+.model-warning{display:grid;gap:4px;margin:0 0 22px;padding:14px 16px;border:1px solid #ead9b5;border-left:3px solid #c89534;border-radius:7px;background:#fffaf0;color:#6b572d;font-size:11px}
+.model-warning strong{font-size:12px;color:#755616}.model-warning span{line-height:1.6}
+.model-metrics{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:28px;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.model-metrics .metric{min-width:0;border-top:0}.model-metrics .metric strong{font-variant-numeric:tabular-nums}.model-metrics .metric small{line-height:1.45}
+.model-good{color:var(--success)!important}.model-bad{color:var(--danger)!important}
+.model-section-heading{margin:0 0 13px}.model-meta-chip,.model-pair-count{padding:5px 8px;border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--muted);font-size:10px;white-space:nowrap}
+.model-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-bottom:20px}
+.model-card{min-width:0;padding:18px 20px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.model-card-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.model-card-heading h3{margin:5px 0 0;color:var(--ink);font:600 17px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+.model-score-line{display:flex;align-items:baseline;gap:8px;margin:22px 0 8px}.model-score-line strong{font-size:26px;line-height:1;color:var(--success)}.model-score-line span,.model-score-line b{font-size:10px;color:var(--muted);font-weight:500}.model-score-line b{margin-left:auto;color:var(--danger)}
+.model-score-track{height:6px;overflow:hidden;border-radius:6px;background:#f4e8e7}.model-score-track i{display:block;height:100%;border-radius:6px;background:#25836c}
+.model-observations{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:17px 0 0;padding-top:14px;border-top:1px solid #edf0ed}.model-observations div{min-width:0}.model-observations dt{color:var(--muted);font-size:9px;line-height:1.4}.model-observations dd{margin:5px 0 0;color:var(--ink);font-size:11px;font-weight:650;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.model-failures{margin-top:20px;padding:18px 20px;border:1px solid var(--line);border-radius:9px;background:#fff}.model-failures .subsection-heading>div>p:not(.eyebrow){margin:5px 0 0;color:var(--muted);font-size:10px}.model-failures .table-scroll{margin-top:14px}.model-failures td{white-space:normal;overflow-wrap:anywhere}.model-failures td code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:10px}
+.model-provenance{margin-top:14px;padding:15px 17px;border:1px solid var(--line);border-radius:8px;background:#f9fbfa;color:var(--muted);font-size:10px}.model-provenance summary{color:var(--ink);font-size:11px;font-weight:650;cursor:pointer}.model-provenance p{line-height:1.6;overflow-wrap:anywhere}.model-provenance code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.provenance-runs{display:grid;gap:4px;margin-top:10px}.provenance-runs code{color:#668072;font-size:9px;overflow-wrap:anywhere}
+@media(max-width:900px){.model-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.model-metrics .metric:nth-child(2){border-right:0}.model-metrics .metric:nth-child(n+3){border-top:1px solid var(--line)}}
+@media(max-width:680px){.model-cards{grid-template-columns:1fr}.model-card{padding:16px}.model-failures{padding:15px 12px}.model-observations{grid-template-columns:1fr 1fr}.model-observations div:last-child{grid-column:1/-1}.model-draft-tag{margin-top:10px}.model-failures .table-scroll{border:0}.model-failures table{min-width:580px}}
+@media(max-width:420px){.model-metrics .metric{padding:13px}.model-metrics .metric strong{font-size:22px}.model-observations{grid-template-columns:1fr}.model-observations div:last-child{grid-column:auto}.model-score-line{gap:6px}.model-score-line b{font-size:9px}}
 </style>

@@ -1,0 +1,1673 @@
+{
+  "summary_schema_version": "1.0.0",
+  "run_mode": "real_model_exploratory_draft",
+  "dataset_id": "promptops-synthetic-refund-policy-model-eval",
+  "dataset_version": "0.2.0",
+  "dataset_sha256": "f87f51dd6178780e12b620c6df293801160d45612e24d63c38b3448263bf26b2",
+  "selected_split": "development",
+  "benchmark_eligible": false,
+  "human_review_status": "pending",
+  "billing_status": "provider_did_not_report_cost",
+  "source_run_ids": [
+    "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+    "model-eval-93477432-541e-48b3-8f50-1d29599e9483",
+    "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+    "model-eval-d7836205-456d-4de0-99b0-571bfa875b5b",
+    "model-eval-89759973-2517-4b03-843e-9a6e94c44d04"
+  ],
+  "requested_models": [
+    "deepseek-v4-pro",
+    "deepseek-v4.1-flash"
+  ],
+  "planned_unique_pairs": 48,
+  "unique_pairs_with_attempts": 48,
+  "evaluated_unique_pairs": 48,
+  "deterministic_pass_pairs": 43,
+  "deterministic_fail_pairs": 5,
+  "unresolved_unique_pairs": 0,
+  "actual_request_attempts": 51,
+  "gateway_error_attempts": 3,
+  "duplicate_pair_attempts": 3,
+  "completion_status": "complete",
+  "quality_gate_status": "failed",
+  "per_model_summary": [
+    {
+      "model": "deepseek-v4-pro",
+      "planned_pairs": 24,
+      "evaluated_pairs": 24,
+      "passed_pairs": 22,
+      "failed_pairs": 2,
+      "unresolved_pairs": 0,
+      "gateway_error_attempts": 3,
+      "provider_reported_usage": {
+        "prompt_tokens": 14730,
+        "completion_tokens": 1064,
+        "total_tokens": 15794
+      },
+      "billing_status": "provider_did_not_report_cost",
+      "latency_ms": {
+        "n": 24,
+        "p50_nearest_rank": 3962.428,
+        "p95_nearest_rank": 7704.575
+      }
+    },
+    {
+      "model": "deepseek-v4.1-flash",
+      "planned_pairs": 24,
+      "evaluated_pairs": 24,
+      "passed_pairs": 21,
+      "failed_pairs": 3,
+      "unresolved_pairs": 0,
+      "gateway_error_attempts": 0,
+      "provider_reported_usage": {
+        "prompt_tokens": 14754,
+        "completion_tokens": 868,
+        "total_tokens": 15622
+      },
+      "billing_status": "provider_did_not_report_cost",
+      "latency_ms": {
+        "n": 24,
+        "p50_nearest_rank": 3228.333,
+        "p95_nearest_rank": 6218.106
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "case_id": "model-001",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-001",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-002",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-002",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-003",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-003",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "failed",
+      "selected_run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": [
+        {
+          "check_id": "allowed",
+          "expected": true,
+          "actual": false
+        }
+      ]
+    },
+    {
+      "case_id": "model-004",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-004",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-005",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-93477432-541e-48b3-8f50-1d29599e9483",
+      "attempt_count": 2,
+      "gateway_error_attempts": 1,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-005",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-d7836205-456d-4de0-99b0-571bfa875b5b",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-006",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-006",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-007",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-007",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-008",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-008",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-009",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "failed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": [
+        {
+          "check_id": "requested_refund_cny",
+          "expected": 1.001,
+          "actual": null
+        }
+      ]
+    },
+    {
+      "case_id": "model-009",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "failed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": [
+        {
+          "check_id": "requested_refund_cny",
+          "expected": 1.001,
+          "actual": null
+        }
+      ]
+    },
+    {
+      "case_id": "model-010",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-010",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-011",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "failed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": [
+        {
+          "check_id": "reason_code",
+          "expected": "invalid_amount",
+          "actual": "exceeds_remaining_amount"
+        }
+      ]
+    },
+    {
+      "case_id": "model-011",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-012",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-012",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "failed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": [
+        {
+          "check_id": "allowed",
+          "expected": null,
+          "actual": false
+        }
+      ]
+    },
+    {
+      "case_id": "model-013",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-013",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-014",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-89759973-2517-4b03-843e-9a6e94c44d04",
+      "attempt_count": 2,
+      "gateway_error_attempts": 1,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-014",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-015",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-015",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-016",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-016",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-017",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-017",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-018",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-018",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-019",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-89759973-2517-4b03-843e-9a6e94c44d04",
+      "attempt_count": 2,
+      "gateway_error_attempts": 1,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-019",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-020",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-020",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-021",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-021",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-022",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-022",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-023",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-023",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-024",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    },
+    {
+      "case_id": "model-024",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "pair_status": "evaluated",
+      "deterministic_status": "passed",
+      "selected_run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "attempt_count": 1,
+      "gateway_error_attempts": 0,
+      "output_consistent_across_successes": true,
+      "failed_checks": []
+    }
+  ],
+  "attempts": [
+    {
+      "run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "case_id": "model-001",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 7089.899,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 47,
+        "total_tokens": 659
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "b293ea0f62817b3ebf76eb4b332a730b02f080dfa25cd4e791436ec5d53057fc",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "case_id": "model-001",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3074.091,
+      "usage": {
+        "prompt_tokens": 613,
+        "completion_tokens": 35,
+        "total_tokens": 648
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "0eddfebaed8f4084547d2c95e3a3d4158c7b5a9c2cf80c984ce45c42e7395dfc",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "case_id": "model-002",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 4573.094,
+      "usage": {
+        "prompt_tokens": 625,
+        "completion_tokens": 47,
+        "total_tokens": 672
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "3143330b537a8e2b8b32dd5cb8890a38997fc6d7aa5b1ec4863e02cee5121225",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "case_id": "model-002",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 2739.54,
+      "usage": {
+        "prompt_tokens": 626,
+        "completion_tokens": 35,
+        "total_tokens": 661
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "4802decc660934b6868074ad76ddbb5a2126f9da6f430ef60d4a9e27429b82f8",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "case_id": "model-003",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 6195.059,
+      "usage": {
+        "prompt_tokens": 616,
+        "completion_tokens": 47,
+        "total_tokens": 663
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "a488e05c0552eda6dfa1b272508ae528d711e261286f5df7031b8aab622c548e",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "case_id": "model-003",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "failed",
+      "error_code": null,
+      "latency_ms": 4488.088,
+      "usage": {
+        "prompt_tokens": 617,
+        "completion_tokens": 35,
+        "total_tokens": 652
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "71b212ef069fd2eeac69e4debca52b394d8b430aa412c9a413e8182186de5b50",
+      "failed_checks": [
+        {
+          "check_id": "allowed",
+          "expected": true,
+          "actual": false
+        }
+      ]
+    },
+    {
+      "run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "case_id": "model-004",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 7704.575,
+      "usage": {
+        "prompt_tokens": 616,
+        "completion_tokens": 50,
+        "total_tokens": 666
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "40163dfa77fc65ae681d997fe7729325a5e1fbff9d695e228b3c4fc7441d7acd",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "case_id": "model-004",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 2802.269,
+      "usage": {
+        "prompt_tokens": 617,
+        "completion_tokens": 38,
+        "total_tokens": 655
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "8474c8b79079877744666ed7badae6a715c7b799f5c342c1fca45239cc4dc7e9",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-0221cb3c-b094-485b-8a3a-1c6132f5089e",
+      "case_id": "model-005",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "error",
+      "evaluation_status": null,
+      "deterministic_status": null,
+      "error_code": "gateway_network_error",
+      "latency_ms": null,
+      "usage": null,
+      "billing_status": "not_reported",
+      "output_sha256": null,
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-93477432-541e-48b3-8f50-1d29599e9483",
+      "case_id": "model-005",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 4161.01,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 47,
+        "total_tokens": 659
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "f8626a8407f7e6e0a984efed7749f641540e458374e5e66cc9f6647b9a87051e",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-006",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3364.796,
+      "usage": {
+        "prompt_tokens": 611,
+        "completion_tokens": 47,
+        "total_tokens": 658
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "47f2d6943ed52f90f36139a83d2a1162d47d2ab54a5fee62fd27391869cc2cdb",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-006",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 2773.038,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 35,
+        "total_tokens": 647
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "2228ad8e11ce6fcb07aa0a72b38a2e5564a4262bd5d4cca4635064c4f213b8cb",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-007",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3526.399,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 35,
+        "total_tokens": 647
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "bc4d6de6cecde5aa8653296ea980814da092c5ce103355fbdb5caf71ea37f04a",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-007",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 2650.832,
+      "usage": {
+        "prompt_tokens": 613,
+        "completion_tokens": 35,
+        "total_tokens": 648
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "bc4d6de6cecde5aa8653296ea980814da092c5ce103355fbdb5caf71ea37f04a",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-008",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 4601.747,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 36,
+        "total_tokens": 648
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "d5bb759a18ea4d31849c566baacc38e48bf73167b6dacb65266d381056201411",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-008",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3755.792,
+      "usage": {
+        "prompt_tokens": 613,
+        "completion_tokens": 36,
+        "total_tokens": 649
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "d5bb759a18ea4d31849c566baacc38e48bf73167b6dacb65266d381056201411",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-009",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "failed",
+      "error_code": null,
+      "latency_ms": 3666.922,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 33,
+        "total_tokens": 645
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "efde0f718d9d0520f7f0637d8260f701ad310c248ae088f28baa739fcbb8d454",
+      "failed_checks": [
+        {
+          "check_id": "requested_refund_cny",
+          "expected": 1.001,
+          "actual": null
+        }
+      ]
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-009",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "failed",
+      "error_code": null,
+      "latency_ms": 3023.094,
+      "usage": {
+        "prompt_tokens": 613,
+        "completion_tokens": 33,
+        "total_tokens": 646
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "efde0f718d9d0520f7f0637d8260f701ad310c248ae088f28baa739fcbb8d454",
+      "failed_checks": [
+        {
+          "check_id": "requested_refund_cny",
+          "expected": 1.001,
+          "actual": null
+        }
+      ]
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-010",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3343.902,
+      "usage": {
+        "prompt_tokens": 619,
+        "completion_tokens": 41,
+        "total_tokens": 660
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "4b27cd54ac89086606e40c9cd792e7a0d45f06da8cb289150000b61a20930671",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-010",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 2877.974,
+      "usage": {
+        "prompt_tokens": 620,
+        "completion_tokens": 41,
+        "total_tokens": 661
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "4b27cd54ac89086606e40c9cd792e7a0d45f06da8cb289150000b61a20930671",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-011",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "failed",
+      "error_code": null,
+      "latency_ms": 3728.033,
+      "usage": {
+        "prompt_tokens": 618,
+        "completion_tokens": 56,
+        "total_tokens": 674
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "e057e549de697722bc60c39a5c4b05c557d2ceeacd0409cc7f6c8cb3206082a2",
+      "failed_checks": [
+        {
+          "check_id": "reason_code",
+          "expected": "invalid_amount",
+          "actual": "exceeds_remaining_amount"
+        }
+      ]
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-011",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3479.49,
+      "usage": {
+        "prompt_tokens": 619,
+        "completion_tokens": 41,
+        "total_tokens": 660
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "338a4da3eeaad341d6f584c3d87c274ebbb6d9451d533148092b1e6b938fc8ce",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-012",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3582.389,
+      "usage": {
+        "prompt_tokens": 606,
+        "completion_tokens": 45,
+        "total_tokens": 651
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "10b37496fc21bdcc5acb391eff8f8db614b745d210ebba3ee1630d8367f051bc",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-012",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "failed",
+      "error_code": null,
+      "latency_ms": 3541.276,
+      "usage": {
+        "prompt_tokens": 607,
+        "completion_tokens": 34,
+        "total_tokens": 641
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "08a5635dcaecfcb321706b34e0176a53a5e52e9cbf1201923a77cd2791a9ac8d",
+      "failed_checks": [
+        {
+          "check_id": "allowed",
+          "expected": null,
+          "actual": false
+        }
+      ]
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-013",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3962.428,
+      "usage": {
+        "prompt_tokens": 614,
+        "completion_tokens": 50,
+        "total_tokens": 664
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "b7b776caa84cc6d5a62336011a96d474a413e6bb8f6639acb62ca6b207928569",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-013",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3626.66,
+      "usage": {
+        "prompt_tokens": 615,
+        "completion_tokens": 38,
+        "total_tokens": 653
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "577d933976b5eded0cbd6cda277dcf6d92010cc75403cc75b831a48e96259b4c",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-014",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "error",
+      "evaluation_status": null,
+      "deterministic_status": null,
+      "error_code": "gateway_network_error",
+      "latency_ms": null,
+      "usage": null,
+      "billing_status": "not_reported",
+      "output_sha256": null,
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-014",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3228.333,
+      "usage": {
+        "prompt_tokens": 616,
+        "completion_tokens": 38,
+        "total_tokens": 654
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "577d933976b5eded0cbd6cda277dcf6d92010cc75403cc75b831a48e96259b4c",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-015",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 9274.207,
+      "usage": {
+        "prompt_tokens": 614,
+        "completion_tokens": 48,
+        "total_tokens": 662
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "6b4d44ec061c2e3e9f7ac457f8ee53312509c1e7119bd2dfe9298e7e1fd92c5b",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-015",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3178.208,
+      "usage": {
+        "prompt_tokens": 615,
+        "completion_tokens": 38,
+        "total_tokens": 653
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "8c20803858c1a64aad98b3f7c716ac96dd867bf8e881ed0d30e82ec4cfba6571",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-016",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3793.016,
+      "usage": {
+        "prompt_tokens": 617,
+        "completion_tokens": 35,
+        "total_tokens": 652
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "68df39fcf130ae9d4a5ffe2280a696d997ee4a82c8b3160c0a236d2d3768fdad",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-016",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 6218.106,
+      "usage": {
+        "prompt_tokens": 618,
+        "completion_tokens": 35,
+        "total_tokens": 653
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "68df39fcf130ae9d4a5ffe2280a696d997ee4a82c8b3160c0a236d2d3768fdad",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-017",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3965.575,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 49,
+        "total_tokens": 661
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "cd75e175abbdd82c136adaac980726c5e01af012b5fc6aa15f2f9b32ad060369",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-017",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3367.1,
+      "usage": {
+        "prompt_tokens": 613,
+        "completion_tokens": 37,
+        "total_tokens": 650
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "edc416fdddc7c3cb5853265fa7ed6f9476cab19994c3041d3eb3b37d0b23b74d",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-018",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 4341.269,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 46,
+        "total_tokens": 658
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "aa479c9bde7951efa8a591a4a3c16033b0d1925662625897cfc89a319ca07087",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-018",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3421.229,
+      "usage": {
+        "prompt_tokens": 613,
+        "completion_tokens": 40,
+        "total_tokens": 653
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "f6c35daaf66ab1a9c56801cd2db4142cd562b1e6d74690aef4580d43bd023d29",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-019",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "error",
+      "evaluation_status": null,
+      "deterministic_status": null,
+      "error_code": "gateway_network_error",
+      "latency_ms": null,
+      "usage": null,
+      "billing_status": "not_reported",
+      "output_sha256": null,
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-019",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 4758.662,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 35,
+        "total_tokens": 647
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "7542e3c44d8edfc915941581994aa70e1f5bddfd11ad4c9b8b7d63c8055cadde",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-020",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 4584.205,
+      "usage": {
+        "prompt_tokens": 611,
+        "completion_tokens": 45,
+        "total_tokens": 656
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "87eb4cff2f05ac0783c6493bd4654229fb17c316263055c6a25860967aa380f6",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-020",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 8176.895,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 34,
+        "total_tokens": 646
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "c325b3454380165d8f2e2a5798adc342edf861a5a0b2307b2ea15398506f0e03",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-021",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3196.348,
+      "usage": {
+        "prompt_tokens": 613,
+        "completion_tokens": 47,
+        "total_tokens": 660
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "b6cc8e406948ae07a1b1a0f55a7654fa5a50c77f36c789ff2452decdfb34042a",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-021",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3635.141,
+      "usage": {
+        "prompt_tokens": 614,
+        "completion_tokens": 35,
+        "total_tokens": 649
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "39010b329d39479d4cfc242e5b4329520a097db0fe11b59e5d7ade78ae877401",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-022",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 5118.749,
+      "usage": {
+        "prompt_tokens": 612,
+        "completion_tokens": 35,
+        "total_tokens": 647
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "aa8d3b158158c26c73c1d76935541f0962ad927d378e99ae15510bdfe812ecb4",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-022",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 2882.514,
+      "usage": {
+        "prompt_tokens": 613,
+        "completion_tokens": 35,
+        "total_tokens": 648
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "aa8d3b158158c26c73c1d76935541f0962ad927d378e99ae15510bdfe812ecb4",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-023",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3014.666,
+      "usage": {
+        "prompt_tokens": 614,
+        "completion_tokens": 35,
+        "total_tokens": 649
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "39010b329d39479d4cfc242e5b4329520a097db0fe11b59e5d7ade78ae877401",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-023",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 2507.161,
+      "usage": {
+        "prompt_tokens": 615,
+        "completion_tokens": 35,
+        "total_tokens": 650
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "39010b329d39479d4cfc242e5b4329520a097db0fe11b59e5d7ade78ae877401",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-024",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3708.699,
+      "usage": {
+        "prompt_tokens": 614,
+        "completion_tokens": 47,
+        "total_tokens": 661
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "d209e4f239e3021c1a12cd559f4abd011aaa69c35e8172da07fd9ec2f54065e6",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-8d1950b8-0edc-418d-ac8a-458b6da04f47",
+      "case_id": "model-024",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 2954.258,
+      "usage": {
+        "prompt_tokens": 615,
+        "completion_tokens": 35,
+        "total_tokens": 650
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "aa8d3b158158c26c73c1d76935541f0962ad927d378e99ae15510bdfe812ecb4",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-d7836205-456d-4de0-99b0-571bfa875b5b",
+      "case_id": "model-005",
+      "requested_model": "deepseek-v4.1-flash",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3354.296,
+      "usage": {
+        "prompt_tokens": 613,
+        "completion_tokens": 35,
+        "total_tokens": 648
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "ac6a23a31097cb5ca2f8ff18b4ad2455296a5003d33a3df28a29c283627b13dc",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-89759973-2517-4b03-843e-9a6e94c44d04",
+      "case_id": "model-014",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 4669.672,
+      "usage": {
+        "prompt_tokens": 615,
+        "completion_tokens": 50,
+        "total_tokens": 665
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "4901df8d4e150b2d12a32e93d789a7bd3dfa77ec6025c848a794cefe5e9fd947",
+      "failed_checks": []
+    },
+    {
+      "run_id": "model-eval-89759973-2517-4b03-843e-9a6e94c44d04",
+      "case_id": "model-019",
+      "requested_model": "deepseek-v4-pro",
+      "repetition_index": 1,
+      "call_status": "success",
+      "evaluation_status": "complete_output",
+      "deterministic_status": "passed",
+      "error_code": null,
+      "latency_ms": 3416.857,
+      "usage": {
+        "prompt_tokens": 611,
+        "completion_tokens": 46,
+        "total_tokens": 657
+      },
+      "billing_status": "not_reported",
+      "output_sha256": "2858e2363b7bd8bd08ad4424b06213d26e177937d90c0c5b5f3aeb8cd01dc293",
+      "failed_checks": []
+    }
+  ],
+  "generated_at": "2026-10-29T14:48:33+00:00"
+}

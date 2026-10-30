@@ -85,3 +85,44 @@ def test_markdown_calls_out_local_boundary_and_combined_percentiles():
     assert "not production traffic" in markdown
     assert "combine all four stages" in markdown
     assert "3 | 20" in markdown
+
+
+def ramping_vu_report():
+    data = raw_report()
+    data["project_metadata"] = {
+        "run_id": "k6-vu-smoke-001",
+        "run_mode": "local-synthetic-vu-stress",
+        "target": "PromptOps isolated synthetic order/refund API",
+        "executor": "ramping-vus",
+        "target_active_vus": 50,
+        "stage_plan": [
+            {"duration": "10s", "target": 10, "label": "ramp to 10 VUs"},
+            {"duration": "20s", "target": 50, "label": "hold 50 VUs"},
+        ],
+        "client_think_time_seconds_between_workflows": 1,
+    }
+    return data
+
+
+def test_summary_supports_ramping_vus_and_keeps_stage_plan():
+    report = build_report(ramping_vu_report(), "raw-vu-k6.json")
+    markdown = render_markdown(report)
+
+    assert report["summary"]["quality_gate"] == "passed"
+    assert report["execution_mode"] == "local-synthetic-vu-stress"
+    assert report["executor"] == "ramping-vus"
+    assert report["target_active_vus"] == 50
+    assert report["stage_plan"][1]["target"] == 50
+    assert report["summary"]["workflow_count"] == 2
+    assert "ramp to 10 VUs" in markdown
+    assert "hold 50 VUs" in markdown
+
+
+def test_ramping_vus_summary_fails_when_any_global_threshold_fails():
+    data = ramping_vu_report()
+    data["metrics"]["http_req_failed"]["thresholds"]["contract"]["ok"] = False
+
+    report = build_report(data, "raw-vu-k6.json")
+
+    assert report["summary"]["quality_gate"] == "failed"
+    assert report["summary"]["failed_thresholds"] == ["http_req_failed: contract"]
