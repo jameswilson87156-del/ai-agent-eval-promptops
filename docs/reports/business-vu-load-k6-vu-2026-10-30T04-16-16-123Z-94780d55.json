@@ -1,0 +1,408 @@
+{
+  "project_metadata": {
+    "workflow": "create order -> pay -> read -> refund -> read back",
+    "boundary": "local Docker/H2 only; not production traffic or capacity evidence",
+    "run_id": "k6-vu-2026-10-30T04-16-16-123Z-94780d55",
+    "target": "PromptOps isolated synthetic order/refund API",
+    "executor": "ramping-vus",
+    "client_think_time_seconds_between_workflows": 1,
+    "run_mode": "local-synthetic-vu-stress",
+    "target_active_vus": 50,
+    "stage_plan": [
+      {
+        "duration": "20s",
+        "target": 10,
+        "label": "ramp to 10 VUs"
+      },
+      {
+        "label": "hold 10 VUs",
+        "duration": "30s",
+        "target": 10
+      },
+      {
+        "duration": "20s",
+        "target": 25,
+        "label": "ramp to 25 VUs"
+      },
+      {
+        "duration": "30s",
+        "target": 25,
+        "label": "hold 25 VUs"
+      },
+      {
+        "target": 50,
+        "label": "ramp to 50 VUs",
+        "duration": "20s"
+      },
+      {
+        "label": "hold 50 VUs",
+        "duration": "30s",
+        "target": 50
+      },
+      {
+        "target": 0,
+        "label": "ramp down",
+        "duration": "15s"
+      }
+    ]
+  },
+  "root_group": {
+    "path": "",
+    "id": "d41d8cd98f00b204e9800998ecf8427e",
+    "groups": [
+      {
+        "name": "create, pay, read, refund, read back",
+        "path": "::create, pay, read, refund, read back",
+        "id": "77fc01e78ec3d1dbcbb122303931a624",
+        "groups": [],
+        "checks": [
+            {
+              "passes": 4112,
+              "fails": 0,
+              "name": "order created",
+              "path": "::create, pay, read, refund, read back::order created",
+              "id": "9b7f7267363bf99039370bae839a60e5"
+            },
+            {
+              "name": "create returned pending order",
+              "path": "::create, pay, read, refund, read back::create returned pending order",
+              "id": "3f99322003b17402b9c075e88458c059",
+              "passes": 4112,
+              "fails": 0
+            },
+            {
+              "name": "payment accepted",
+              "path": "::create, pay, read, refund, read back::payment accepted",
+              "id": "000b32f5b08a0e524d096059a4505f6f",
+              "passes": 4112,
+              "fails": 0
+            },
+            {
+              "name": "payment response is paid",
+              "path": "::create, pay, read, refund, read back::payment response is paid",
+              "id": "39e2c376ff8685f7bddda661773f8b5c",
+              "passes": 4112,
+              "fails": 0
+            },
+            {
+              "path": "::create, pay, read, refund, read back::paid order can be retrieved",
+              "id": "e414659ded1a912a270d7ac0ac0fac52",
+              "passes": 4112,
+              "fails": 0,
+              "name": "paid order can be retrieved"
+            },
+            {
+              "passes": 4112,
+              "fails": 0,
+              "name": "retrieved status is paid",
+              "path": "::create, pay, read, refund, read back::retrieved status is paid",
+              "id": "dcbe6ecda9f19d5cb24840d6ae80f818"
+            },
+            {
+              "name": "refund accepted",
+              "path": "::create, pay, read, refund, read back::refund accepted",
+              "id": "549095069a0998b6abe54a6be6b9a958",
+              "passes": 4112,
+              "fails": 0
+            },
+            {
+              "name": "refund response is complete",
+              "path": "::create, pay, read, refund, read back::refund response is complete",
+              "id": "29070294c0d27c36345a609f84902558",
+              "passes": 4112,
+              "fails": 0
+            },
+            {
+              "id": "96d8779276b8ee216338504d4baadd55",
+              "passes": 4112,
+              "fails": 0,
+              "name": "refunded order can be retrieved",
+              "path": "::create, pay, read, refund, read back::refunded order can be retrieved"
+            },
+            {
+              "passes": 4112,
+              "fails": 0,
+              "name": "retrieved status is refunded",
+              "path": "::create, pay, read, refund, read back::retrieved status is refunded",
+              "id": "88fdb1d159db754c5bb2b04e7af4c095"
+            }
+          ]
+      }
+    ],
+    "checks": [],
+    "name": ""
+  },
+  "options": {
+    "summaryTrendStats": [
+      "avg",
+      "min",
+      "med",
+      "max",
+      "p(90)",
+      "p(95)",
+      "p(99)"
+    ],
+    "summaryTimeUnit": "",
+    "noColor": false
+  },
+  "state": {
+    "isStdOutTTY": false,
+    "isStdErrTTY": false,
+    "testRunDurationMs": 165625.972225
+  },
+  "metrics": {
+    "data_received": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 15160048,
+        "rate": 91531.82798773455
+      }
+    },
+    "http_req_tls_handshaking": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 0,
+        "med": 0,
+        "max": 0,
+        "p(90)": 0,
+        "p(95)": 0,
+        "p(99)": 0,
+        "avg": 0
+      }
+    },
+    "http_req_receiving": {
+      "values": {
+        "p(99)": 0.7081506799999993,
+        "avg": 0.06582844922179032,
+        "min": 0.003608,
+        "med": 0.035014500000000004,
+        "max": 25.97831,
+        "p(90)": 0.0779272,
+        "p(95)": 0.11433494999999999
+      },
+      "type": "trend",
+      "contains": "time"
+    },
+    "vus": {
+      "type": "gauge",
+      "contains": "default",
+      "values": {
+        "max": 50,
+        "value": 4,
+        "min": 1
+      }
+    },
+    "vus_max": {
+      "contains": "default",
+      "values": {
+        "max": 50,
+        "value": 50,
+        "min": 50
+      },
+      "type": "gauge"
+    },
+    "checks": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 41120,
+        "fails": 0
+      },
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      }
+    },
+    "http_reqs": {
+      "contains": "default",
+      "values": {
+        "count": 20560,
+        "rate": 124.1351203787628
+      },
+      "type": "counter"
+    },
+    "http_req_blocked": {
+      "contains": "time",
+      "values": {
+        "max": 3.505504,
+        "p(90)": 0.004200100000000002,
+        "p(95)": 0.005086099999999999,
+        "p(99)": 0.17636187999999983,
+        "avg": 0.006616563326848261,
+        "min": 0.000425,
+        "med": 0.001588
+      },
+      "type": "trend"
+    },
+    "http_req_sending": {
+      "contains": "time",
+      "values": {
+        "p(95)": 0.0269842,
+        "p(99)": 0.05876595999999999,
+        "avg": 0.01152867159533074,
+        "min": 0.001614,
+        "med": 0.00592,
+        "max": 5.412143,
+        "p(90)": 0.01969670000000002
+      },
+      "type": "trend"
+    },
+    "http_req_failed": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 0,
+        "passes": 0,
+        "fails": 20560
+      },
+      "thresholds": {
+        "rate==0": {
+          "ok": true
+        }
+      }
+    },
+    "http_req_connecting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "p(90)": 0,
+        "p(95)": 0,
+        "p(99)": 0.10983953999999997,
+        "avg": 0.0024534533073929964,
+        "min": 0,
+        "med": 0,
+        "max": 2.18785
+      }
+    },
+    "http_req_waiting": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "avg": 0.9100950443093426,
+        "min": 0.117501,
+        "med": 0.504786,
+        "max": 523.503929,
+        "p(90)": 1.6019546000000011,
+        "p(95)": 2.437818449999999,
+        "p(99)": 5.258221259999996
+      }
+    },
+    "group_duration": {
+      "contains": "time",
+      "values": {
+        "p(99)": 20.07011296999997,
+        "avg": 5.419527734679,
+        "min": 1.759199,
+        "med": 3.920815,
+        "max": 605.326298,
+        "p(90)": 8.3947851,
+        "p(95)": 11.30350855
+      },
+      "type": "trend"
+    },
+    "dropped_iterations": {
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 0,
+        "rate": 0
+      },
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      }
+    },
+    "iterations": {
+      "contains": "default",
+      "values": {
+        "rate": 24.82702407575256,
+        "count": 4112
+      },
+      "thresholds": {
+        "count>=3500": {
+          "ok": true
+        }
+      },
+      "type": "counter"
+    },
+    "iteration_duration": {
+      "values": {
+        "avg": 1006.1029943251457,
+        "min": 1001.880749,
+        "med": 1004.5902845,
+        "max": 1606.763117,
+        "p(90)": 1009.1958318000001,
+        "p(95)": 1012.0844471,
+        "p(99)": 1020.7457564299999
+      },
+      "type": "trend",
+      "contains": "time"
+    },
+    "http_req_duration{expected_response:true}": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 0.134865,
+        "med": 0.557915,
+        "max": 525.121041,
+        "p(90)": 1.725719100000002,
+        "p(95)": 2.60043905,
+        "p(99)": 5.587422949999996,
+        "avg": 0.9874521651264622
+      }
+    },
+    "data_sent": {
+      "type": "counter",
+      "contains": "data",
+      "values": {
+        "count": 7312780,
+        "rate": 44152.37478615803
+      }
+    },
+    "http_req_duration": {
+      "type": "trend",
+      "contains": "time",
+      "values": {
+        "min": 0.134865,
+        "med": 0.557915,
+        "max": 525.121041,
+        "p(90)": 1.725719100000002,
+        "p(95)": 2.60043905,
+        "p(99)": 5.587422949999996,
+        "avg": 0.9874521651264622
+      }
+    },
+    "business_workflow_failures": {
+      "thresholds": {
+        "count==0": {
+          "ok": true
+        }
+      },
+      "type": "counter",
+      "contains": "default",
+      "values": {
+        "count": 0,
+        "rate": 0
+      }
+    },
+    "business_workflow_success": {
+      "type": "rate",
+      "contains": "default",
+      "values": {
+        "rate": 1,
+        "passes": 4112,
+        "fails": 0
+      },
+      "thresholds": {
+        "rate==1": {
+          "ok": true
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,13 @@
 # TODO
 
+## 2026-10-30 本地 50 VU 阶梯负载
+
+- 新增 `performance/k6/business-order-workflow-ramping-vus.js`，以 10/25/50 active VUs 对本地订单/退款合成 API 执行闭环阶梯流程。
+- `docker compose -f compose.production-like.yml run --rm k6 inspect /scripts/business-order-workflow-ramping-vus.js` 退出码 0；最终 `docker compose -f compose.production-like.yml run --rm k6 run /scripts/business-order-workflow-ramping-vus.js` 退出码 0。首轮在 HTTP 请求前发现 k6 不支持 `max` aggregation for `vus` gauge，修正后通过。
+- Run ID `k6-vu-2026-10-30T04-16-16-123Z-94780d55`：峰值 active VU 50；4,112 workflows、20,560 requests、41,120 checks；0 HTTP/业务失败、0 dropped iteration；HTTP p95/p99 2.600/5.587 ms。报告位于仓库外 `outputs/testdev-production-like-20261028/business-vu-load-k6-vu-2026-10-30T04-16-16-123Z-94780d55.json`。
+- 汇总器现兼容 ramping-vus 报告；针对性测试 6 passed、0 failed/skip，py_compile 退出码 0；原始 JSON、摘要 JSON、Markdown 已复制进 `docs/reports/`。
+- 边界：本地 Docker/H2 合成 API 的受控测试，不代表生产系统、生产 SLO 或大规模线上容量。旧 constant-arrival run active VU peak=1 单独保留。
+
 本文件用于 Claude / Codex 本地接力。每轮只处理一个名称明确、范围可验收的任务；未被用户确认前，不自动进入下一项。
 
 ## Documentation

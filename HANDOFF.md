@@ -1,5 +1,13 @@
 # Claude / Codex 交接记录
 
+## 2026-10-30 — 本地 50 VU k6 阶梯负载
+
+- 工作分支：`feat/k6-ramping-vus-local-20261030`；新增独立 `ramping-vus` 场景，旧 constant-arrival 场景未改。
+- 实际检查：`docker compose -f compose.production-like.yml run --rm k6 inspect /scripts/business-order-workflow-ramping-vus.js` 退出码 0；`docker compose -f compose.production-like.yml run --rm k6 run /scripts/business-order-workflow-ramping-vus.js` 最终退出码 0。首轮在发送请求前因 k6 1.8.1 不支持对 `vus` gauge 使用 `max` aggregation 而退出；移除无效 VU threshold 后重跑成功。
+- Run ID `k6-vu-2026-10-30T04-16-16-123Z-94780d55`：峰值 active VU 50；4,112 个完整合成订单/支付/查询/退款/回读工作流，20,560 次 HTTP 请求，41,120 项检查通过，HTTP/工作流失败 0，dropped iterations 0；HTTP duration p95 2.600 ms / p99 5.587 ms。数据仅来自本机 Docker/H2，不代表生产容量或 SLO。
+- 原始 JSON 在仓库外：`D:\CodexData\codex-workspaces\2026-10-28\ai-agent-github-https-github-com\outputs\testdev-production-like-20261028\business-vu-load-k6-vu-2026-10-30T04-16-16-123Z-94780d55.json`。
+- `backend/tools/summarize_k6_report.py` 原先只接受 `scenario_plans` arrival-rate 报告；新增 ramping-vus 测试先红灯（2 failures），完成支持后 `py -3.12 -m pytest backend/tests/test_k6_report_summary.py -q` 为 6 passed / 0 failed / 0 skipped。实际 JSON 已由汇总器输出 quality gate `passed` 的 JSON/Markdown 摘要并作为公开证据放入 `docs/reports/`。
+
 使用规则：每轮把新记录追加在“历史记录”顶部，不覆盖旧记录。没有证据时不要写“测试通过”。
 
 ## 当前待处理交接
